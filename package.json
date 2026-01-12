@@ -1,0 +1,19 @@
+{
+	"name": "wordpress-studio-mcp-server",
+	"description": "MCP server for WordPress Studio",
+	"private": true,
+	"version": "0.1.0",
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc -w",
+		"inspect": "npx @modelcontextprotocol/inspector node ./build/index.js"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.25.1",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"typescript": "^5.9.3"
+	}
+}
