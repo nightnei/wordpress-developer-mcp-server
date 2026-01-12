@@ -3,6 +3,14 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 
+function formatCliFailure(cmd: string, res: { stdout: string; stderr: string; exitCode: number }) {
+	return (
+		`${ cmd } failed (exit ${ res.exitCode }).\n\n` +
+		( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
+		( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' )
+	);
+}
+
 function runStudioCli( args: string[] ) {
 	return new Promise< { stdout: string; stderr: string; exitCode: number } >( ( resolve ) => {
 		const child = spawn( 'studio', args, {
@@ -50,10 +58,7 @@ server.registerTool(
 				content: [
 					{
 						type: 'text',
-						text:
-							`studio preview list failed (exit ${ res.exitCode }).\n\n` +
-							( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
-							( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' ),
+						text: formatCliFailure('studio preview list', res),
 					},
 				],
 			};
@@ -88,10 +93,7 @@ server.registerTool(
 				content: [
 					{
 						type: 'text',
-						text:
-							`studio preview create failed (exit ${ res.exitCode }).\n\n` +
-							( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
-							( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' ),
+						text: formatCliFailure('studio preview create', res),
 					},
 				],
 			};
@@ -109,6 +111,43 @@ server.registerTool(
 					text: url ? `Created preview: ${ url }` : res.stdout.trim() || '(no output)',
 				},
 			],
+		};
+	}
+);
+
+server.registerTool(
+	'studio_preview_update',
+	{
+		description: 'Update a Studio preview site for a given original site path (wraps `studio preview update <host>`).',
+		inputSchema: {
+			host: z.string().min(1).describe('Hostname of the preview site to update (the <host> argument).'),
+			path: z.string().describe('Path to the root directory of a Studio site.'),
+			overwrite: z
+				.boolean()
+				.optional()
+				.describe('Allow updating a preview site from a different folder (maps to --overwrite). Note, the preview site will be deleted for the old site path and created for the new one, but es expected - the host will be preserved.'),
+		},
+	},
+	async ({ host, path, overwrite }) => {
+		const args = ['preview', 'update', host, '--path', path];
+		if (overwrite) args.push('--overwrite');
+
+		const res = await runStudioCli(args);
+
+		if (res.exitCode !== 0) {
+			return {
+				content: [
+					{
+						type: 'text',
+						text: formatCliFailure('studio preview update', res)
+					},
+				],
+			};
+		}
+
+		return {
+			// stdout doesn't have any information, and it's better to print teh host directly, instead of printing the whole stderr output
+			content: [{ type: 'text', text: `Updated preview: ${ host }` || '(no output)' }],
 		};
 	}
 );
@@ -149,10 +188,7 @@ server.registerTool(
 				content: [
 					{
 						type: 'text',
-						text:
-							`studio preview delete failed (exit ${ res.exitCode }).\n\n` +
-							( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
-							( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' ),
+						text: formatCliFailure('studio preview delete', res),
 					},
 				],
 			};
