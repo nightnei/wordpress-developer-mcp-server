@@ -39,5 +39,5 @@ export function runStudioCli( args: string[] ) {
 
 export function extractFirstWpBuildUrl( text: string ): string | undefined {
 	const urlMatch = text.match( /https?:\/\/[^\s|]+\.wp\.build/ );
-	return urlMatch?.[ 0 ];	
+	return urlMatch?.[ 0 ];
 }
