@@ -4,6 +4,7 @@ This project connects [WordPress Studio](https://developer.wordpress.com/studio/
 It enables AI assistants (such as **Claude Desktop**) to:
 * inspect local WordPress Studio sites and safely read project files
 * manage preview sites (more actions will be added as they become available in the Studio CLI)
+
 Everything runs **locally** and is powered by the official **Studio CLI**.
 
 ## Setup
