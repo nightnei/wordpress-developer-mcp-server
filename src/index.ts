@@ -2,37 +2,7 @@ import { spawn } from 'node:child_process';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-
-function formatCliFailure(cmd: string, res: { stdout: string; stderr: string; exitCode: number }) {
-	return (
-		`${ cmd } failed (exit ${ res.exitCode }).\n\n` +
-		( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
-		( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' )
-	);
-}
-
-function runStudioCli( args: string[] ) {
-	return new Promise< { stdout: string; stderr: string; exitCode: number } >( ( resolve ) => {
-		const child = spawn( 'studio', args, {
-			/**
-			 * 'ignore' for stdin: child can't ask interactive questions (safer, avoids hanging).
-			 * 'pipe' for stdout: we want to capture normal output (e.g. `studio preview list` output).
-			 * 'pipe' for stderr: we want to capture error output for debugging.
-			 */
-			stdio: [ 'ignore', 'pipe', 'pipe' ],
-		} );
-
-		let stdout = '';
-		let stderr = '';
-
-		child.stdout.on( 'data', ( d ) => ( stdout += d.toString( 'utf8' ) ) );
-		child.stderr.on( 'data', ( d ) => ( stderr += d.toString( 'utf8' ) ) );
-
-		child.on( 'close', ( code: number | null ) => {
-			resolve( { stdout, stderr, exitCode: code ?? 0 } );
-		} );
-	} );
-}
+import { runStudioCli, formatCliFailure, extractFirstWpBuildUrl } from './lib/studio-cli';
 
 const server = new McpServer( {
 	name: 'studio',
@@ -100,9 +70,8 @@ server.registerTool(
 		}
 
 		// Studio CLI prints the URL to the preview site in the stderr output.
-		// I think we can keep it there, but additionally print to stdout, with extra information as site name, etc.
-		const urlMatch = res.stderr.match( /https?:\/\/[^\s|]+\.wp\.build/ );
-		const url = urlMatch?.[ 0 ];
+		// TODO: I think we can keep it there, but additionally CLI should print to stdout, with extra information as site name, etc.
+		const url = extractFirstWpBuildUrl(res.stderr);
 
 		return {
 			content: [
