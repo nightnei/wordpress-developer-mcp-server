@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { isStudioSitePath } from '../lib/appdata';
 
 const MAX_READ_BYTES = 200 * 1024;
 
@@ -48,11 +49,14 @@ export function registerFsTools(server: McpServer) {
 		async ({ sitePath, relPath, includeHidden }) => {
 			const rel = relPath ?? '.';
 
-			// TODO:Add also extra validation that sitePath is existing Studio site
 			if (!(await isDirectory(sitePath))) {
 				return {
 					content: [{ type: 'text', text: `sitePath is not a directory or does not exist: ${sitePath}` }],
 				};
+			}
+
+			if (!(await isStudioSitePath(sitePath))) {
+				return { content: [{ type: 'text', text: `sitePath is not a known Studio site: ${sitePath}. Tip: open Studio and ensure the site exists there.` }] };
 			}
 
 			let target: string;
@@ -72,7 +76,7 @@ export function registerFsTools(server: McpServer) {
 				}))
 				.sort((a, b) => a.name.localeCompare(b.name));
 
-			const result = {
+			const structuredContent = {
 				sitePath,
 				relPath: rel,
 				entries: filtered
@@ -82,10 +86,10 @@ export function registerFsTools(server: McpServer) {
 				content: [
 					{
 						type: 'text',
-						text: JSON.stringify( result, null, 2 ),
+						text: JSON.stringify( structuredContent, null, 2 ),
 					}
 				],
-				structuredContent: { sitePath, relPath: rel, entries: result },
+				structuredContent,
 			};
 		}
 	);
@@ -113,6 +117,10 @@ export function registerFsTools(server: McpServer) {
 				return {
 					content: [{ type: 'text', text: `sitePath is not a directory or does not exist: ${sitePath}` }],
 				};
+			}
+
+			if (!(await isStudioSitePath(sitePath))) {
+				return { content: [{ type: 'text', text: `sitePath is not a known Studio site: ${sitePath}. Tip: open Studio and ensure the site exists there.` }] };
 			}
 
 			let target: string;
