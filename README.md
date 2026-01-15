@@ -11,6 +11,10 @@ Everything runs **locally** and is powered by the official **Studio CLI**.
 
 ### Demo tools
 **[Watch the demo video](demos/studio_mcp_demo_tools.mp4)**
+### Demo prompts with reading filesystem
+**[Watch the demo video](demos/studio_mcp_demo_prompts.mp4)**
+### Demo resources
+**[Watch the demo video](demos/studio_mcp_demo_resources.mp4)**
 
 ## Setup
 
