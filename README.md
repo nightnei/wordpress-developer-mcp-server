@@ -10,10 +10,19 @@ It enables AI assistants (such as **Claude Desktop**) to:
 Everything runs **locally** and is powered by the official **Studio CLI**.
 
 ### Demo tools
+
 **[Watch the demo video](demos/studio_mcp_demo_tools.mp4)**
-### Demo prompts with reading filesystem
+
+### Demo prompts
+
+At the moment, the project includes a single demo prompt.
+It is provided mainly to demonstrate the MVP and to show basic capabilities such as interacting with Studio and reading the local filesystem.
+
+This prompt is intended purely as a demonstration and will be **expanded, refined, or replaced** with more realistic use cases in the future.
 **[Watch the demo video](demos/studio_mcp_demo_prompts.mp4)**
+
 ### Demo resources
+
 **[Watch the demo video](demos/studio_mcp_demo_resources.mp4)**
 
 ## Setup
