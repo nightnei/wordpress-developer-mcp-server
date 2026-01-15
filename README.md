@@ -9,6 +9,9 @@ It enables AI assistants (such as **Claude Desktop**) to:
 
 Everything runs **locally** and is powered by the official **Studio CLI**.
 
+### Demo tools
+**[Watch the demo video](demos/studio_mcp_demo_tools.mp4)**
+
 ## Setup
 
 To use this MCP server, you need the **WordPress Studio CLI** available on your machine.
