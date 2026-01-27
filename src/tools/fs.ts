@@ -251,4 +251,80 @@ export function registerFsTools( server: McpServer ) {
 			};
 		}
 	);
+
+	server.registerTool(
+		'studio_fs_delete_file',
+		{
+			description:
+				'Delete a file inside a Studio site directory. Safe: only allows paths within the given sitePath. Cannot delete directories.',
+			inputSchema: {
+				sitePath: z.string().describe( 'Absolute path to the Studio site root folder.' ),
+				relPath: z.string().describe( 'Relative path to the file within the site folder.' ),
+			},
+		},
+		async ( { sitePath, relPath } ) => {
+			if ( ! ( await isDirectory( sitePath ) ) ) {
+				return {
+					content: [
+						{ type: 'text', text: `sitePath is not a directory or does not exist: ${ sitePath }` },
+					],
+				};
+			}
+
+			if ( ! ( await isStudioSitePath( sitePath ) ) ) {
+				return {
+					content: [
+						{
+							type: 'text',
+							text: `sitePath is not a known Studio site: ${ sitePath }. Tip: open Studio and ensure the site exists there.`,
+						},
+					],
+				};
+			}
+
+			let target: string;
+			try {
+				target = resolveInsideRoot( sitePath, relPath );
+			} catch ( e: any ) {
+				return { content: [ { type: 'text', text: e?.message || 'Unknown error' } ] };
+			}
+
+			let st;
+			try {
+				st = await fs.stat( target );
+			} catch {
+				return {
+					content: [ { type: 'text', text: `File does not exist: ${ relPath }` } ],
+				};
+			}
+
+			// Only allow deleting files, not directories
+			if ( ! st.isFile() ) {
+				return {
+					content: [
+						{
+							type: 'text',
+							text: `Cannot delete: ${ relPath } is not a file. Only files can be deleted.`,
+						},
+					],
+				};
+			}
+
+			await fs.unlink( target );
+
+			return {
+				content: [
+					{
+						type: 'text',
+						text: `Successfully deleted ${ relPath }`,
+					},
+				],
+				structuredContent: {
+					sitePath,
+					relPath,
+					deleted: true,
+				},
+			};
+		}
+	);
 }
