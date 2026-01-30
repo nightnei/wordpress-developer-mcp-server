@@ -259,7 +259,9 @@ export function registerFsTools( server: McpServer ) {
 				'Delete a file or folder inside a Studio site directory. Safe: only allows paths within the given sitePath.',
 			inputSchema: {
 				sitePath: z.string().describe( 'Absolute path to the Studio site root folder.' ),
-				relPath: z.string().describe( 'Relative path to the file or folder within the site folder.' ),
+				relPath: z
+					.string()
+					.describe( 'Relative path to the file or folder within the site folder.' ),
 			},
 		},
 		async ( { sitePath, relPath } ) => {
