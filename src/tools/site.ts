@@ -8,7 +8,7 @@ export function registerSiteTools( server: McpServer ) {
 			description: 'List all local WordPress Studio sites (wraps `studio site list`).',
 		},
 		async () => {
-			const res = await runStudioCli( [ 'site', 'list' ] );
+			const res = await runStudioCli( [ 'site', 'list', '--format=json' ] );
 
 			if ( res.exitCode !== 0 ) {
 				return {
@@ -21,13 +21,18 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
+			const structuredContent = {
+				sites: JSON.parse( res.stdout.trim() ),
+			};
+
 			return {
 				content: [
 					{
 						type: 'text',
-						text: res.stdout.trim() || '(no sites found)',
+						text: JSON.stringify( structuredContent, null, 2 ),
 					},
 				],
+				structuredContent,
 			};
 		}
 	);
