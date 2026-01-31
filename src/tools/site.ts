@@ -225,4 +225,55 @@ export function registerSiteTools( server: McpServer ) {
 			};
 		}
 	);
+
+	server.registerTool(
+		'studio_site_create',
+		{
+			description: 'Create a new Studio site (wraps `studio site create`).',
+			inputSchema: {
+				path: z.string().describe( 'Path to where the new site should be located (preferably default location as /Users/<USERNAME>/Studio/...) or which existing site should be used as a base.' ),
+				name: z.string().optional().describe( 'Site name.' ),
+				wp: z.string().optional().describe( 'WordPress version (e.g., "latest", "6.4", "6.4.1"). Default: "latest".' ),
+				php: z
+					.enum( [ '8.4', '8.3', '8.2', '8.1', '8.0', '7.4', '7.3', '7.2' ] )
+					.optional()
+					.describe( 'PHP version. Default: "8.3".' ),
+				blueprint: z.string().optional().describe( 'Path or URL to Blueprint JSON file.' ),
+			},
+		},
+		async ( { path, name, wp, php, blueprint } ) => {
+			const args = [ 'site', 'create', '--path', path, '--skip-browser' ];
+
+			if ( name ) args.push( '--name', name );
+			if ( wp ) args.push( '--wp', wp );
+			if ( php ) args.push( '--php', php );
+			if ( blueprint ) args.push( '--blueprint', blueprint );
+
+			const res = await runStudioCli( args );
+
+			if ( res.exitCode !== 0 ) {
+				return {
+					content: [
+						{
+							type: 'text',
+							text: formatCliFailure( 'studio site create', res ),
+						},
+					],
+				};
+			}
+
+			// Sanitize password from output
+			const sanitizedOutput = res.stdout
+				.replace( /Password:\s*.+/gi, 'Password: [REDACTED]' );
+
+			return {
+				content: [
+					{
+						type: 'text',
+						text: sanitizedOutput.trim() || 'Site created',
+					},
+				],
+			};
+		}
+	);
 }
