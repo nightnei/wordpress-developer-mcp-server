@@ -170,4 +170,59 @@ export function registerSiteTools( server: McpServer ) {
 			};
 		}
 	);
+
+	server.registerTool(
+		'studio_site_delete',
+		{
+			description:
+				'Delete a Studio site. Destructive: requires confirm=true. Optionally move site files to trash.',
+			inputSchema: {
+				path: z.string().describe( 'Path to the root directory of a Studio site.' ),
+				files: z
+					.boolean()
+					.optional()
+					.describe( 'Also move site files to trash (default: false). If false, only removes from Studio but folder remains.' ),
+				confirm: z.boolean().describe( 'Must be true to actually delete.' ),
+			},
+		},
+		async ( { path, files, confirm } ) => {
+			if ( ! confirm ) {
+				return {
+					content: [
+						{
+							type: 'text',
+							text:
+								`Refusing to delete site at "${ path }" because confirm=false.\n` +
+								`Re-run with confirm=true if you're sure.`,
+						},
+					],
+				};
+			}
+
+			const args = [ 'site', 'delete', '--path', path ];
+			if ( files ) args.push( '--files' );
+
+			const res = await runStudioCli( args );
+
+			if ( res.exitCode !== 0 ) {
+				return {
+					content: [
+						{
+							type: 'text',
+							text: formatCliFailure( 'studio site delete', res ),
+						},
+					],
+				};
+			}
+
+			return {
+				content: [
+					{
+						type: 'text',
+						text: `Site deleted${ files ? ' (files moved to trash)' : '' }`,
+					},
+				],
+			};
+		}
+	);
 }
