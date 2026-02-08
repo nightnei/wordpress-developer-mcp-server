@@ -5,30 +5,37 @@ This project connects [WordPress Studio](https://developer.wordpress.com/studio/
 It enables AI assistants (such as **Claude Desktop**) to manage local WordPress sites with natural language:
 
 ### 🛠 Site Management
+
 - List, create, start, stop, and delete WordPress sites
 - Configure PHP/WordPress versions, custom domains, HTTPS, Xdebug
 - Check site status and authentication
 
 ### 📁 File System Operations
+
 - List directories, read, write, and delete files
 - Safely sandboxed to site directories only
 
 ### 🌐 Preview Sites
-- Create, update, list, and delete shareable preview links (*.wp.build)
+
+- Create, update, list, and delete shareable preview links (\*.wp.build)
 
 ### ⚡ WP-CLI Integration
+
 - Full access to WP-CLI commands: plugins, themes, posts, pages, users, options, database, and more
 - Install plugins, create content, manage settings — all through natural language
 
 ## Demos
 
 ### Demo: Tools
+
 **[Watch the demo video](demos/studio_mcp_demo_tools.mp4)**
 
 ### Demo: Prompts
+
 **[Watch the demo video](demos/studio_mcp_demo_prompts.mp4)**
 
 ### Demo: Resources
+
 **[Watch the demo video](demos/studio_mcp_demo_resources.mp4)**
 
 ## Setup
@@ -43,6 +50,7 @@ To use this MCP server, you need the **WordPress Studio CLI** available on your 
 4. Enable: **"Enable the studio command in the terminal"**
 
 Verify it works:
+
 ```bash
 studio --version
 ```
@@ -50,37 +58,40 @@ studio --version
 ## Integrate with Claude Desktop or Cursor
 
 1. Build the MCP server:
+
 ```bash
    npm run build
 ```
 
 2. Open the MCP server configuration:
+
    - **Claude Desktop**: **Settings** → **Developer** → **Edit Config**
    - **Cursor**: **Settings** → **Cursor Settings** → **Tools and MCP** → **New MCP Server**
 
 3. Add the MCP server entry:
+
 ```json
-   {
-     "mcpServers": {
-       "wordpress-studio-mcp-server": {
-         "command": "node",
-         "args": ["/ABSOLUTE/PATH/TO/wordpress-studio-mcp-server/build/index.js"]
-       }
-     }
-   }
+{
+	"mcpServers": {
+		"wordpress-studio-mcp-server": {
+			"command": "node",
+			"args": [ "/ABSOLUTE/PATH/TO/wordpress-studio-mcp-server/build/index.js" ]
+		}
+	}
+}
 ```
 
 4. Quit and reopen the app
 
 ## Available Tools
 
-| Category | Tools |
-|----------|-------|
-| **Sites** | `studio_site_list`, `studio_site_status`, `studio_site_start`, `studio_site_stop`, `studio_site_create`, `studio_site_delete`, `studio_site_set` |
-| **Files** | `studio_fs_list_dir`, `studio_fs_read_file`, `studio_fs_write_file`, `studio_fs_delete` |
-| **Previews** | `studio_preview_list`, `studio_preview_create`, `studio_preview_update`, `studio_preview_delete` |
-| **Auth** | `studio_auth_status`, `studio_auth_logout` |
-| **WP-CLI** | `studio_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.) |
+| Category     | Tools                                                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Sites**    | `studio_site_list`, `studio_site_status`, `studio_site_start`, `studio_site_stop`, `studio_site_create`, `studio_site_delete`, `studio_site_set` |
+| **Files**    | `studio_fs_list_dir`, `studio_fs_read_file`, `studio_fs_write_file`, `studio_fs_delete`                                                          |
+| **Previews** | `studio_preview_list`, `studio_preview_create`, `studio_preview_update`, `studio_preview_delete`                                                 |
+| **Auth**     | `studio_auth_status`, `studio_auth_logout`                                                                                                       |
+| **WP-CLI**   | `studio_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.)                                                              |
 
 ## Development notes:
 
