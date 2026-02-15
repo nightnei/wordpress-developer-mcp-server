@@ -49,15 +49,16 @@ studio --version
 ```
 
 ## Integrate with Claude Desktop or Cursor
+1. Clone this repo `git clone git@github.com:nightnei/wordpress-studio-mcp-server.git`
 
 No `npm install` or build step required — `dist/index.js` is a pre-built, self-contained bundle.
 
-1. Open the MCP server configuration:
+2. Open the MCP server configuration:
 
    - **Claude Desktop**: **Settings** → **Developer** → **Edit Config**
    - **Cursor**: **Settings** → **Cursor Settings** → **Tools and MCP** → **New MCP Server**
 
-2. Add the MCP server entry:
+3. Add the MCP server entry:
 
 ```json
 {
@@ -70,17 +71,7 @@ No `npm install` or build step required — `dist/index.js` is a pre-built, self
 }
 ```
 
-3. Quit and reopen the app
-
-## Available Tools
-
-| Category     | Tools                                                                                                                                            |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Sites**    | `studio_site_list`, `studio_site_status`, `studio_site_start`, `studio_site_stop`, `studio_site_create`, `studio_site_delete`, `studio_site_set` |
-| **Files**    | `studio_fs_list_dir`, `studio_fs_read_file`, `studio_fs_write_file`, `studio_fs_delete`                                                          |
-| **Previews** | `studio_preview_list`, `studio_preview_create`, `studio_preview_update`, `studio_preview_delete`                                                 |
-| **Auth**     | `studio_auth_status`, `studio_auth_logout`                                                                                                       |
-| **WP-CLI**   | `studio_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.)                                                              |
+4. Quit and reopen the app                                                           |
 
 ## Development notes:
 
