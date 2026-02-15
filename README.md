@@ -29,15 +29,18 @@ It enables AI assistants (such as **Claude Desktop**) to manage local WordPress 
 [![Watch the demo](https://img.youtube.com/vi/so5iux5EEqU/maxresdefault.jpg)](https://youtu.be/so5iux5EEqU)
 
 ## Pre-setup
+1. Node.js
+Verify your Node.js installation by opening a terminal or command prompt and running:
+```bash
+node --version
+```
+If Node.js is not installed, download it from [nodejs.org](https://nodejs.org/).
+2. Studio CLI (Note: this will be unnecessary soon, when Studio CLI becomes a standalone npm package, and it will be included in the MCP)
 
-To use this MCP server, you need the **WordPress Studio CLI** available on your machine.
-
-> Note: This pre-setup will be unnecessary once Studio CLI becomes a standalone npm package.
-
-1. Download and install **Studio**: https://developer.wordpress.com/studio/
+1. Download and install [Studio](https://developer.wordpress.com/studio/):
 2. Open **Studio**
 3. Go to **Settings** → **Preferences**
-4. Enable: **"Enable the studio command in the terminal"**
+4. Enable checkbox: **"Enable the studio command in the terminal"**
 
 Verify it works:
 
