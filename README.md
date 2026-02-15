@@ -54,7 +54,7 @@ studio --version
 ## Integrate with Claude Desktop or Cursor
 1. Clone this repo `git clone git@github.com:nightnei/wordpress-studio-mcp-server.git`
 
-No `npm install` or build step required — `dist/index.js` is a pre-built, self-contained bundle.
+> Note: No `npm install` or build step required — `dist/index.js` is a pre-built, self-contained bundle.
 
 2. Open the MCP server configuration:
 
