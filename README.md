@@ -74,16 +74,7 @@ studio --version
 }
 ```
 
-4. Quit and reopen the app                                                           |
-
-## Development notes:
-
-1. Inspector
-   - When using the MCP Inspector together with `npm run build:watch`, click “Restart” in the Inspector UI after code changes.
-   - File rebuilds happen automatically, but the MCP server process must be restarted.
-2. Claude Desktop
-   - When developing with `npm run build:watch`, you should quit and reopen Claude Desktop after code changes.
-   - Restarting the connector alone may sometimes work (I encountered it a few times), but it is not reliable.
+4. Quit and reopen the app
 
 ## ⚠️ Platform support
 
