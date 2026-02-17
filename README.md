@@ -2,7 +2,7 @@
 
 Build, manage, and develop WordPress sites by simply asking AI.
 
-This project connects [WordPress Studio](https://developer.wordpress.com/studio/) with AI assistants via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). See [TOOLS.md](TOOLS.md) for a full list of capabilities and available tools.
+This [MCP server](https://modelcontextprotocol.io/) gives AI assistants full control over your local WordPress sites. See [TOOLS.md](TOOLS.md) for a full list of capabilities.
 
 ## Demo
 
