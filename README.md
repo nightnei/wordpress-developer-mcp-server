@@ -1,80 +1,63 @@
 # WordPress Studio MCP Server
 
-This project connects [WordPress Studio](https://developer.wordpress.com/studio/) with AI tools via the **Model Context Protocol (MCP)**.
+Build, manage, and deploy WordPress sites using plain English — powered by AI.
 
-It enables AI assistants (such as **Claude Desktop**) to manage local WordPress sites with natural language:
-
-### 🛠 Site Management
-
-- List, create, start, stop, and delete WordPress sites
-- Configure PHP/WordPress versions, custom domains, HTTPS, Xdebug
-- Check site status and authentication
-
-### 📁 File System Operations
-
-- List directories, read, write, and delete files
-- Safely sandboxed to site directories only
-
-### 🌐 Preview Sites
-
-- Create, update, list, and delete shareable preview links (\*.wp.build)
-
-### ⚡ WP-CLI Integration
-
-- Full access to WP-CLI commands: plugins, themes, posts, pages, users, options, database, and more
-- Install plugins, create content, manage settings — all through natural language
+This project connects [WordPress Studio](https://developer.wordpress.com/studio/) with AI assistants via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). See [TOOLS.md](TOOLS.md) for a full list of capabilities and available tools.
 
 ## Demo
 
 [![Watch the demo](https://img.youtube.com/vi/so5iux5EEqU/maxresdefault.jpg)](https://youtu.be/so5iux5EEqU)
 
-## Pre-setup
-### Node.js
-Verify your Node.js installation by opening a terminal or command prompt and running:
-```bash
-node --version
-```
+## Setup
 
-If Node.js is not installed, download it from [nodejs.org](https://nodejs.org/).
+### Step 1 — Install an AI assistant
 
-### Studio CLI
-Note: this will be unnecessary soon, when Studio CLI becomes a standalone npm package, and it will be included in the MCP
+Pick one (or both):
 
-1. Download and install [Studio](https://developer.wordpress.com/studio/):
-2. Open **Studio**
-3. Go to **Settings** → **Preferences**
-4. Enable checkbox: **"Enable the studio command in the terminal"**
+- [Claude Desktop](https://claude.ai/download)
+- [Cursor](https://www.cursor.com/)
 
-Verify it works:
+### Step 2 — Install WordPress Studio
+
+1. Download and install **Studio**: https://developer.wordpress.com/studio/
+2. Open **Studio** → **Settings** → **Preferences**
+3. Enable **"Enable the studio command in the terminal"**
+4. Verify it works:
 
 ```bash
 studio --version
 ```
 
-## Integrate with Claude Desktop or Cursor
-1. Clone this repo `git clone git@github.com:nightnei/wordpress-studio-mcp-server.git`
+### Step 3 — Connect the MCP server
 
-> Note: No `npm install` or build step required — `dist/index.js` is a pre-built, self-contained bundle.
+1. Open your AI assistant's MCP configuration:
 
-2. Open the MCP server configuration:
+   - **Claude Desktop**: Settings → Developer → Edit Config
+   - **Cursor**: Settings → Cursor Settings → Tools and MCP → New MCP Server
 
-   - **Claude Desktop**: **Settings** → **Developer** → **Edit Config**
-   - **Cursor**: **Settings** → **Cursor Settings** → **Tools and MCP** → **New MCP Server**
-
-3. Add the MCP server entry:
+2. Add the server entry:
 
 ```json
 {
-	"mcpServers": {
-		"wordpress-studio-mcp-server": {
-			"command": "node",
-			"args": [ "/ABSOLUTE/PATH/TO/wordpress-studio-mcp-server/dist/index.js" ]
-		}
-	}
+  "mcpServers": {
+    "wordpress-studio-mcp-server": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/wordpress-studio-mcp-server/dist/index.js"]
+    }
+  }
 }
 ```
 
-4. Quit and reopen the app
+3. **Restart** the app (quit and reopen).
+
+### Step 4 — Try it out!
+
+Ask your AI assistant something like:
+
+- *"Create a new WordPress site called My Blog"*
+- *"Change the color palette to dark mode"*
+- *"Install the WooCommerce plugin"*
+- *"Create a new page called About Us with some placeholder content"*
 
 ## ⚠️ Platform support
 
