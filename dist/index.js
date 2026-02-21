@@ -30856,7 +30856,8 @@ var server = new McpServer(
   {
     instructions: [
       `Studio sites MUST be stored in ${STUDIO_SITES_DIR}/<site-name>, unless the user explicitly provided a custom path.`,
-      "Always use studio_site_list to discover existing sites and their paths before operating on them."
+      "Always use studio_site_list to discover existing sites and their paths before operating on them.",
+      'Some features, such as creating preview sites, require authentication. Ask the user to run "~/.studio-mcp/bin/studio-cli auth login" in their terminal, as the login flow requires a browser interaction that the AI Assistant cannot perform.'
     ].join(" ")
   }
 );
