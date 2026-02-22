@@ -240,7 +240,7 @@ else
     if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
         echo ""
         echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
-        "$INSTALL_DIR/bin/studio-cli" auth login
+        "$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
 
         if [ $? -eq 0 ]; then
             echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
