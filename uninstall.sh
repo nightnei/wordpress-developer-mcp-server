@@ -12,6 +12,7 @@ INSTALL_DIR="$HOME/.studio-mcp"
 CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
 CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
+STUDIO_SITES_DIR="$HOME/Studio"
 
 echo -e "${BLUE}${BOLD}🗑️ Uninstalling WordPress Developer MCP Server...${NC}"
 
@@ -46,3 +47,10 @@ for (const site of sites) {
 echo ""
 echo -e "${YELLOW}Cleaning up WordPress sites...${NC}"
 delete_all_sites
+
+if [ -d "$STUDIO_SITES_DIR" ]; then
+	echo ""
+	echo -e "${YELLOW}Removing sites directory...${NC}"
+	rm -rf "$STUDIO_SITES_DIR"
+	echo -e "${GREEN}✓ Sites directory removed ($STUDIO_SITES_DIR)${NC}"
+fi
