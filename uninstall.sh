@@ -13,15 +13,15 @@ CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
 CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
 STUDIO_SITES_DIR="$HOME/Studio"
+NODE_BIN="$INSTALL_DIR/node/bin/node"
+STUDIO_CLI="$INSTALL_DIR/bin/studio-cli"
 
 echo -e "${BLUE}${BOLD}🗑️ Uninstalling WordPress Developer MCP Server...${NC}"
-
-STUDIO_CLI="$INSTALL_DIR/bin/studio-cli"
 
 delete_all_sites() {
 	SITES_JSON=$("$STUDIO_CLI" site list --format=json 2>/dev/null || echo "[]")
 
-	"$INSTALL_DIR/node/bin/node" -e "
+	"$NODE_BIN" -e "
 const { execSync } = require('child_process');
 const cli = process.argv[1];
 let sites = [];
@@ -44,17 +44,6 @@ for (const site of sites) {
 	echo -e "${GREEN}✓ All sites deleted${NC}"
 }
 
-echo ""
-echo -e "${YELLOW}Cleaning up WordPress sites...${NC}"
-delete_all_sites
-
-if [ -d "$STUDIO_SITES_DIR" ]; then
-	echo ""
-	echo -e "${YELLOW}Removing sites directory...${NC}"
-	rm -rf "$STUDIO_SITES_DIR"
-	echo -e "${GREEN}✓ Sites directory removed ($STUDIO_SITES_DIR)${NC}"
-fi
-
 remove_mcp_from_claude_config() {
 	if [ ! -f "$CLAUDE_CONFIG" ]; then
 		echo -e "${YELLOW}Claude Desktop config not found. Skipping.${NC}"
@@ -68,7 +57,7 @@ remove_mcp_from_claude_config() {
 
 	echo -e "${YELLOW}Removing MCP from Claude Desktop config...${NC}"
 
-	"$INSTALL_DIR/node/bin/node" -e "
+	"$NODE_BIN" -e "
 const fs = require('fs');
 const configPath = '$CLAUDE_CONFIG';
 let config = {};
@@ -86,22 +75,31 @@ if (config.mcpServers && config.mcpServers['wordpress-developer']) {
 	echo -e "${GREEN}✓ MCP removed from Claude Desktop config${NC}"
 }
 
-echo ""
-remove_mcp_from_claude_config
+if [ -x "$NODE_BIN" ]; then
+	echo ""
+	echo -e "${YELLOW}Cleaning up WordPress sites...${NC}"
+	delete_all_sites
+fi
+
+if [ -d "$STUDIO_SITES_DIR" ]; then
+	echo ""
+	echo -e "${YELLOW}Removing sites directory...${NC}"
+	rm -rf "$STUDIO_SITES_DIR"
+	echo -e "${GREEN}✓ Sites directory removed ($STUDIO_SITES_DIR)${NC}"
+fi
+
+if [ -x "$NODE_BIN" ]; then
+	echo ""
+	remove_mcp_from_claude_config
+fi
 
 if [ -d "$INSTALL_DIR" ]; then
 	echo ""
 	echo -e "${YELLOW}Removing installation directory...${NC}"
-	for i in $(seq 1 5); do
-		rm -rf "$INSTALL_DIR" 2>/dev/null && break
-		sleep 1
-	done
-	if [ -d "$INSTALL_DIR" ]; then
-		echo -e "${RED}Failed to remove $INSTALL_DIR. Please remove it manually.${NC}"
-	else
-		echo -e "${GREEN}✓ Installation directory removed ($INSTALL_DIR)${NC}"
-	fi
+	rm -rf "$INSTALL_DIR"
+	echo -e "${GREEN}✓ Installation directory removed ($INSTALL_DIR)${NC}"
 else
 	echo ""
 	echo -e "${YELLOW}Installation directory not found. Skipping.${NC}"
 fi
+
