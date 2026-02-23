@@ -30285,7 +30285,7 @@ Re-run with confirm=true if you're sure.`
   server2.registerTool(
     "studio_site_create",
     {
-      description: `Create a new Studio site (wraps \`studio site create\`). If the user did not specify a custom path, you MUST use ${STUDIO_SITES_DIR}/<site-name> as the default location. Use studio_site_list to discover all sites and their paths, to avoid using already existing paths.`,
+      description: `Create a new Studio site (wraps \`studio site create\`). If the user did not specify a custom path, you MUST use ${STUDIO_SITES_DIR}/<site-name> as the default location. Use studio_site_list to discover all sites and their paths, to avoid using already existing paths. After creating the site, run studio_site_status and share the auto-login URL to wp-admin with the user.`,
       inputSchema: {
         path: external_exports3.string().describe(
           `Path for the new site. MUST default to ${STUDIO_SITES_DIR}/<site-name> unless the user explicitly provided a custom path.`
