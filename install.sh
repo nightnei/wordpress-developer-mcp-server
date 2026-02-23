@@ -32,12 +32,6 @@ if [[ "$OS" != "darwin" ]]; then
 	exit 1
 fi
 
-ARCH=$(uname -m)
-if [[ "$ARCH" != "arm64" ]]; then
-    echo -e "${RED}❌ Currently only Apple Silicon (arm64) is supported.${NC}"
-    exit 1
-fi
-
 if [ ! -d "/Applications/Claude.app" ]; then
 	echo ""
     echo -e "${RED}❌ Claude Desktop not found.${NC}"
