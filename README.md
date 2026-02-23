@@ -20,4 +20,4 @@ This project currently supports **macOS only** with **Claude Desktop**.
 
 ## Demo
 
-[![Watch the demo](https://img.youtube.com/vi/so5iux5EEqU/maxresdefault.jpg)](https://youtu.be/so5iux5EEqU)
+[![Watch the demo](https://img.youtube.com/vi/l8jFp2455qE/maxresdefault.jpg)](https://youtu.be/l8jFp2455qE)
