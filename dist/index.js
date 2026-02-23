@@ -30181,12 +30181,11 @@ function registerSiteTools(server2) {
           ]
         };
       }
-      const sanitizedOutput = res.stdout.replace(/Password:\s*.+/gi, "Password: [REDACTED]");
       return {
         content: [
           {
             type: "text",
-            text: sanitizedOutput.trim()
+            text: res.stdout.trim()
           }
         ]
       };
@@ -30314,12 +30313,11 @@ Re-run with confirm=true if you're sure.`
           ]
         };
       }
-      const sanitizedOutput = res.stdout.replace(/Password:\s*.+/gi, "Password: [REDACTED]");
       return {
         content: [
           {
             type: "text",
-            text: sanitizedOutput.trim() || "Site created"
+            text: res.stdout.trim() || "Site created"
           }
         ]
       };

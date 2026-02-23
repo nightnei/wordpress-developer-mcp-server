@@ -5,7 +5,7 @@
 	"type": "module",
 	"version": "2.0.0",
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --outfile=dist/index.js --banner:js='#!/usr/bin/env node' --define:__STUDIO_CLI_PRODUCTION__=true",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --outfile=dist/index.js --banner:js='#!/usr/bin/env node' --define:PRODUCTION=true",
 		"build:watch": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --outfile=dist/index.js --banner:js='#!/usr/bin/env node' --watch",
 		"inspect": "npx @modelcontextprotocol/inspector node ./dist/index.js",
 		"format": "prettier . --write"

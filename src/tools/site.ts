@@ -112,14 +112,11 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
-			// Sanitize password from output
-			const sanitizedOutput = res.stdout.replace( /Password:\s*.+/gi, 'Password: [REDACTED]' );
-
 			return {
 				content: [
 					{
 						type: 'text',
-						text: sanitizedOutput.trim(),
+						text: res.stdout.trim(),
 					},
 				],
 			};
@@ -275,14 +272,11 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
-			// Sanitize password from output
-			const sanitizedOutput = res.stdout.replace( /Password:\s*.+/gi, 'Password: [REDACTED]' );
-
 			return {
 				content: [
 					{
 						type: 'text',
-						text: sanitizedOutput.trim() || 'Site created',
+						text: res.stdout.trim() || 'Site created',
 					},
 				],
 			};

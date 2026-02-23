@@ -21,7 +21,7 @@ Set the `command` to your local `node` and `args` to the built file:
   "mcpServers": {
     "wordpress-developer": {
       "command": "node",
-      "args": ["/absolute/path/to/wordpress-studio-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.js"]
     }
   }
 }
@@ -37,11 +37,3 @@ npm run build:watch
 
 - **Inspector** — When using the MCP Inspector (`npm run inspect`) with `npm run build:watch`, click "Restart" in the Inspector UI after code changes. File rebuilds happen automatically, but the MCP server process must be restarted.
 - **Claude Desktop** — After code changes, quit and reopen Claude Desktop. Restarting the connector alone is not reliable.
-
-## Production build
-
-The production build sets `__STUDIO_CLI_PRODUCTION__=true`, which switches the CLI path to `~/.studio-mcp/bin/studio-cli` (the bundled binary installed by `install.sh`). During development, the CLI falls back to the `studio` command on your PATH.
-
-```bash
-npm run build
-```

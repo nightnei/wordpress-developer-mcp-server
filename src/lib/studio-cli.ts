@@ -2,10 +2,10 @@ import { spawn } from 'node:child_process';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-declare const __STUDIO_CLI_PRODUCTION__: boolean;
+declare const PRODUCTION: boolean;
 
 const CLI_COMMAND =
-	typeof __STUDIO_CLI_PRODUCTION__ !== 'undefined'
+	typeof PRODUCTION !== 'undefined'
 		? join( homedir(), '.studio-mcp', 'bin', 'studio-cli' )
 		: 'studio';
 
