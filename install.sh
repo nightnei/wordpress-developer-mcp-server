@@ -57,6 +57,13 @@ if [ ! -d "/Applications/Claude.app" ]; then
     exit 1
 fi
 
+if [ -d "/Applications/Studio.app" ]; then
+	echo ""
+	echo -e "${GREEN}🔗 WordPress Studio detected on your machine!${NC}"
+	echo "  The MCP server will sync with Studio, so you can work"
+	echo "  on both at the same time — your sites and data stay in sync."
+fi
+
 if [ -d "$INSTALL_DIR" ]; then
 	echo ""
 	echo -e "${YELLOW}Removing previous installation...${NC}"
