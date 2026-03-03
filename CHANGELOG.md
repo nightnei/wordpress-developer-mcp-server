@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.1...v1.2.0) (2026-03-03)
+
+
+### Features
+
+* oportunity to provide custom studio cli instance ([f766881](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f7668818a55a829272efab62566edac89ef3c973))
+
 ## [1.1.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.0...v1.1.1) (2026-03-03)
 
 
