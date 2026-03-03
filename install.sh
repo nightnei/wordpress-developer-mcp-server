@@ -221,6 +221,8 @@ if (!config.mcpServers) {
 	config.mcpServers = {};
 }
 
+delete config.mcpServers['wordpress-studio'];
+
 config.mcpServers['wordpress-developer'] = {
 	command: mcpCommand,
 	env: { STUDIO_CLI_PATH: cliCommand }
