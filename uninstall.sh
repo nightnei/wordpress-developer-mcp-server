@@ -8,7 +8,8 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.studio-mcp"
+INSTALL_DIR="$HOME/.wordpress-studio-mcp"
+OLD_INSTALL_DIR="$HOME/.studio-mcp"
 CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
 CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
@@ -113,6 +114,11 @@ fi
 if [ -x "$NODE_BIN" ]; then
 	echo ""
 	remove_mcp_from_claude_config
+fi
+
+# Migration: clean up old install path (~/.studio-mcp -> ~/.wordpress-studio-mcp)
+if [ -d "$OLD_INSTALL_DIR" ]; then
+	rm -rf "$OLD_INSTALL_DIR"
 fi
 
 if [ -d "$INSTALL_DIR" ]; then

@@ -8,7 +8,8 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.studio-mcp"
+INSTALL_DIR="$HOME/.wordpress-studio-mcp"
+OLD_INSTALL_DIR="$HOME/.studio-mcp"
 NODE_VERSION="24.13.1"
 SQLITE_VERSION="v2.2.17"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
@@ -62,6 +63,11 @@ if [ -d "/Applications/Studio.app" ]; then
 	echo -e "${GREEN}🔗 WordPress Studio detected on your machine!${NC}"
 	echo "  The MCP server will sync with Studio, so you can work"
 	echo "  on both at the same time — your sites and data stay in sync."
+fi
+
+# Migration: clean up old install path (~/.studio-mcp -> ~/.wordpress-studio-mcp)
+if [ -d "$OLD_INSTALL_DIR" ]; then
+	rm -rf "$OLD_INSTALL_DIR"
 fi
 
 if [ -d "$INSTALL_DIR" ]; then
