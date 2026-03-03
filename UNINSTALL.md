@@ -33,7 +33,7 @@ Find and delete the `"wordpress-developer"` entry from the `"mcpServers"` object
 ### 2. Remove the installation directory
 
 ```bash
-rm -rf ~/.studio-mcp
+rm -rf ~/.wordpress-studio-mcp
 ```
 
 This contains the bundled Node.js runtime, MCP server, CLI, and bin scripts.

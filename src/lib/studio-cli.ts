@@ -6,7 +6,7 @@ declare const PRODUCTION: boolean;
 
 const CLI_COMMAND =
 	typeof PRODUCTION !== 'undefined'
-		? join( homedir(), '.studio-mcp', 'bin', 'studio-cli' )
+		? join( homedir(), '.wordpress-studio-mcp', 'bin', 'studio-cli' )
 		: 'studio';
 
 type CliResult = {
