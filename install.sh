@@ -79,15 +79,19 @@ curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
 echo -e "${GREEN}✓ Runtime environment ready${NC}"
 
 echo ""
-echo -e "${YELLOW}Downloading MCP Server (this may take a while)...${NC}"
-curl -fsSL "https://github.com/$MCP_REPO/archive/refs/heads/main.tar.gz" | \
-	tar -xz -C "$INSTALL_DIR/mcp" --strip-components=1
+echo -e "${YELLOW}Downloading MCP Server...${NC}"
+MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
+	-H "Accept: application/vnd.github.v3+json" \
+	| "$INSTALL_DIR/node/bin/node" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
+curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
+	tar -xz -C "$INSTALL_DIR/mcp"
+echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
 curl -fsSL "$CLI_URL" | \
 	tar -xz -C "$INSTALL_DIR/cli" --strip-components=1
 
 cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
 #!/bin/bash
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/dist/index.js" "\$@"
+"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
