@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.0...v1.1.1) (2026-03-03)
+
+
+### Bug Fixes
+
+* provide correct path to install_dir ([65345b3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/65345b31cb94836f17fedbc60899ea055bcbc088))
+
 ## [1.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.0.0...v1.1.0) (2026-03-03)
 
 
