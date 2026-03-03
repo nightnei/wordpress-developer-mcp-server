@@ -5,7 +5,7 @@
 
 ### Features
 
-* use releses instead of dist ([cfaee72](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cfaee72f5dfd6cea88ce932260654fb71c4404d3))
+* use releses instead of commited dist ([cfaee72](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cfaee72f5dfd6cea88ce932260654fb71c4404d3))
 
 ## 1.0.0 (2026-03-03)
 
