@@ -79,7 +79,7 @@ curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
 echo -e "${GREEN}✓ Runtime environment ready${NC}"
 
 echo ""
-echo -e "${YELLOW}Downloading MCP Server...${NC}"
+echo -e "${YELLOW}Downloading MCP Server (this may take a while)...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$INSTALL_DIR/node/bin/node" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
