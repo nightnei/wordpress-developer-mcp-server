@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.0.0...v1.1.0) (2026-03-03)
+
+
+### Features
+
+* use releses instead of committed dist ([cfaee72](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cfaee72f5dfd6cea88ce932260654fb71c4404d3))
+
 ## 1.0.0 (2026-03-03)
 
 
