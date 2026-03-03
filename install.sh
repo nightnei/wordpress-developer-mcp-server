@@ -195,6 +195,7 @@ configure_claude() {
 	mkdir -p "$CLAUDE_CONFIG_DIR"
 	
 	MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
+	CLI_COMMAND="$INSTALL_DIR/bin/studio-cli"
 	
 	if [ -f "$CLAUDE_CONFIG" ]; then
 		if grep -q "wordpress-developer" "$CLAUDE_CONFIG"; then
@@ -207,6 +208,7 @@ configure_claude() {
 const fs = require('fs');
 const configPath = '$CLAUDE_CONFIG';
 const mcpCommand = '$MCP_COMMAND';
+const cliCommand = '$CLI_COMMAND';
 
 let config = {};
 try {
@@ -220,7 +222,8 @@ if (!config.mcpServers) {
 }
 
 config.mcpServers['wordpress-developer'] = {
-	command: mcpCommand
+	command: mcpCommand,
+	env: { STUDIO_CLI_PATH: cliCommand }
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -231,7 +234,10 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 {
   "mcpServers": {
 	"wordpress-developer": {
-	  "command": "$MCP_COMMAND"
+	  "command": "$MCP_COMMAND",
+	  "env": {
+		"STUDIO_CLI_PATH": "$CLI_COMMAND"
+	  }
 	}
   }
 }

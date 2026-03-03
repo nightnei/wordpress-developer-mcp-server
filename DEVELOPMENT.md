@@ -14,14 +14,17 @@ npm install
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
-Set the `command` to your local `node` and `args` to the built file:
+Set the `command` to your local `node` and `args` to the built file. In dev mode the server uses the global `studio` command by default. To use a custom CLI binary, set `STUDIO_CLI_PATH` in `env`:
 
 ```json
 {
   "mcpServers": {
     "wordpress-developer": {
       "command": "node",
-      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.js"],
+      "env": {
+        "STUDIO_CLI_PATH": "/path/to/custom/studio-cli"
+      }
     }
   }
 }

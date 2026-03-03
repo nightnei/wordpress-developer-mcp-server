@@ -1,13 +1,6 @@
 import { spawn } from 'node:child_process';
-import { homedir } from 'node:os';
-import { join } from 'node:path';
 
-declare const PRODUCTION: boolean;
-
-const CLI_COMMAND =
-	typeof PRODUCTION !== 'undefined'
-		? join( homedir(), '.wordpress-studio-mcp', 'bin', 'studio-cli' )
-		: 'studio';
+const CLI_COMMAND = process.env.STUDIO_CLI_PATH || 'studio';
 
 type CliResult = {
 	stdout: string;
