@@ -19,7 +19,7 @@ Set the `command` to your local `node` and `args` to the built file. In dev mode
 ```json
 {
   "mcpServers": {
-    "wordpress-developer": {
+    "wordpress-studio": {
       "command": "node",
       "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.js"],
       "env": {

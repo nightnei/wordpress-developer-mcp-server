@@ -97,14 +97,45 @@ curl -fsSL "$CLI_URL" | \
 
 cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
 #!/bin/bash
+STUDIO_NODE="/Applications/Studio.app/Contents/Resources/bin/node"
+INSTALLER_NODE="$INSTALL_DIR/node/bin/node"
+
+if [ -x "\$STUDIO_NODE" ]; then
+  NODE="\$STUDIO_NODE"
+elif [ -x "\$INSTALLER_NODE" ]; then
+  NODE="\$INSTALLER_NODE"
+else
+  NODE="node"
+fi
+
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
+"\$NODE" "$INSTALL_DIR/mcp/index.js" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/cli/main.js" "\$@"
+STUDIO_NODE="/Applications/Studio.app/Contents/Resources/bin/node"
+INSTALLER_NODE="$INSTALL_DIR/node/bin/node"
+
+if [ -x "\$STUDIO_NODE" ]; then
+  NODE="\$STUDIO_NODE"
+elif [ -x "\$INSTALLER_NODE" ]; then
+  NODE="\$INSTALLER_NODE"
+else
+  NODE="node"
+fi
+
+STUDIO_CLI="/Applications/Studio.app/Contents/Resources/cli/main.js"
+INSTALLER_CLI="$INSTALL_DIR/cli/main.js"
+
+if [ -f "\$STUDIO_CLI" ]; then
+  CLI="\$STUDIO_CLI"
+else
+  CLI="\$INSTALLER_CLI"
+fi
+
+"\$NODE" "\$CLI" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
 echo -e "${GREEN}✓ MCP Server installed${NC}"
@@ -198,7 +229,7 @@ configure_claude() {
 	MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
 	
 	if [ -f "$CLAUDE_CONFIG" ]; then
-		if grep -q "wordpress-developer" "$CLAUDE_CONFIG"; then
+		if grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
 			echo -e "${YELLOW}Updating existing Claude Desktop config...${NC}"
 		else
 			echo -e "${YELLOW}Adding to existing Claude Desktop config...${NC}"
@@ -220,9 +251,9 @@ if (!config.mcpServers) {
 	config.mcpServers = {};
 }
 
-delete config.mcpServers['wordpress-studio'];
+delete config.mcpServers['wordpress-developer'];
 
-config.mcpServers['wordpress-developer'] = {
+config.mcpServers['wordpress-studio'] = {
 	command: mcpCommand
 };
 
@@ -233,7 +264,7 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 		cat > "$CLAUDE_CONFIG" << CONFIGEOF
 {
   "mcpServers": {
-	"wordpress-developer": {
+	"wordpress-studio": {
 	  "command": "$MCP_COMMAND"
 	}
   }

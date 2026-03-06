@@ -51,7 +51,7 @@ remove_mcp_from_claude_config() {
 		return
 	fi
 
-	if ! grep -q "wordpress-developer" "$CLAUDE_CONFIG"; then
+	if ! grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
 		echo -e "${YELLOW}No MCP entry found in Claude Desktop config. Skipping.${NC}"
 		return
 	fi
@@ -67,8 +67,9 @@ try {
 } catch (e) {
 	process.exit(0);
 }
-if (config.mcpServers && config.mcpServers['wordpress-developer']) {
+if (config.mcpServers) {
 	delete config.mcpServers['wordpress-developer'];
+	delete config.mcpServers['wordpress-studio'];
 	fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 "

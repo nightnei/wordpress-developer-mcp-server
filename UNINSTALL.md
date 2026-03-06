@@ -18,12 +18,12 @@ Open the config file:
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
-Find and delete the `"wordpress-developer"` entry from the `"mcpServers"` object:
+Find and delete the `"wordpress-studio"` entry from the `"mcpServers"` object:
 
 ```json
 {
   "mcpServers": {
-    "wordpress-developer": {   ← remove this entire block
+    "wordpress-studio": {   ← remove this entire block
       "command": "..."
     }
   }
