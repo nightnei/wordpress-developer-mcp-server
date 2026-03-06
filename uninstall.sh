@@ -109,12 +109,16 @@ console.log(Array.isArray(sites) ? sites.length : 0);
 	fi
 elif [ -d "/Applications/Studio.app" ]; then
 	echo ""
-	echo -e "${GREEN}🔗 WordPress Studio detected — sites created with Claude remain usable with the Studio app.${NC}"
+	echo -e "${GREEN}🔗 WordPress Studio detected — sites created via the MCP server remain usable with the Studio app.${NC}"
 fi
 
+CLEANED_CLAUDE=false
 if [ -x "$NODE_BIN" ]; then
-	echo ""
-	remove_mcp_from_claude_config
+	if [ -f "$CLAUDE_CONFIG" ] && grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
+		echo ""
+		remove_mcp_from_claude_config
+		CLEANED_CLAUDE=true
+	fi
 fi
 
 # Migration: clean up old install path (~/.studio-mcp -> ~/.wordpress-studio-mcp)
@@ -158,26 +162,32 @@ fi
 echo ""
 echo -e "${GREEN}✅ Uninstall complete!${NC}"
 
-if pgrep -x "Claude" > /dev/null; then
-	echo ""
-	echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
-	echo ""
-	echo -e "${YELLOW}Restart now? [Y/n]${NC}"
-	read -r restart_response < /dev/tty
-
-	if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
-		echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
-		osascript -e 'quit app "Claude"'
-		for i in $(seq 1 10); do
-			pgrep -x "Claude" > /dev/null || break
-			sleep 1
-		done
-		open -a "/Applications/Claude.app"
-		echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
-	else
+if [ "$CLEANED_CLAUDE" = true ]; then
+	if pgrep -x "Claude" > /dev/null; then
 		echo ""
-		echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the changes.${NC}"
+		echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
+		echo ""
+		echo -e "${YELLOW}Restart now? [Y/n]${NC}"
+		read -r restart_response < /dev/tty
+
+		if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
+			echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
+			osascript -e 'quit app "Claude"'
+			for i in $(seq 1 10); do
+				pgrep -x "Claude" > /dev/null || break
+				sleep 1
+			done
+			open -a "/Applications/Claude.app"
+			echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
+		else
+			echo ""
+			echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the changes.${NC}"
+		fi
 	fi
+else
+	echo ""
+	echo -e "${YELLOW}⚠️  If you configured an AI assistant manually, remember to remove${NC}"
+	echo -e "${YELLOW}   the ${BOLD}\"wordpress-studio\"${NC}${YELLOW} entry from its MCP configuration.${NC}"
 fi
 
 echo ""

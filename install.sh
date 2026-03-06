@@ -46,16 +46,9 @@ else
 	echo -e "${GREEN}✓ Detected: macOS on ${ARCH}${NC}"
 fi
 
-if [ ! -d "/Applications/Claude.app" ]; then
-	echo ""
-    echo -e "${RED}❌ Claude Desktop not found.${NC}"
-    echo "  It's the only supported AI assistant for now. More coming soon."
-    echo ""
-    echo "  Download it here and create an account:"
-    echo -e "  ${BLUE}https://claude.ai/download${NC}"
-    echo ""
-    echo "  After installing Claude Desktop, run this script again."
-    exit 1
+HAS_CLAUDE=false
+if [ -d "/Applications/Claude.app" ]; then
+	HAS_CLAUDE=true
 fi
 
 if [ -d "/Applications/Studio.app" ]; then
@@ -221,12 +214,12 @@ if [ ! -f "$WP_CLI_PHAR" ]; then
 	echo -e "${GREEN}✓ WP-CLI installed${NC}"
 fi
 
+MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
+
 CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
 CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 configure_claude() {
 	mkdir -p "$CLAUDE_CONFIG_DIR"
-	
-	MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
 	
 	if [ -f "$CLAUDE_CONFIG" ]; then
 		if grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
@@ -275,9 +268,49 @@ CONFIGEOF
 	echo -e "${GREEN}✓ Claude Desktop configured${NC}"
 }
 
+print_manual_config() {
+	echo ""
+	echo -e "${GREEN}✓ MCP server is ready.${NC}"
+	echo ""
+	echo -e "  Add the following to your AI assistant's MCP configuration:"
+	echo ""
+	echo -e "  ${BOLD}{${NC}"
+	echo -e "  ${BOLD}  \"wordpress-studio\": {${NC}"
+	echo -e "  ${BOLD}    \"command\": \"$MCP_COMMAND\"${NC}"
+	echo -e "  ${BOLD}  }${NC}"
+	echo -e "  ${BOLD}}${NC}"
+	echo ""
+	echo -e "  Then restart your AI assistant to apply the changes."
+}
+
+SETUP_MODE=""
+
 echo ""
-echo -e "${YELLOW}Configuring Claude Desktop...${NC}"
-configure_claude
+if [ "$HAS_CLAUDE" = true ]; then
+	echo -e "${YELLOW}Choose how to configure the MCP server:${NC}"
+	echo ""
+	echo -e "  ${BOLD}1)${NC} Claude Desktop ${GREEN}(auto-configure)${NC}"
+	echo -e "  ${BOLD}2)${NC} Other AI assistant ${YELLOW}(manual setup)${NC}"
+	echo ""
+	echo -e "${GREEN}Choose [1]:${NC}"
+	read -r setup_choice < /dev/tty
+
+	if [[ "$setup_choice" == "2" ]]; then
+		SETUP_MODE="manual"
+	else
+		SETUP_MODE="claude"
+	fi
+else
+	SETUP_MODE="manual"
+fi
+
+if [ "$SETUP_MODE" = "claude" ]; then
+	echo ""
+	echo -e "${YELLOW}Configuring Claude Desktop...${NC}"
+	configure_claude
+else
+	print_manual_config
+fi
 
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -319,34 +352,36 @@ echo ""
 echo -e "${GREEN}✅ Installation complete!${NC}"
 echo ""
 
-if pgrep -x "Claude" > /dev/null; then
-    echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
-    echo ""
-    echo -e "${YELLOW}Restart now? [Y/n]${NC}"
-    read -r restart_response < /dev/tty
-    
-    if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
-        echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
-        osascript -e 'quit app "Claude"'
-        for i in $(seq 1 10); do
-            pgrep -x "Claude" > /dev/null || break
-            sleep 1
-        done
-        open -a "/Applications/Claude.app"
-        echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
-    else
+if [ "$SETUP_MODE" = "claude" ]; then
+    if pgrep -x "Claude" > /dev/null; then
+        echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
         echo ""
-        echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the MCP configuration.${NC}"
+        echo -e "${YELLOW}Restart now? [Y/n]${NC}"
+        read -r restart_response < /dev/tty
+        
+        if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
+            echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
+            osascript -e 'quit app "Claude"'
+            for i in $(seq 1 10); do
+                pgrep -x "Claude" > /dev/null || break
+                sleep 1
+            done
+            open -a "/Applications/Claude.app"
+            echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
+        else
+            echo ""
+            echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the MCP configuration.${NC}"
+        fi
+    else
+        echo "Start Claude Desktop to begin using WordPress Developer MCP! 🚀"
     fi
-else
-    echo "Start Claude Desktop to begin using WordPress Developer MCP! 🚀"
 fi
 
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}🌸 You're all set!${NC}"
 echo ""
-echo "Try asking Claude:"
+echo "Try asking your AI assistant:"
 echo "  \"Create a new WordPress site named 'Flowers Shop'\""
 echo "  \"Install the WooCommerce plugin\""
 echo "  \"Add one demo product to the shop named 'Sunflower'\""

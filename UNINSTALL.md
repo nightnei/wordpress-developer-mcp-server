@@ -10,9 +10,9 @@ curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-se
 
 ## Manual uninstall
 
-### 1. Remove the MCP entry from Claude Desktop config
+### 1. Remove the MCP entry from your AI assistant
 
-Open the config file:
+If you used **Claude Desktop** (auto-configured), open the config file:
 
 ```
 ~/Library/Application Support/Claude/claude_desktop_config.json
@@ -29,6 +29,8 @@ Find and delete the `"wordpress-studio"` entry from the `"mcpServers"` object:
   }
 }
 ```
+
+If you configured a **different AI assistant** manually, remove the `"wordpress-studio"` entry from its MCP configuration.
 
 ### 2. Remove the installation directory
 
@@ -56,9 +58,9 @@ rm -rf ~/Library/Application\ Support/Studio
 
 This contains `appdata-v1.json`, WordPress core files, SQLite integration, and WP-CLI.
 
-### 5. Restart Claude Desktop
+### 5. Restart your AI assistant
 
-Restart Claude Desktop so it picks up the config change. You can do this from the menu bar or by running:
+Restart your AI assistant so it picks up the config change. For Claude Desktop, you can do this from the menu bar or by running:
 
 ```bash
 osascript -e 'quit app "Claude"' && open -a "/Applications/Claude.app"

@@ -9,14 +9,14 @@ Turn your AI into a full-stack WordPress developer
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
-2. Open Claude Desktop and have fun
+2. Choose your AI assistant when prompted (Claude Desktop is auto-configured; other assistants get a config snippet to paste)
 3. Star this repo if you like it :)
 
 ## ⚠️ Platform support
 
-This project currently supports **macOS only** with **Claude Desktop**.
+This project currently supports **macOS only** with **Claude Desktop** and other MCP-compatible AI assistants.
 
-> Support for Windows and more AI assistants is **coming soon**.
+> Support for Windows is **coming soon**.
 
 ## Demo
 

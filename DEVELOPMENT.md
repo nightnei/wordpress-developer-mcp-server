@@ -8,11 +8,13 @@
 npm install
 ```
 
-2. Point Claude Desktop to your local build. Open the config file:
+2. Point your AI assistant to your local build. For Claude Desktop, open:
 
 ```
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
+
+For other MCP-compatible assistants, add the same entry to their MCP configuration.
 
 Set the `command` to your local `node` and `args` to the built file. In dev mode the server uses the global `studio` command by default. To use a custom CLI binary, set `STUDIO_CLI_PATH` in `env`:
 
@@ -39,7 +41,7 @@ npm run build:watch
 ## Workflow
 
 - **Inspector** — When using the MCP Inspector (`npm run inspect`) with `npm run build:watch`, click "Restart" in the Inspector UI after code changes. File rebuilds happen automatically, but the MCP server process must be restarted.
-- **Claude Desktop** — After code changes, quit and reopen Claude Desktop. Restarting the connector alone is not reliable.
+- **AI Assistants** — After code changes, restart your AI assistant. For Claude Desktop, quit and reopen it — restarting the connector alone is not reliable.
 
 ## Releasing
 
