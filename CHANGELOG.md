@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.2.0...v1.3.0) (2026-03-06)
+
+
+### Features
+
+* **install:** bin files now flexible with selecting tools and adjust to any environment ([b524a66](https://github.com/nightnei/wordpress-developer-mcp-server/commit/b524a66d827bf20fe9a3b387fc19dedfbf8d2f6c))
+
 ## [1.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.1...v1.2.0) (2026-03-03)
 
 
