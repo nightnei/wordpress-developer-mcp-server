@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.3.0...v1.4.0) (2026-03-06)
+
+
+### Features
+
+* **tools:** add auto-updates ([bb1403e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bb1403e821dc7baa44b5513e6bc545fb02c24cd6))
+
 ## [1.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.2.0...v1.3.0) (2026-03-06)
 
 
