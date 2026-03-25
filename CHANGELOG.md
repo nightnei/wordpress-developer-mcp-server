@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.4.0...v1.4.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **tools:** description improvements ([124857a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/124857ad4a9994c3eff11ca1f40bbb9c1e832130))
+
 ## [1.4.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.3.0...v1.4.0) (2026-03-06)
 
 
