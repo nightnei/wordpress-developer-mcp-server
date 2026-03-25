@@ -13,7 +13,7 @@ OLD_INSTALL_DIR="$HOME/.studio-mcp"
 NODE_VERSION="24.13.1"
 SQLITE_VERSION="v2.2.17"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
-CLI_URL="https://github.com/nightnei/tmp_apr/releases/download/v0.0.1/tmp_sol.tar.gz"
+CLI_URL="https://github.com/nightnei/tmp_apr/releases/download/v0.0.2/tmp_sol.tar.gz"
 
 STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
 STUDIO_APPDATA_V1_JSON="$STUDIO_APPDATA_DIR/appdata-v1.json"
