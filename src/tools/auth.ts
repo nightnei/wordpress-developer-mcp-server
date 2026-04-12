@@ -16,7 +16,7 @@ export function registerAuthTools( server: McpServer ) {
 				};
 			}
 
-			return { content: [ { type: 'text', text: res.stderr.trim() || '(no output)' } ] };
+			return { content: [ { type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' } ] };
 		}
 	);
 
@@ -35,7 +35,7 @@ export function registerAuthTools( server: McpServer ) {
 				};
 			}
 
-			return { content: [ { type: 'text', text: res.stderr.trim() || '(no output)' } ] };
+			return { content: [ { type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' } ] };
 		}
 	);
 }
