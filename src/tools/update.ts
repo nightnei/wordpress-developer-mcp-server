@@ -156,10 +156,10 @@ export function registerUpdateTools( server: McpServer ) {
 				};
 			}
 
-			const mpcDir = `${ INSTALL_DIR }/mcp`;
+			const mcpDir = `${ INSTALL_DIR }/mcp`;
 
 			try {
-				execSync( `curl -fsSL "${ latest.tarballUrl }" | tar -xz -C "${ mpcDir }"`, {
+				execSync( `rm -rf "${ mcpDir }" && mkdir -p "${ mcpDir }" && curl -fsSL "${ latest.tarballUrl }" | tar -xz -C "${ mcpDir }"`, {
 					timeout: 60000,
 				} );
 				await writeFile( VERSION_FILE, latest.tagName );
