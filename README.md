@@ -10,7 +10,7 @@ Turn your AI into a full-stack WordPress developer
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
 2. Open Claude Desktop and have fun
-3. Star this repo if you like it :)
+3. ⭐ [Star this repo](https://github.com/nightnei/wordpress-developer-mcp-server) — it helps others discover the project!
 
 ## ⚠️ Platform support
 
