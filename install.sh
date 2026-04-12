@@ -150,3 +150,14 @@ else
 		echo -e "${GREEN}✓ MCP Server installed${NC}"
 	fi
 fi
+
+# ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
+echo ""
+echo -e "${YELLOW}Checking Studio CLI...${NC}"
+if command -v studio &>/dev/null; then
+	echo -e "${GREEN}✓ Studio CLI already installed${NC}"
+else
+	echo -e "${YELLOW}Installing Studio CLI...${NC}"
+	"$NPM_BIN" install -g wp-studio 2>&1 | grep -v "^npm warn" | grep -v "^$" || true
+	echo -e "${GREEN}✓ Studio CLI installed${NC}"
+fi
