@@ -154,10 +154,16 @@ fi
 # ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Checking Studio CLI...${NC}"
-if [ -x "$INSTALL_DIR/node/bin/studio" ]; then
-	echo -e "${GREEN}✓ Studio CLI already installed${NC}"
+STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
+CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
+if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
+	echo -e "${GREEN}✓ Studio CLI already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing Studio CLI...${NC}"
 	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=silent 2>&1 | grep -i "error" || true
-	echo -e "${GREEN}✓ Studio CLI installed${NC}"
+	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
+		echo -e "${GREEN}✓ Studio CLI updated to $STUDIO_LATEST${NC}"
+	else
+		echo -e "${GREEN}✓ Studio CLI installed${NC}"
+	fi
 fi
