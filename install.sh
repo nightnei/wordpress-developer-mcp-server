@@ -154,7 +154,7 @@ fi
 # ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Checking Studio CLI...${NC}"
-if command -v studio &>/dev/null; then
+if [ -x "$INSTALL_DIR/node/bin/studio" ]; then
 	echo -e "${GREEN}✓ Studio CLI already installed${NC}"
 else
 	echo -e "${YELLOW}Installing Studio CLI...${NC}"
