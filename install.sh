@@ -399,3 +399,63 @@ else
 		echo -e "${YELLOW}Skipped.${NC}"
 	fi
 fi
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+echo ""
+echo -e "${GREEN}✅ Installation complete!${NC}"
+echo ""
+
+if [ ${#CONFIGURED_AGENTS[@]} -gt 0 ]; then
+	echo -e "${GREEN}Successfully configured agents:${NC}"
+	for agent in "${CONFIGURED_AGENTS[@]}"; do
+		echo -e "  ${GREEN}✓${NC} $agent"
+	done
+fi
+
+if [ ${#FAILED_AGENTS[@]} -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}⚠️  Could not configure automatically:${NC}"
+	for agent in "${FAILED_AGENTS[@]}"; do
+		echo -e "  ${YELLOW}•${NC} $agent"
+	done
+	echo ""
+	echo "  Add this to the agent's MCP configuration manually:"
+	echo ""
+	echo "    \"mcpServers\": {"
+	echo "      \"wordpress-developer\": {"
+	echo "        \"command\": \"$MCP_COMMAND\""
+	echo "      }"
+	echo "    }"
+fi
+
+# ── Restart reminder ──────────────────────────────────────────────────────────
+NEEDS_RESTART=()
+[[ " ${CONFIGURED_AGENTS[*]} " =~ " Codex " ]]          && app_installed "Codex.app" && NEEDS_RESTART+=("Codex")
+[[ " ${CONFIGURED_AGENTS[*]} " =~ " Claude Desktop " ]] && NEEDS_RESTART+=("Claude Desktop")
+[[ " ${CONFIGURED_AGENTS[*]} " =~ " Windsurf " ]]       && NEEDS_RESTART+=("Windsurf")
+[[ " ${CONFIGURED_AGENTS[*]} " =~ " Zed " ]]            && NEEDS_RESTART+=("Zed")
+
+if [ ${#NEEDS_RESTART[@]} -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}↺  Please restart these apps to apply MCP configuration:${NC}"
+	for app in "${NEEDS_RESTART[@]}"; do
+		echo -e "  ${YELLOW}•${NC} $app"
+	done
+fi
+
+
+# ── Footer ────────────────────────────────────────────────────────────────────
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}🌸 You're all set!${NC}"
+echo ""
+echo "Try asking your AI:"
+echo "  \"Create a new WordPress site named 'Flowers Shop'\""
+echo "  \"Install the WooCommerce plugin\""
+echo "  \"Add one demo product to the shop named 'Sunflower'\""
+echo "  \"Create shareable link for the shop\""
+echo ""
+echo -e "⭐ If you like it, star the repo: ${BLUE}https://github.com/nightnei/wordpress-developer-mcp-server${NC}"
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
