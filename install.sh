@@ -191,3 +191,106 @@ fi
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
 echo -e "${GREEN}✓ Wrapper scripts ready${NC}"
+
+# ── Configure AI agents ───────────────────────────────────────────────────────
+CONFIGURED_AGENTS=()
+FAILED_AGENTS=()
+
+# Shared helper: write/merge mcpServers JSON config (Claude Desktop, Cursor, Windsurf)
+configure_mcpservers_json() {
+	local config_file="$1"
+	local config_dir
+	config_dir="$(dirname "$config_file")"
+	mkdir -p "$config_dir"
+
+	"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = '$config_file';
+const mcpCommand = '$MCP_COMMAND';
+
+let config = {};
+try {
+  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (e) {
+  config = {};
+}
+
+if (!config.mcpServers) config.mcpServers = {};
+delete config.mcpServers['wordpress-studio'];
+config.mcpServers['wordpress-developer'] = { command: mcpCommand };
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+"
+}
+
+configure_codex() {
+	if command -v codex &>/dev/null; then
+		codex mcp add wordpress-developer -- "$MCP_COMMAND"
+	else
+		local config_file="$HOME/.codex/config.toml"
+		mkdir -p "$HOME/.codex"
+		"$NODE_BIN" -e "
+const fs = require('fs');
+const path = require('path');
+const configPath = '$config_file';
+const mcpCommand = '$MCP_COMMAND';
+
+let content = '';
+try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = ''; }
+
+const newEntry = '[mcp_servers.wordpress-developer]\ncommand = \"' + mcpCommand + '\"';
+const sectionRegex = /\[mcp_servers\.wordpress-developer\][^\[]*/;
+
+if (sectionRegex.test(content)) {
+  content = content.replace(sectionRegex, newEntry + '\n\n');
+} else {
+  content = (content.trimEnd() ? content.trimEnd() + '\n\n' : '') + newEntry + '\n';
+}
+
+fs.writeFileSync(configPath, content);
+"
+	fi
+}
+
+configure_claude_desktop() {
+	configure_mcpservers_json "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+}
+
+configure_claude_code() {
+	claude mcp add --scope user wordpress-developer -- "$MCP_COMMAND"
+}
+
+configure_cursor() {
+	configure_mcpservers_json "$HOME/.cursor/mcp.json"
+}
+
+configure_windsurf() {
+	configure_mcpservers_json "$HOME/.codeium/windsurf/mcp_config.json"
+}
+
+configure_zed() {
+	local config_file="$HOME/.config/zed/settings.json"
+	mkdir -p "$HOME/.config/zed"
+
+	"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = '$config_file';
+const mcpCommand = '$MCP_COMMAND';
+
+let config = {};
+try {
+  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (e) {
+  config = {};
+}
+
+if (!config.context_servers) config.context_servers = {};
+config.context_servers['wordpress-developer'] = {
+  source: 'custom',
+  command: mcpCommand,
+  args: []
+};
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+"
+}
