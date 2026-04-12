@@ -8,7 +8,7 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.wordpress-studio-mcp"
+INSTALL_DIR="$HOME/.wordpress-developer-mcp"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
 NODE_VERSION="24.13.1"
 
