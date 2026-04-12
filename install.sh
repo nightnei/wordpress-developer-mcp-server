@@ -362,3 +362,40 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 		fi
 	fi
 fi
+
+# ── WordPress.com authentication ──────────────────────────────────────────────
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "${YELLOW}🔐 Connect to WordPress.com${NC}"
+echo ""
+
+AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
+if echo "$AUTH_OUTPUT" | grep -qi "Authenticated"; then
+	WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*as `\(.*\)`.*/\1/p')
+	if [ -d "/Applications/Studio.app" ]; then
+		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
+	else
+		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC}."
+	fi
+	echo "  Preview sites and other WordPress.com features are available."
+else
+	echo "This unlocks extra powerful features provided by WordPress.com."
+	echo ""
+	echo -e "${GREEN}Connect now? [Y/n]${NC}"
+	read -r auth_response < /dev/tty
+
+	if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
+		echo ""
+		echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
+		"$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
+
+		if [ $? -eq 0 ]; then
+			echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
+		else
+			echo -e "${RED}Connection failed.${NC}"
+		fi
+	else
+		echo -e "${YELLOW}Skipped.${NC}"
+	fi
+fi
