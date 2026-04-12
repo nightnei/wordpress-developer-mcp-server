@@ -158,6 +158,6 @@ if command -v studio &>/dev/null; then
 	echo -e "${GREEN}✓ Studio CLI already installed${NC}"
 else
 	echo -e "${YELLOW}Installing Studio CLI...${NC}"
-	"$NPM_BIN" install -g wp-studio 2>&1 | grep -v "^npm warn" | grep -v "^$" || true
+	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=error
 	echo -e "${GREEN}✓ Studio CLI installed${NC}"
 fi
