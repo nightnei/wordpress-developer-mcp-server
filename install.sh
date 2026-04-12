@@ -167,3 +167,25 @@ else
 		echo -e "${GREEN}✓ Studio CLI installed${NC}"
 	fi
 fi
+
+# ── Wrapper scripts (always regenerated) ─────────────────────────────────────
+rm -f "$INSTALL_DIR/bin/studio-mcp" "$INSTALL_DIR/bin/studio-cli"
+MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
+
+cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
+#!/bin/bash
+export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
+"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
+EOF
+chmod +x "$INSTALL_DIR/bin/studio-mcp"
+
+cat > "$INSTALL_DIR/bin/studio-cli" << EOF
+#!/bin/bash
+if command -v studio &>/dev/null; then
+  studio "\$@"
+else
+  "$INSTALL_DIR/node/bin/studio" "\$@"
+fi
+EOF
+chmod +x "$INSTALL_DIR/bin/studio-cli"
+echo -e "${GREEN}✓ Wrapper scripts created${NC}"
