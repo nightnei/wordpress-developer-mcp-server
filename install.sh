@@ -257,7 +257,8 @@ configure_claude_desktop() {
 }
 
 configure_claude_code() {
-	claude mcp add --scope user wordpress-developer -- "$MCP_COMMAND"
+	claude mcp remove wordpress-developer --scope user &>/dev/null || true
+	claude mcp add --scope user wordpress-developer -- "$MCP_COMMAND" &>/dev/null
 }
 
 configure_cursor() {
