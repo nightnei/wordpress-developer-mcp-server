@@ -36,7 +36,7 @@ fi
 # ── Supported agents ──────────────────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}${BOLD}Supported AI agents:${NC}"
-echo "  • Codex / OpenAI CLI"
+echo "  • Codex (app + CLI)"
 echo "  • Claude Desktop"
 echo "  • Claude Code (CLI)"
 echo "  • Cursor"
@@ -59,7 +59,7 @@ app_installed() {
 	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
 }
 
-if command -v codex &>/dev/null; then
+if command -v codex &>/dev/null || app_installed "Codex.app"; then
 	FOUND_CODEX=true
 	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
 fi
@@ -90,14 +90,14 @@ if [ "$FOUND_AGENTS_COUNT" -eq 0 ]; then
 	echo "  The MCP server will still be installed."
 	echo "  Install any supported agent and re-run this script."
 	echo ""
-	echo -e "  Get Codex:          ${BLUE}https://github.com/openai/codex${NC}"
+	echo -e "  Get Codex:          ${BLUE}https://openai.com/codex${NC}"
 	echo -e "  Get Claude:         ${BLUE}https://claude.ai/download${NC}"
 	echo -e "  Get Cursor:         ${BLUE}https://cursor.com${NC}"
 	echo -e "  Get Windsurf:       ${BLUE}https://windsurf.com${NC}"
 	echo -e "  Get Zed:            ${BLUE}https://zed.dev${NC}"
 else
 	echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
-	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex (OpenAI CLI)"
+	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex"
 	$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
 	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
 	$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
