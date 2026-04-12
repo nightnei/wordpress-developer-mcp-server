@@ -183,6 +183,7 @@ chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
+export PATH="$INSTALL_DIR/node/bin:\$PATH"
 if command -v studio &>/dev/null; then
   studio "\$@"
 else
@@ -225,7 +226,8 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
 configure_codex() {
 	if command -v codex &>/dev/null; then
-		codex mcp add wordpress-developer -- "$MCP_COMMAND"
+		codex mcp remove wordpress-developer &>/dev/null || true
+		codex mcp add wordpress-developer -- "$MCP_COMMAND" &>/dev/null
 	else
 		local config_file="$HOME/.codex/config.toml"
 		mkdir -p "$HOME/.codex"
