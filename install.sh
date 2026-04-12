@@ -169,6 +169,8 @@ else
 fi
 
 # ── Wrapper scripts (always regenerated) ─────────────────────────────────────
+echo ""
+echo -e "${YELLOW}Creating wrapper scripts...${NC}"
 rm -f "$INSTALL_DIR/bin/studio-mcp" "$INSTALL_DIR/bin/studio-cli"
 MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
 
@@ -188,4 +190,4 @@ else
 fi
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
-echo -e "${GREEN}✓ Wrapper scripts created${NC}"
+echo -e "${GREEN}✓ Wrapper scripts ready${NC}"
