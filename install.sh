@@ -217,7 +217,6 @@ try {
 }
 
 if (!config.mcpServers) config.mcpServers = {};
-delete config.mcpServers['wordpress-studio'];
 config.mcpServers['wordpress-developer'] = { command: mcpCommand };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
