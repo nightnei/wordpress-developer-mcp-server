@@ -8,176 +8,110 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.wordpress-studio-mcp"
-OLD_INSTALL_DIR="$HOME/.studio-mcp"
-CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
-CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
-STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
-STUDIO_SITES_DIR="$HOME/Studio"
+INSTALL_DIR="$HOME/.wordpress-developer-mcp"
 NODE_BIN="$INSTALL_DIR/node/bin/node"
-STUDIO_CLI="$INSTALL_DIR/bin/studio-cli"
 
-echo -e "${BLUE}${BOLD}🗑️ Uninstalling WordPress Developer MCP Server...${NC}"
+echo -e "${BLUE}${BOLD}🗑️  Uninstalling WordPress Developer MCP Server...${NC}"
 
-delete_all_sites() {
-	SITES_JSON=$("$STUDIO_CLI" site list --format=json 2>/dev/null || echo "[]")
-
-	"$NODE_BIN" -e "
-const { execSync } = require('child_process');
-const cli = process.argv[1];
-let sites = [];
-try { sites = JSON.parse(process.argv[2]); } catch {}
-if (!Array.isArray(sites) || sites.length === 0) {
-	console.log('  No sites found. Skipping.');
-	process.exit(0);
-}
-console.log('  Found ' + sites.length + ' site(s). Deleting...');
-for (const site of sites) {
-	try {
-		console.log('  Deleting: ' + site.path);
-		execSync(cli + ' site delete --path ' + JSON.stringify(site.path) + ' --files', { stdio: 'pipe' });
-	} catch (e) {
-		console.error('  Failed to delete: ' + site.path);
-	}
-}
-" "$STUDIO_CLI" "$SITES_JSON"
-
-	echo -e "${GREEN}✓ All sites deleted${NC}"
+app_installed() {
+	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
 }
 
-remove_mcp_from_claude_config() {
-	if [ ! -f "$CLAUDE_CONFIG" ]; then
-		echo -e "${YELLOW}Claude Desktop config not found. Skipping.${NC}"
-		return
-	fi
+# ── Remove MCP from all agents ────────────────────────────────────────────────
+echo ""
+echo -e "${YELLOW}Removing MCP configuration from AI agents...${NC}"
 
-	if ! grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
-		echo -e "${YELLOW}No MCP entry found in Claude Desktop config. Skipping.${NC}"
-		return
-	fi
-
-	echo -e "${YELLOW}Removing MCP from Claude Desktop config...${NC}"
-
+remove_mcpservers_json() {
+	local config_file="$1"
+	[ -f "$config_file" ] || return 0
 	"$NODE_BIN" -e "
 const fs = require('fs');
-const configPath = '$CLAUDE_CONFIG';
+const configPath = '$config_file';
 let config = {};
-try {
-	config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-} catch (e) {
-	process.exit(0);
-}
+try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch (e) { process.exit(0); }
 if (config.mcpServers) {
 	delete config.mcpServers['wordpress-developer'];
-	delete config.mcpServers['wordpress-studio'];
 	fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
-"
-
-	echo -e "${GREEN}✓ MCP removed from Claude Desktop config${NC}"
+" 2>/dev/null
 }
 
-if [ -x "$NODE_BIN" ] && [ ! -d "/Applications/Studio.app" ]; then
-	SITES_COUNT=$("$NODE_BIN" -e "
-let sites = [];
-try { sites = JSON.parse(process.argv[1]); } catch {}
-console.log(Array.isArray(sites) ? sites.length : 0);
-" "$("$STUDIO_CLI" site list --format=json 2>/dev/null || echo "[]")")
-
-	if [ "$SITES_COUNT" -gt 0 ] 2>/dev/null; then
-		echo ""
-		echo -e "${YELLOW}Found ${BOLD}${SITES_COUNT}${NC}${YELLOW} WordPress site(s) on your machine.${NC}"
-		echo ""
-		echo -e "  Delete them? If you choose to keep them, the site files"
-		echo -e "  will remain in ${BOLD}${STUDIO_SITES_DIR}${NC}."
-		echo ""
-		echo -e "${GREEN}Delete sites? [y/N]${NC}"
-		read -r delete_response < /dev/tty
-
-		if [[ "$delete_response" =~ ^[Yy]$ ]]; then
-			echo ""
-			echo -e "${YELLOW}Deleting WordPress sites...${NC}"
-			delete_all_sites
-			if [ -d "$STUDIO_SITES_DIR" ]; then
-				echo -e "${YELLOW}Removing sites directory...${NC}"
-				rm -rf "$STUDIO_SITES_DIR"
-				echo -e "${GREEN}✓ Sites directory removed ($STUDIO_SITES_DIR)${NC}"
-			fi
-		else
-			echo -e "${YELLOW}Keeping sites.${NC}"
-		fi
+if app_installed "Codex.app" || command -v codex &>/dev/null; then
+	if command -v codex &>/dev/null; then
+		codex mcp remove wordpress-developer &>/dev/null || true
+	else
+		"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = process.env.HOME + '/.codex/config.toml';
+let content = '';
+try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { process.exit(0); }
+content = content.replace(/\[mcp_servers\.wordpress-developer\][^\[]*/, '');
+fs.writeFileSync(configPath, content.trimEnd() + '\n');
+" 2>/dev/null
 	fi
-elif [ -d "/Applications/Studio.app" ]; then
-	echo ""
-	echo -e "${GREEN}🔗 WordPress Studio detected — sites created with Claude remain usable with the Studio app.${NC}"
+	echo -e "  ${GREEN}✓${NC} Codex"
 fi
 
-if [ -x "$NODE_BIN" ]; then
-	echo ""
-	remove_mcp_from_claude_config
+if app_installed "Claude.app"; then
+	remove_mcpservers_json "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+	echo -e "  ${GREEN}✓${NC} Claude Desktop"
 fi
 
-# Migration: clean up old install path (~/.studio-mcp -> ~/.wordpress-studio-mcp)
-if [ -d "$OLD_INSTALL_DIR" ]; then
-	rm -rf "$OLD_INSTALL_DIR"
+if command -v claude &>/dev/null; then
+	claude mcp remove wordpress-developer --scope user &>/dev/null || true
+	echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
 fi
 
+if app_installed "Cursor.app"; then
+	remove_mcpservers_json "$HOME/.cursor/mcp.json"
+	echo -e "  ${GREEN}✓${NC} Cursor"
+fi
+
+if app_installed "Windsurf.app"; then
+	remove_mcpservers_json "$HOME/.codeium/windsurf/mcp_config.json"
+	echo -e "  ${GREEN}✓${NC} Windsurf"
+fi
+
+if app_installed "Zed.app" && [ -f "$HOME/.config/zed/settings.json" ]; then
+	"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = process.env.HOME + '/.config/zed/settings.json';
+let config = {};
+try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch (e) { process.exit(0); }
+if (config.context_servers) {
+	delete config.context_servers['wordpress-developer'];
+	fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
+" 2>/dev/null
+	echo -e "  ${GREEN}✓${NC} Zed"
+fi
+
+# ── Remove install directory ──────────────────────────────────────────────────
+echo ""
 if [ -d "$INSTALL_DIR" ]; then
-	echo ""
 	echo -e "${YELLOW}Removing installation directory...${NC}"
 	rm -rf "$INSTALL_DIR"
-	echo -e "${GREEN}✓ Installation directory removed ($INSTALL_DIR)${NC}"
+	echo -e "${GREEN}✓ $INSTALL_DIR removed${NC}"
 else
-	echo ""
 	echo -e "${YELLOW}Installation directory not found. Skipping.${NC}"
 fi
 
-if [ ! -d "/Applications/Studio.app" ] && [ -d "$STUDIO_APPDATA_DIR" ]; then
+# ── Sites notice ──────────────────────────────────────────────────────────────
+SITES_DIR="$HOME/Studio"
+if [ -d "$SITES_DIR" ]; then
 	echo ""
-	echo -e "${YELLOW}⚠️  The folder ${BOLD}$STUDIO_APPDATA_DIR${NC}"
-	echo -e "${YELLOW}   is also used by the WordPress ecosystem, specifically the${NC}"
-	echo -e "${YELLOW}   WordPress Studio app (${BLUE}https://developer.wordpress.com/studio/${YELLOW}).${NC}"
-	echo ""
-	echo -e "${YELLOW}   WordPress Studio was not found on your system, so this folder${NC}"
-	echo -e "${YELLOW}   can be safely removed.${NC}"
-	echo ""
-	echo -e "   If you confirm that you don't use the WordPress Studio app,"
-	echo -e "   this folder will be cleaned up from your system."
-	echo ""
-	echo -e "${GREEN}Remove it? [y/N]${NC}"
-	read -r remove_response < /dev/tty
-
-	if [[ "$remove_response" =~ ^[Yy]$ ]]; then
-		rm -rf "$STUDIO_APPDATA_DIR"
-		echo -e "${GREEN}✓ Studio data directory removed${NC}"
-	else
-		echo -e "${YELLOW}Kept Studio data directory.${NC}"
-	fi
+	echo -e "${BLUE}ℹ${NC}  Your WordPress sites are still available at ${BOLD}$SITES_DIR${NC}"
+	echo "   If you no longer need them, you can remove them with:"
+	echo -e "   ${YELLOW}rm -rf \"$SITES_DIR\"${NC}"
 fi
 
+# ── Restart reminder ──────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}✅ Uninstall complete!${NC}"
-
-if pgrep -x "Claude" > /dev/null; then
-	echo ""
-	echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
-	echo ""
-	echo -e "${YELLOW}Restart now? [Y/n]${NC}"
-	read -r restart_response < /dev/tty
-
-	if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
-		echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
-		osascript -e 'quit app "Claude"'
-		for i in $(seq 1 10); do
-			pgrep -x "Claude" > /dev/null || break
-			sleep 1
-		done
-		open -a "/Applications/Claude.app"
-		echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
-	else
-		echo ""
-		echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the changes.${NC}"
-	fi
-fi
-
+echo ""
+echo -e "${YELLOW}↺  Restart these apps to apply the changes:${NC}"
+app_installed "Claude.app"   && echo -e "  ${YELLOW}•${NC} Claude Desktop"
+app_installed "Windsurf.app" && echo -e "  ${YELLOW}•${NC} Windsurf"
+app_installed "Zed.app"      && echo -e "  ${YELLOW}•${NC} Zed"
+app_installed "Codex.app"    && echo -e "  ${YELLOW}•${NC} Codex"
 echo ""
