@@ -9,23 +9,13 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 INSTALL_DIR="$HOME/.wordpress-studio-mcp"
-OLD_INSTALL_DIR="$HOME/.studio-mcp"
-NODE_VERSION="24.13.1"
-SQLITE_VERSION="v2.2.17"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
-CLI_URL="https://github.com/nightnei/tmp_apr/releases/download/v0.0.2/tmp_sol.tar.gz"
-
-STUDIO_APPDATA_DIR="$HOME/Library/Application Support/Studio"
-STUDIO_APPDATA_V1_JSON="$STUDIO_APPDATA_DIR/appdata-v1.json"
-SERVER_FILES="$STUDIO_APPDATA_DIR/server-files"
-WP_LATEST_DIR="$SERVER_FILES/wordpress-versions/latest"
-SQLITE_DIR="$SERVER_FILES/sqlite-database-integration"
-SQLITE_CMD_DIR="$SERVER_FILES/sqlite-command"
-WP_CLI_PHAR="$SERVER_FILES/wp-cli.phar"
+NODE_VERSION="24.13.1"
 
 echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
 echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
 
+# ── OS check ──────────────────────────────────────────────────────────────────
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m 2>/dev/null || echo "unknown")
 if [[ "$OS" != "darwin" ]]; then
@@ -33,30 +23,8 @@ if [[ "$OS" != "darwin" ]]; then
 	echo -e "${RED}❌ Currently only macOS is supported.${NC}"
 	exit 1
 fi
-if [[ "$ARCH" != "arm64" ]]; then
-	echo ""
-	echo -e "${YELLOW}⚠️  It looks like you're running macOS on ${ARCH}, which is not officially supported.${NC}"
-	echo "  Currently only Apple Silicon (arm64) is supported."
-	echo ""
-	echo "  If this detection seems incorrect, press Enter to continue."
-	echo -e "  Otherwise, press ${BOLD}Ctrl+C${NC} to cancel."
-	read -r < /dev/tty
-else
-	echo ""
-	echo -e "${GREEN}✓ Detected: macOS on ${ARCH}${NC}"
-fi
-
-if [ ! -d "/Applications/Claude.app" ]; then
-	echo ""
-    echo -e "${RED}❌ Claude Desktop not found.${NC}"
-    echo "  It's the only supported AI assistant for now. More coming soon."
-    echo ""
-    echo "  Download it here and create an account:"
-    echo -e "  ${BLUE}https://claude.ai/download${NC}"
-    echo ""
-    echo "  After installing Claude Desktop, run this script again."
-    exit 1
-fi
+echo ""
+echo -e "${GREEN}✓ Detected: macOS on ${ARCH}${NC}"
 
 if [ -d "/Applications/Studio.app" ]; then
 	echo ""
@@ -65,47 +33,146 @@ if [ -d "/Applications/Studio.app" ]; then
 	echo "  on both at the same time — your sites and data stay in sync."
 fi
 
-# Migration: clean up old install path (~/.studio-mcp -> ~/.wordpress-studio-mcp)
-if [ -d "$OLD_INSTALL_DIR" ]; then
-	rm -rf "$OLD_INSTALL_DIR"
+# ── Supported agents ──────────────────────────────────────────────────────────
+echo ""
+echo -e "${BLUE}${BOLD}Supported AI agents:${NC}"
+echo "  • Codex / OpenAI CLI"
+echo "  • Claude Desktop"
+echo "  • Claude Code (CLI)"
+echo "  • Cursor"
+echo "  • Windsurf"
+echo "  • Zed"
+
+# ── Detect installed agents ───────────────────────────────────────────────────
+echo ""
+echo -e "${YELLOW}Detecting installed AI agents...${NC}"
+
+FOUND_CODEX=false
+FOUND_CLAUDE_DESKTOP=false
+FOUND_CLAUDE_CODE=false
+FOUND_CURSOR=false
+FOUND_WINDSURF=false
+FOUND_ZED=false
+FOUND_AGENTS_COUNT=0
+
+app_installed() {
+	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
+}
+
+if command -v codex &>/dev/null; then
+	FOUND_CODEX=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+fi
+if app_installed "Claude.app"; then
+	FOUND_CLAUDE_DESKTOP=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+fi
+if command -v claude &>/dev/null; then
+	FOUND_CLAUDE_CODE=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+fi
+if app_installed "Cursor.app"; then
+	FOUND_CURSOR=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+fi
+if app_installed "Windsurf.app"; then
+	FOUND_WINDSURF=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+fi
+if app_installed "Zed.app"; then
+	FOUND_ZED=true
+	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
 fi
 
-if [ -d "$INSTALL_DIR" ]; then
+echo ""
+if [ "$FOUND_AGENTS_COUNT" -eq 0 ]; then
+	echo -e "${YELLOW}⚠️  No supported AI agents found on your system.${NC}"
+	echo "  The MCP server will still be installed."
+	echo "  Install any supported agent and re-run this script, or configure it manually."
 	echo ""
-	echo -e "${YELLOW}Removing previous installation...${NC}"
-	rm -rf "$INSTALL_DIR"
+	echo -e "  Get Codex:          ${BLUE}https://github.com/openai/codex${NC}"
+	echo -e "  Get Claude:         ${BLUE}https://claude.ai/download${NC}"
+	echo -e "  Get Cursor:         ${BLUE}https://cursor.com${NC}"
+	echo -e "  Get Windsurf:       ${BLUE}https://windsurf.com${NC}"
+	echo -e "  Get Zed:            ${BLUE}https://zed.dev${NC}"
+else
+	echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
+	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex (OpenAI CLI)"
+	$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
+	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+	$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
+	$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
+	$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
+	echo ""
+	echo "  MCP support will be added to all of them."
 fi
 
-mkdir -p "$INSTALL_DIR"/{node,mcp,cli,bin}
+mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
 
-echo ""
-echo -e "${YELLOW}Downloading runtime environment...${NC}"
-NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-darwin-arm64.tar.gz"
-curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
-echo -e "${GREEN}✓ Runtime environment ready${NC}"
+# ── Node.js runtime ───────────────────────────────────────────────────────────
+NODE_BIN="$INSTALL_DIR/node/bin/node"
+NPM_BIN="$INSTALL_DIR/node/bin/npm"
 
+CURRENT_NODE_VERSION=$("$NODE_BIN" --version 2>/dev/null | tr -d 'v' || echo "")
+if [ "$CURRENT_NODE_VERSION" = "$NODE_VERSION" ]; then
+	echo ""
+	echo -e "${GREEN}✓ Runtime environment ready${NC}"
+else
+	echo ""
+	echo -e "${YELLOW}Downloading runtime environment...${NC}"
+	rm -rf "$INSTALL_DIR/node"
+	mkdir -p "$INSTALL_DIR/node"
+	NODE_ARCH=$(echo "$ARCH" | sed 's/x86_64/x64/')
+	NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-darwin-${NODE_ARCH}.tar.gz"
+	curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
+	echo -e "${GREEN}✓ Runtime environment ready${NC}"
+fi
+
+# ── MCP Server (this repo) ────────────────────────────────────────────────────
 echo ""
-echo -e "${YELLOW}Downloading MCP Server (this may take a while)...${NC}"
+echo -e "${YELLOW}Checking MCP Server...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
-	| "$INSTALL_DIR/node/bin/node" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
-curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
-	tar -xz -C "$INSTALL_DIR/mcp"
-echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
-curl -fsSL "$CLI_URL" | \
-	tar -xz -C "$INSTALL_DIR/cli" --strip-components=1
+	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
+
+CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
+if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
+	echo -e "${GREEN}✓ MCP Server already at $MCP_LATEST${NC}"
+else
+	echo -e "${YELLOW}Downloading MCP Server $MCP_LATEST...${NC}"
+	rm -rf "$INSTALL_DIR/mcp"
+	mkdir -p "$INSTALL_DIR/mcp"
+	curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
+		tar -xz -C "$INSTALL_DIR/mcp"
+	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
+	echo -e "${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+fi
+
+# ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
+echo ""
+if command -v studio &>/dev/null; then
+	echo -e "${GREEN}✓ Studio CLI already available${NC}"
+else
+	echo -e "${YELLOW}Installing Studio CLI...${NC}"
+	"$NPM_BIN" install -g wp-studio 2>&1 | grep -v "^npm warn" | grep -v "^$" || true
+	echo -e "${GREEN}✓ Studio CLI installed${NC}"
+fi
+
+# ── Wrapper scripts (always regenerated) ─────────────────────────────────────
+rm -f "$INSTALL_DIR/bin/studio-mcp" "$INSTALL_DIR/bin/studio-cli"
+MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
 #!/bin/bash
-STUDIO_NODE="/Applications/Studio.app/Contents/Resources/bin/node"
 INSTALLER_NODE="$INSTALL_DIR/node/bin/node"
 
-if [ -x "\$STUDIO_NODE" ]; then
-  NODE="\$STUDIO_NODE"
+if command -v node &>/dev/null; then
+  NODE="node"
 elif [ -x "\$INSTALLER_NODE" ]; then
   NODE="\$INSTALLER_NODE"
 else
-  NODE="node"
+  echo "Node.js not found." >&2
+  exit 1
 fi
 
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
@@ -113,172 +180,162 @@ export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
-cat > "$INSTALL_DIR/bin/studio-cli" << EOF
+cat > "$INSTALL_DIR/bin/studio-cli" << 'EOF'
 #!/bin/bash
-STUDIO_NODE="/Applications/Studio.app/Contents/Resources/bin/node"
-INSTALLER_NODE="$INSTALL_DIR/node/bin/node"
-
-if [ -x "\$STUDIO_NODE" ]; then
-  NODE="\$STUDIO_NODE"
-elif [ -x "\$INSTALLER_NODE" ]; then
-  NODE="\$INSTALLER_NODE"
-else
-  NODE="node"
+if ! command -v studio &>/dev/null; then
+  echo "Studio CLI not found. Run: npm install -g wp-studio" >&2
+  exit 1
 fi
-
-STUDIO_CLI="/Applications/Studio.app/Contents/Resources/cli/main.js"
-INSTALLER_CLI="$INSTALL_DIR/cli/main.js"
-
-if [ -f "\$STUDIO_CLI" ]; then
-  CLI="\$STUDIO_CLI"
-else
-  CLI="\$INSTALLER_CLI"
-fi
-
-"\$NODE" "\$CLI" "\$@"
+studio "$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
-echo -e "${GREEN}✓ MCP Server installed${NC}"
+echo -e "${GREEN}✓ Wrapper scripts created${NC}"
 
-if [ ! -f "$STUDIO_APPDATA_V1_JSON" ]; then
-	echo ""
-	echo -e "${YELLOW}Creating data storage...${NC}"
-	mkdir -p "$STUDIO_APPDATA_DIR"
-	cat > "$STUDIO_APPDATA_V1_JSON" << 'APPDATAEOF'
-{
-  "version": 1,
-  "sites": [],
-  "snapshots": [],
-  "sentryUserId": "studio_mcp",
-  "lastSeenVersion": "1.7.4",
-  "onboardingCompleted": true
-}
-APPDATAEOF
-	echo -e "${GREEN}✓ Data storage created${NC}"
-fi
 
-if [ ! -d "$WP_LATEST_DIR" ]; then
-	echo ""
-	echo -e "${YELLOW}Downloading latest WordPress...${NC}"
-	TMP_DIR=$(mktemp -d)
-	trap 'rm -rf "$TMP_DIR"' EXIT
+# ── Configure AI agents ───────────────────────────────────────────────────────
+CONFIGURED_AGENTS=()
+FAILED_AGENTS=()
 
-	curl -sSL "https://wordpress.org/latest.zip" -o "$TMP_DIR/wordpress.zip"
-	unzip -q "$TMP_DIR/wordpress.zip" -d "$TMP_DIR"
+# Shared helper: write/merge mcpServers JSON config (Claude Desktop, Cursor, Windsurf)
+configure_mcpservers_json() {
+	local config_file="$1"
+	local config_dir
+	config_dir="$(dirname "$config_file")"
+	mkdir -p "$config_dir"
 
-	mkdir -p "$WP_LATEST_DIR"
-	cp -R "$TMP_DIR/wordpress/." "$WP_LATEST_DIR/"
-
-	rm -rf "$TMP_DIR"
-	trap - EXIT
-	echo -e "${GREEN}✓ WordPress installed${NC}"
-fi
-
-if [ ! -d "$SQLITE_DIR" ]; then
-	echo ""
-	echo -e "${YELLOW}Downloading SQLite files...${NC}"
-	TMP_DIR=$(mktemp -d)
-	trap 'rm -rf "$TMP_DIR"' EXIT
-
-	SQLITE_URL="https://github.com/WordPress/sqlite-database-integration/archive/refs/tags/${SQLITE_VERSION}.zip"
-	curl -sSL "$SQLITE_URL" -o "$TMP_DIR/sqlite.zip"
-	unzip -q "$TMP_DIR/sqlite.zip" -d "$TMP_DIR"
-
-	EXTRACTED_NAME="sqlite-database-integration-${SQLITE_VERSION#v}"
-	mkdir -p "$SQLITE_DIR"
-	cp -R "$TMP_DIR/$EXTRACTED_NAME/." "$SQLITE_DIR/"
-
-	rm -rf "$TMP_DIR"
-	trap - EXIT
-	echo -e "${GREEN}✓ SQLite files installed${NC}"
-fi
-
-if [ ! -d "$SQLITE_CMD_DIR" ]; then
-	echo ""
-	echo -e "${YELLOW}Downloading SQLite Command...${NC}"
-	TMP_DIR=$(mktemp -d)
-	trap 'rm -rf "$TMP_DIR"' EXIT
-
-	SQLITE_CMD_URL=$(curl -sSL "https://api.github.com/repos/Automattic/wp-cli-sqlite-command/releases/latest" \
-		-H "Accept: application/vnd.github.v3+json" -H "User-Agent: wp-now-cli" \
-		| "$INSTALL_DIR/node/bin/node" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).assets[0].browser_download_url))")
-	curl -sSL "$SQLITE_CMD_URL" -o "$TMP_DIR/sqlite-command.zip"
-
-	mkdir -p "$SQLITE_CMD_DIR"
-	unzip -q "$TMP_DIR/sqlite-command.zip" -d "$SQLITE_CMD_DIR"
-
-	rm -rf "$TMP_DIR"
-	trap - EXIT
-	echo -e "${GREEN}✓ SQLite Command installed${NC}"
-fi
-
-if [ ! -f "$WP_CLI_PHAR" ]; then
-	echo ""
-	echo -e "${YELLOW}Downloading WP-CLI...${NC}"
-	mkdir -p "$SERVER_FILES"
-	curl -sSL "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar" \
-		-o "$WP_CLI_PHAR"
-	echo -e "${GREEN}✓ WP-CLI installed${NC}"
-fi
-
-CLAUDE_CONFIG_DIR="$HOME/Library/Application Support/Claude"
-CLAUDE_CONFIG="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
-configure_claude() {
-	mkdir -p "$CLAUDE_CONFIG_DIR"
-	
-	MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
-	
-	if [ -f "$CLAUDE_CONFIG" ]; then
-		if grep -qE "wordpress-(developer|studio)" "$CLAUDE_CONFIG"; then
-			echo -e "${YELLOW}Updating existing Claude Desktop config...${NC}"
-		else
-			echo -e "${YELLOW}Adding to existing Claude Desktop config...${NC}"
-		fi
-		
-		"$INSTALL_DIR/node/bin/node" -e "
+	"$NODE_BIN" -e "
 const fs = require('fs');
-const configPath = '$CLAUDE_CONFIG';
+const configPath = '$config_file';
 const mcpCommand = '$MCP_COMMAND';
 
 let config = {};
 try {
-	config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 } catch (e) {
-	config = {};
+  config = {};
 }
 
-if (!config.mcpServers) {
-	config.mcpServers = {};
-}
-
+if (!config.mcpServers) config.mcpServers = {};
 delete config.mcpServers['wordpress-developer'];
+config.mcpServers['wordpress-studio'] = { command: mcpCommand };
 
-config.mcpServers['wordpress-studio'] = {
-	command: mcpCommand
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+"
+}
+
+configure_codex() {
+	codex mcp add wordpress-studio -- "$MCP_COMMAND"
+}
+
+configure_claude_desktop() {
+	configure_mcpservers_json "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+}
+
+configure_claude_code() {
+	claude mcp add --scope user wordpress-studio -- "$MCP_COMMAND"
+}
+
+configure_cursor() {
+	configure_mcpservers_json "$HOME/.cursor/mcp.json"
+}
+
+configure_windsurf() {
+	configure_mcpservers_json "$HOME/.codeium/windsurf/mcp_config.json"
+}
+
+configure_zed() {
+	local config_file="$HOME/.config/zed/settings.json"
+	mkdir -p "$HOME/.config/zed"
+
+	"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = '$config_file';
+const mcpCommand = '$MCP_COMMAND';
+
+let config = {};
+try {
+  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (e) {
+  config = {};
+}
+
+if (!config.context_servers) config.context_servers = {};
+config.context_servers['wordpress-studio'] = {
+  source: 'custom',
+  command: mcpCommand,
+  args: []
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 "
-	else
-		echo -e "${YELLOW}Creating Claude Desktop config...${NC}"
-		cat > "$CLAUDE_CONFIG" << CONFIGEOF
-{
-  "mcpServers": {
-	"wordpress-studio": {
-	  "command": "$MCP_COMMAND"
-	}
-  }
 }
-CONFIGEOF
+
+if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}Configuring AI agents...${NC}"
+
+	if $FOUND_CODEX; then
+		if configure_codex; then
+			CONFIGURED_AGENTS+=("Codex (CLI)")
+			echo -e "  ${GREEN}✓${NC} Codex (CLI)"
+		else
+			FAILED_AGENTS+=("Codex (CLI)")
+			echo -e "  ${RED}✗${NC} Codex (CLI) (failed)"
+		fi
 	fi
-	
-	echo -e "${GREEN}✓ Claude Desktop configured${NC}"
-}
 
-echo ""
-echo -e "${YELLOW}Configuring Claude Desktop...${NC}"
-configure_claude
+	if $FOUND_CLAUDE_DESKTOP; then
+		if configure_claude_desktop 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Claude Desktop")
+			echo -e "  ${GREEN}✓${NC} Claude Desktop"
+		else
+			FAILED_AGENTS+=("Claude Desktop")
+			echo -e "  ${RED}✗${NC} Claude Desktop (failed)"
+		fi
+	fi
 
+	if $FOUND_CLAUDE_CODE; then
+		if configure_claude_code; then
+			CONFIGURED_AGENTS+=("Claude Code (CLI)")
+			echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+		else
+			FAILED_AGENTS+=("Claude Code (CLI)")
+			echo -e "  ${RED}✗${NC} Claude Code (CLI) (failed)"
+		fi
+	fi
+
+	if $FOUND_CURSOR; then
+		if configure_cursor 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Cursor")
+			echo -e "  ${GREEN}✓${NC} Cursor"
+		else
+			FAILED_AGENTS+=("Cursor")
+			echo -e "  ${RED}✗${NC} Cursor (failed)"
+		fi
+	fi
+
+	if $FOUND_WINDSURF; then
+		if configure_windsurf 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Windsurf")
+			echo -e "  ${GREEN}✓${NC} Windsurf"
+		else
+			FAILED_AGENTS+=("Windsurf")
+			echo -e "  ${RED}✗${NC} Windsurf (failed)"
+		fi
+	fi
+
+	if $FOUND_ZED; then
+		if configure_zed 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Zed")
+			echo -e "  ${GREEN}✓${NC} Zed"
+		else
+			FAILED_AGENTS+=("Zed")
+			echo -e "  ${RED}✗${NC} Zed (failed)"
+		fi
+	fi
+fi
+
+# ── WordPress.com authentication ──────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
@@ -287,66 +344,148 @@ echo ""
 
 AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
 if echo "$AUTH_OUTPUT" | grep -qi "Authenticated"; then
-    WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*as `\(.*\)`.*/\1/p')
-    if [ -d "/Applications/Studio.app" ]; then
-        echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
-    else
-        echo -e "Connected as ${GREEN}${WPCOM_USER}${NC}."
-    fi
-    echo "  Preview sites and other WordPress.com features are available."
+	WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*as `\(.*\)`.*/\1/p')
+	if [ -d "/Applications/Studio.app" ]; then
+		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
+	else
+		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC}."
+	fi
+	echo "  Preview sites and other WordPress.com features are available."
 else
-    echo "This unlocks extra powerful features provided by WordPress.com."
-    echo ""
-    echo -e "${GREEN}Connect now? [Y/n]${NC}"
-    read -r auth_response < /dev/tty
+	echo "This unlocks extra powerful features provided by WordPress.com."
+	echo ""
+	echo -e "${GREEN}Connect now? [Y/n]${NC}"
+	read -r auth_response < /dev/tty
 
-    if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
-        echo ""
-        echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
-        "$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
+	if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
+		echo ""
+		echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
+		"$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
 
-        if [ $? -eq 0 ]; then
-            echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
-        else
-            echo -e "${RED}Connection failed.${NC}"
-        fi
-    else
-        echo -e "${YELLOW}Skipped.${NC}"
-    fi
+		if [ $? -eq 0 ]; then
+			echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
+		else
+			echo -e "${RED}Connection failed.${NC}"
+		fi
+	else
+		echo -e "${YELLOW}Skipped.${NC}"
+	fi
 fi
 
+# ── Summary ───────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}✅ Installation complete!${NC}"
 echo ""
 
-if pgrep -x "Claude" > /dev/null; then
-    echo -e "${YELLOW}⚠️  Claude Desktop is running.${NC}"
-    echo ""
-    echo -e "${YELLOW}Restart now? [Y/n]${NC}"
-    read -r restart_response < /dev/tty
-    
-    if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
-        echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
-        osascript -e 'quit app "Claude"'
-        for i in $(seq 1 10); do
-            pgrep -x "Claude" > /dev/null || break
-            sleep 1
-        done
-        open -a "/Applications/Claude.app"
-        echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
-    else
-        echo ""
-        echo -e "${YELLOW}⚠️  Please restart Claude Desktop manually to apply the MCP configuration.${NC}"
-    fi
-else
-    echo "Start Claude Desktop to begin using WordPress Developer MCP! 🚀"
+if [ ${#CONFIGURED_AGENTS[@]} -gt 0 ]; then
+	echo -e "${GREEN}Successfully configured agents:${NC}"
+	for agent in "${CONFIGURED_AGENTS[@]}"; do
+		echo -e "  ${GREEN}✓${NC} $agent"
+	done
+	if $FOUND_CURSOR && [[ " ${CONFIGURED_AGENTS[*]} " =~ " Cursor " ]]; then
+		echo ""
+		echo -e "  ${BLUE}ℹ${NC}  Cursor picks up MCP changes automatically — no restart needed."
+	fi
 fi
 
+if [ ${#FAILED_AGENTS[@]} -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}⚠️  Could not configure automatically:${NC}"
+	for agent in "${FAILED_AGENTS[@]}"; do
+		echo -e "  ${YELLOW}•${NC} $agent"
+	done
+	echo ""
+	echo "  Add this to the agent's MCP configuration manually:"
+	echo ""
+	echo "    \"mcpServers\": {"
+	echo "      \"wordpress-studio\": {"
+	echo "        \"command\": \"$MCP_COMMAND\""
+	echo "      }"
+	echo "    }"
+fi
+
+# ── Restart apps that need it to pick up MCP config ───────────────────────────
+RESTART_NEEDED=()
+
+if [[ " ${CONFIGURED_AGENTS[*]} " =~ " Claude Desktop " ]] && pgrep -x "Claude" > /dev/null; then
+	RESTART_NEEDED+=("claude_desktop")
+fi
+if [[ " ${CONFIGURED_AGENTS[*]} " =~ " Windsurf " ]] && pgrep -x "Windsurf" > /dev/null; then
+	RESTART_NEEDED+=("windsurf")
+fi
+if [[ " ${CONFIGURED_AGENTS[*]} " =~ " Zed " ]] && pgrep -x "Zed" > /dev/null; then
+	RESTART_NEEDED+=("zed")
+fi
+
+if [ ${#RESTART_NEEDED[@]} -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}⚠️  The following apps are running and need a restart to apply MCP:${NC}"
+	for app_key in "${RESTART_NEEDED[@]}"; do
+		case "$app_key" in
+			claude_desktop) echo "  • Claude Desktop" ;;
+			windsurf)       echo "  • Windsurf" ;;
+			zed)            echo "  • Zed" ;;
+		esac
+	done
+	echo ""
+	echo -e "${YELLOW}Restart them now? [Y/n]${NC}"
+	read -r restart_response < /dev/tty
+
+	if [[ ! "$restart_response" =~ ^[Nn]$ ]]; then
+		for app_key in "${RESTART_NEEDED[@]}"; do
+			case "$app_key" in
+				claude_desktop)
+					echo -e "${YELLOW}Restarting Claude Desktop...${NC}"
+					osascript -e 'quit app "Claude"'
+					for i in $(seq 1 10); do pgrep -x "Claude" > /dev/null || break; sleep 1; done
+					open -a "/Applications/Claude.app"
+					echo -e "${GREEN}✓ Claude Desktop restarted${NC}"
+					;;
+				windsurf)
+					echo -e "${YELLOW}Restarting Windsurf...${NC}"
+					osascript -e 'quit app "Windsurf"'
+					for i in $(seq 1 10); do pgrep -x "Windsurf" > /dev/null || break; sleep 1; done
+					WINDSURF_APP="/Applications/Windsurf.app"
+					[ ! -d "$WINDSURF_APP" ] && WINDSURF_APP="$HOME/Applications/Windsurf.app"
+					open -a "$WINDSURF_APP"
+					echo -e "${GREEN}✓ Windsurf restarted${NC}"
+					;;
+				zed)
+					echo -e "${YELLOW}Restarting Zed...${NC}"
+					osascript -e 'quit app "Zed"'
+					for i in $(seq 1 10); do pgrep -x "Zed" > /dev/null || break; sleep 1; done
+					ZED_APP="/Applications/Zed.app"
+					[ ! -d "$ZED_APP" ] && ZED_APP="$HOME/Applications/Zed.app"
+					open -a "$ZED_APP"
+					echo -e "${GREEN}✓ Zed restarted${NC}"
+					;;
+			esac
+		done
+	else
+		echo ""
+		echo -e "${YELLOW}⚠️  Please restart the apps manually to apply MCP configuration.${NC}"
+	fi
+elif [ ${#CONFIGURED_AGENTS[@]} -gt 0 ]; then
+	# Some agents were configured but none need a restart (all are CLI tools or Cursor)
+	:
+fi
+
+# If no agents were configured at all, remind the user how to start
+if [ "$FOUND_AGENTS_COUNT" -eq 0 ] || [ ${#CONFIGURED_AGENTS[@]} -eq 0 ]; then
+	echo ""
+	echo -e "${YELLOW}Install a supported AI agent to get started:${NC}"
+	echo -e "  Claude Desktop: ${BLUE}https://claude.ai/download${NC}"
+	echo -e "  Cursor:         ${BLUE}https://cursor.com${NC}"
+	echo -e "  Windsurf:       ${BLUE}https://windsurf.com${NC}"
+	echo "  Then re-run this installer to configure MCP automatically."
+fi
+
+# ── Footer ────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}🌸 You're all set!${NC}"
 echo ""
-echo "Try asking Claude:"
+echo "Try asking your AI:"
 echo "  \"Create a new WordPress site named 'Flowers Shop'\""
 echo "  \"Install the WooCommerce plugin\""
 echo "  \"Add one demo product to the shop named 'Sunflower'\""
