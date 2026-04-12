@@ -294,3 +294,68 @@ config.context_servers['wordpress-developer'] = {
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 "
 }
+
+if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
+	echo ""
+	echo -e "${YELLOW}Configuring AI agents...${NC}"
+
+	if $FOUND_CODEX; then
+		if configure_codex 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Codex")
+			echo -e "  ${GREEN}✓${NC} Codex"
+		else
+			FAILED_AGENTS+=("Codex")
+			echo -e "  ${RED}✗${NC} Codex (failed)"
+		fi
+	fi
+
+	if $FOUND_CLAUDE_DESKTOP; then
+		if configure_claude_desktop 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Claude Desktop")
+			echo -e "  ${GREEN}✓${NC} Claude Desktop"
+		else
+			FAILED_AGENTS+=("Claude Desktop")
+			echo -e "  ${RED}✗${NC} Claude Desktop (failed)"
+		fi
+	fi
+
+	if $FOUND_CLAUDE_CODE; then
+		if configure_claude_code 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Claude Code (CLI)")
+			echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+		else
+			FAILED_AGENTS+=("Claude Code (CLI)")
+			echo -e "  ${RED}✗${NC} Claude Code (CLI) (failed)"
+		fi
+	fi
+
+	if $FOUND_CURSOR; then
+		if configure_cursor 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Cursor")
+			echo -e "  ${GREEN}✓${NC} Cursor"
+		else
+			FAILED_AGENTS+=("Cursor")
+			echo -e "  ${RED}✗${NC} Cursor (failed)"
+		fi
+	fi
+
+	if $FOUND_WINDSURF; then
+		if configure_windsurf 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Windsurf")
+			echo -e "  ${GREEN}✓${NC} Windsurf"
+		else
+			FAILED_AGENTS+=("Windsurf")
+			echo -e "  ${RED}✗${NC} Windsurf (failed)"
+		fi
+	fi
+
+	if $FOUND_ZED; then
+		if configure_zed 2>/dev/null; then
+			CONFIGURED_AGENTS+=("Zed")
+			echo -e "  ${GREEN}✓${NC} Zed"
+		else
+			FAILED_AGENTS+=("Zed")
+			echo -e "  ${RED}✗${NC} Zed (failed)"
+		fi
+	fi
+fi
