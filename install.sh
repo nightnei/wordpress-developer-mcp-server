@@ -113,19 +113,19 @@ mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
 NODE_BIN="$INSTALL_DIR/node/bin/node"
 NPM_BIN="$INSTALL_DIR/node/bin/npm"
 
+echo ""
+echo -e "${YELLOW}Checking runtime environment...${NC}"
 CURRENT_NODE_VERSION=$("$NODE_BIN" --version 2>/dev/null | tr -d 'v' || echo "")
 if [ "$CURRENT_NODE_VERSION" = "$NODE_VERSION" ]; then
-	echo ""
-	echo -e "${GREEN}✓ Runtime environment ready${NC}"
+	echo -e "${GREEN}✓ Runtime environment already installed${NC}"
 else
-	echo ""
 	echo -e "${YELLOW}Downloading runtime environment...${NC}"
 	rm -rf "$INSTALL_DIR/node"
 	mkdir -p "$INSTALL_DIR/node"
 	NODE_ARCH=$(echo "$ARCH" | sed 's/x86_64/x64/')
 	NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-darwin-${NODE_ARCH}.tar.gz"
 	curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
-	echo -e "${GREEN}✓ Runtime environment ready${NC}"
+	echo -e "${GREEN}✓ Runtime environment installed${NC}"
 fi
 
 # ── MCP Server (this repo) ────────────────────────────────────────────────────
@@ -134,17 +134,19 @@ echo -e "${YELLOW}Checking MCP Server...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
-
 CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
-	echo -e "${GREEN}✓ MCP Server already at $MCP_LATEST${NC}"
+	echo -e "${GREEN}✓ MCP Server already up to date${NC}"
 else
-	echo -e "${YELLOW}Downloading MCP Server $MCP_LATEST...${NC}"
+	echo -e "${YELLOW}Downloading MCP Server...${NC}"
 	rm -rf "$INSTALL_DIR/mcp"
 	mkdir -p "$INSTALL_DIR/mcp"
 	curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
 		tar -xz -C "$INSTALL_DIR/mcp"
 	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
-	echo -e "${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+	if [ -n "$CURRENT_MCP_VERSION" ]; then
+		echo -e "${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+	else
+		echo -e "${GREEN}✓ MCP Server installed${NC}"
+	fi
 fi
-
