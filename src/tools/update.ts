@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-const INSTALL_DIR = `${ homedir() }/.wordpress-studio-mcp`;
+const INSTALL_DIR = `${ homedir() }/.wordpress-developer-mcp`;
 const VERSION_FILE = `${ INSTALL_DIR }/mcp/.version`;
 const MCP_REPO = 'nightnei/wordpress-developer-mcp-server';
 const GITHUB_API_URL = `https://api.github.com/repos/${ MCP_REPO }/releases/latest`;
@@ -156,10 +156,10 @@ export function registerUpdateTools( server: McpServer ) {
 				};
 			}
 
-			const mpcDir = `${ INSTALL_DIR }/mcp`;
+			const mcpDir = `${ INSTALL_DIR }/mcp`;
 
 			try {
-				execSync( `curl -fsSL "${ latest.tarballUrl }" | tar -xz -C "${ mpcDir }"`, {
+				execSync( `rm -rf "${ mcpDir }" && mkdir -p "${ mcpDir }" && curl -fsSL "${ latest.tarballUrl }" | tar -xz -C "${ mcpDir }"`, {
 					timeout: 60000,
 				} );
 				await writeFile( VERSION_FILE, latest.tagName );

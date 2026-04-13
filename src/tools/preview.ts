@@ -101,8 +101,8 @@ export function registerPreviewTools( server: McpServer ) {
 			}
 
 			return {
-				// stdout doesn't have any information, and it's better to print teh host directly, instead of printing the whole stderr output
-				content: [ { type: 'text', text: `Updated preview: ${ host }` || '(no output)' } ],
+				// stdout doesn't have any information, and it's better to print the host directly, instead of printing the whole stderr output
+				content: [ { type: 'text', text: `Updated preview: ${ host }` } ],
 			};
 		}
 	);

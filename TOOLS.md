@@ -20,6 +20,10 @@
 - Full access to WP-CLI commands: plugins, themes, posts, pages, users, options, database, and more
 - Install plugins, create content, manage settings — all through natural language
 
+### 🔄 MCP Updates
+
+- Check for and install updates to the MCP server without leaving your AI agent
+
 ## Available Tools
 
 | Category     | Tools                                                                                                                                            |
@@ -29,3 +33,4 @@
 | **Previews** | `studio_preview_list`, `studio_preview_create`, `studio_preview_update`, `studio_preview_delete`                                                 |
 | **Auth**     | `studio_auth_status`, `studio_auth_logout`                                                                                                       |
 | **WP-CLI**   | `studio_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.)                                                              |
+| **Updates**  | `studio_check_for_mcp_updates`, `studio_update_mcp`                                                                                              |

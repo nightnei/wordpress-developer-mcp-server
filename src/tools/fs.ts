@@ -62,7 +62,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Tip: open Studio and ensure the site exists there.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
 						},
 					],
 				};
@@ -141,7 +141,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Tip: open Studio and ensure the site exists there.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
 						},
 					],
 				};
@@ -214,7 +214,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Tip: open Studio and ensure the site exists there.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
 						},
 					],
 				};
@@ -279,7 +279,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Tip: open Studio and ensure the site exists there.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
 						},
 					],
 				};

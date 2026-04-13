@@ -2,6 +2,8 @@
 
 Turn your AI into a full-stack WordPress developer
 
+Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
+
 ## Quick start
 
 1. Run in your terminal:
@@ -9,14 +11,12 @@ Turn your AI into a full-stack WordPress developer
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
-2. Open Claude Desktop and have fun
-3. Star this repo if you like it :)
+2. Open your AI agent and have fun
+3. ⭐ [Star this repo](https://github.com/nightnei/wordpress-developer-mcp-server) — it helps others discover the project!
 
-## ⚠️ Platform support
+## Platform support
 
-This project currently supports **macOS only** with **Claude Desktop**.
-
-> Support for Windows and more AI assistants is **coming soon**.
+macOS only — Windows support coming soon.
 
 ## Demo
 

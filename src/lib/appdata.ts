@@ -2,18 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 
-const APPDATA_PATH = path.join(
-	os.homedir(),
-	'Library',
-	'Application Support',
-	'Studio',
-	'appdata-v1.json'
-);
+const APPDATA_PATH = path.join( os.homedir(), '.studio', 'cli.json' );
 
-export async function readAppData(): Promise< Record< string, any > > {
-	const raw = await fs.readFile( APPDATA_PATH, { encoding: 'utf8' } );
-
-	return JSON.parse( raw );
+async function readAppData(): Promise< Record< string, any > > {
+	try {
+		const raw = await fs.readFile( APPDATA_PATH, { encoding: 'utf8' } );
+		return JSON.parse( raw );
+	} catch {
+		return { sites: [] };
+	}
 }
 
 export async function isStudioSitePath( sitePath: string ): Promise< boolean > {
