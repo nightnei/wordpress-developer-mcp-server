@@ -1,17 +1,16 @@
 # WordPress Developer MCP Server
 
-Turn your AI into a full-stack WordPress developer
-
+Turn your AI into a full-stack WordPress developer<br />
 Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
 
 ## Quickstart
 
-1. Run in your terminal:
+1. Run:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
-2. In your AI app, try prompts like:<br />
+2. Open your AI app and try prompts like:<br />
    2.1. `Create a new WordPress site named 'Flowers Shop'`<br />
    2.2. `Install the WooCommerce plugin`<br />
    2.3. `Create shareable link for the shop`
