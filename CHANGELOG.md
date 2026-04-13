@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.4.1...v2.0.0) (2026-04-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16))
+
+### Features
+
+* **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16)) ([4b3ebd5](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b3ebd53aa7b7140fec7d401f311601757430250))
+
 ## [1.4.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.4.0...v1.4.1) (2026-03-25)
 
 
