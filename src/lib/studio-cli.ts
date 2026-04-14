@@ -16,9 +16,18 @@ export function formatCliFailure( cmd: string, res: CliResult ) {
 	);
 }
 
+function resolveSpawnTarget( command: string, args: string[] ) {
+	if ( /\.(mjs|cjs|js)$/i.test( command ) ) {
+		return { exe: process.execPath, spawnArgs: [ command, ...args ] };
+	}
+	return { exe: command, spawnArgs: args };
+}
+
 export function runStudioCli( args: string[] ) {
 	return new Promise< CliResult >( ( resolve ) => {
-		const child = spawn( CLI_COMMAND, args, {
+		const { exe, spawnArgs } = resolveSpawnTarget( CLI_COMMAND, args );
+
+		const child = spawn( exe, spawnArgs, {
 			/**
 			 * 'ignore' for stdin: child can't ask interactive questions (safer, avoids hanging).
 			 * 'pipe' for stdout: we want to capture normal output (e.g. `studio preview list` output).
