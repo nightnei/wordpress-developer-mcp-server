@@ -374,16 +374,49 @@ if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $st
     }
 }
 
+# Resolve wp-studio's real entry .mjs (from its package.json `bin.studio`).
+# The MCP server spawns STUDIO_CLI_PATH directly, so pointing at the .mjs
+# lets it use `node <script>` and avoids Windows' spawn-EINVAL on .cmd shims.
+$studioMjsPath = $null
+try {
+    $npmRootG = (& $NpmBin root -g --loglevel=silent 2>$null | Out-String).Trim()
+    if ($npmRootG) {
+        $studioPkgJson = Join-Path $npmRootG 'wp-studio\package.json'
+        if (Test-Path -LiteralPath $studioPkgJson) {
+            $studioPkg = Get-Content -LiteralPath $studioPkgJson -Raw | ConvertFrom-Json
+            $binRel = $null
+            if ($studioPkg.bin -is [string]) {
+                $binRel = $studioPkg.bin
+            } elseif ($studioPkg.bin -and $studioPkg.bin.studio) {
+                $binRel = [string]$studioPkg.bin.studio
+            }
+            if ($binRel) {
+                $candidate = Join-Path (Join-Path $npmRootG 'wp-studio') ($binRel -replace '/', '\')
+                if (Test-Path -LiteralPath $candidate) {
+                    $studioMjsPath = $candidate
+                }
+            }
+        }
+    }
+} catch { $studioMjsPath = $null }
+
+if (-not $studioMjsPath) {
+    Err "$($G.Cross) Could not locate wp-studio's entry script. MCP spawning will fail."
+    exit 1
+}
+
 # == Wrapper scripts (always regenerated) ==-----------------------------------
 Write-Host ""
 Info "Creating wrapper scripts..."
 
 # The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule
 # that triggers when a line starts with `"` and ends with `"`.
+# STUDIO_CLI_PATH points straight at wp-studio's .mjs so the MCP can launch
+# it via `node <script>` (dodges Windows spawn-EINVAL on .cmd shims).
 $studioMcpContent = @"
 @echo off
 setlocal
-set "STUDIO_CLI_PATH=$StudioCliCmd"
+set "STUDIO_CLI_PATH=$studioMjsPath"
 call "$NodeBin" "$McpJs" %*
 exit /b %ERRORLEVEL%
 "@
