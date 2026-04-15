@@ -1,19 +1,20 @@
-# Turn your AI into a WordPress developer
+# Turn your AI into a WordPress developer 🌸
+Works in the AI apps you already use:<br />
 Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
 
 ## Quick Start
 
-1. Just run the one-line installer:
+Install in one line:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
 
-2. ⭐ **Star this repo** — it helps others discover the project!
+**Star the repo** ⭐ — it helps other people find the project.
 
-## Working with WordPress in your AI app
+## What it does
 
-Open your AI app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create sharable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
+Open your AI app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
 
 ## Platform support
 macOS only — Windows support coming soon.
