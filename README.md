@@ -15,11 +15,7 @@ curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-se
 
 ## Working with WordPress in your AI app
 
-Open your AI app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create sharable preview links. You do not need to paste docs — describe what you want in plain language. For example:
-
-- `Create a new WordPress site named 'Flowers Shop'`
-- `Install the WooCommerce plugin`
-- `Create shareable link for the shop`
+Open your AI app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create sharable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
 
 ## Platform support
 macOS only — Windows support coming soon.
