@@ -1,6 +1,4 @@
-# WordPress Developer MCP Server
-
-**Turn your AI into a WordPress developer**<br />
+# Turn your AI into a WordPress developer
 Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
 
 ## Quick Start
