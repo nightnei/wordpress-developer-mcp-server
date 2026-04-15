@@ -1,5 +1,5 @@
 # Turn your AI into a WordPress developer 🌸
-Works in the AI apps you already use:<br />
+**Works in the AI apps you already use:**<br />
 Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
 
 ## Quick Start
