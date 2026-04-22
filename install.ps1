@@ -90,16 +90,9 @@ if (-not $nodeArch) {
 Write-Host ""
 Ok "$($G.Tick) Detected: Windows on $procArch"
 
-# == WordPress Studio detection (best effort) ==-------------------------------
-$studioHints = @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\Studio\Studio.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\wordpress-studio\wordpress-studio.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Studio\Studio.exe')
-)
-$studioFound = $false
-foreach ($h in $studioHints) {
-    if ($h -and (Test-Path -LiteralPath $h)) { $studioFound = $true; break }
-}
+# == WordPress Studio detection ==----------------------------------------------
+$studioExe = Join-Path $env:LOCALAPPDATA 'Programs\Studio\Studio.exe'
+$studioFound = Test-Path -LiteralPath $studioExe
 if ($studioFound) {
     Write-Host ""
     Ok "$($G.Link) WordPress Studio detected on your machine!"
