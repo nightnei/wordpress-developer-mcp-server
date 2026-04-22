@@ -173,10 +173,10 @@ chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
-export PATH="$INSTALL_DIR/node/bin:\$PATH"
 if command -v studio &>/dev/null; then
   studio "\$@"
 else
+  export PATH="$INSTALL_DIR/node/bin:\$PATH"
   "$INSTALL_DIR/node/bin/studio" "\$@"
 fi
 EOF
