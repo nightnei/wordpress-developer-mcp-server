@@ -286,13 +286,19 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
         exit 1
     }
 
-    if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) {
-        Err "$($G.Cross) tar.exe not found. Windows 10 build 17063 or later is required."
+    # Pin to Windows' built-in bsdtar at System32. PATH lookup is unreliable
+    # here: if PowerShell was launched from Git Bash, MSYS's GNU tar at
+    # C:\Program Files\Git\usr\bin\tar.exe wins the lookup, and GNU tar treats
+    # arguments containing ':' as 'host:path' (rsh syntax), so `-C C:\...`
+    # fails with "Cannot connect to C: resolve failed".
+    $tarExe = Join-Path $env:SystemRoot 'System32\tar.exe'
+    if (-not (Test-Path -LiteralPath $tarExe)) {
+        Err "$($G.Cross) tar.exe not found at $tarExe. Windows 10 build 17063 or later is required."
         exit 1
     }
 
-    # Run tar with -C to avoid relying on current directory.
-    & tar.exe -xzf $tarPath -C $McpDir
+    # -C avoids relying on the current directory.
+    & $tarExe -xzf $tarPath -C $McpDir
     $tarRc = $LASTEXITCODE
     Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
     if ($tarRc -ne 0) {
@@ -374,3 +380,50 @@ if (-not $studioMjsPath) {
     Err "$($G.Cross) Could not locate wp-studio's entry script. MCP spawning will fail."
     exit 1
 }
+
+# == Wrapper scripts (always regenerated) ==-----------------------------------
+Write-Host ""
+Info "Creating wrapper scripts..."
+
+# The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule
+# that triggers when a line starts with `"` and ends with `"`.
+# STUDIO_CLI_PATH points straight at wp-studio's .mjs so the MCP can launch
+# it via `node <script>` (dodges Windows spawn-EINVAL on .cmd shims).
+$studioMcpContent = @"
+@echo off
+setlocal
+set "STUDIO_CLI_PATH=$studioMjsPath"
+call "$NodeBin" "$McpJs" %*
+exit /b %ERRORLEVEL%
+"@
+
+$studioCliContent = @"
+@echo off
+setlocal
+set "PATH=$NodeDir;%PATH%"
+where /q studio
+if %ERRORLEVEL% EQU 0 (
+  studio %*
+) else (
+  call "$NodeDir\studio.cmd" %*
+)
+exit /b %ERRORLEVEL%
+"@
+
+foreach ($pair in @(
+    @{ Path = $McpCommand;   Content = $studioMcpContent },
+    @{ Path = $StudioCliCmd; Content = $studioCliContent }
+)) {
+    if (Test-Path -LiteralPath $pair.Path) {
+        Remove-Item -LiteralPath $pair.Path -Force
+    }
+    # Normalize to CRLF and write as system ANSI so non-ASCII profile paths
+    # (e.g., Latin-1 usernames) survive cmd.exe's default code page.
+    $text = ($pair.Content -replace "`r?`n", "`r`n")
+    [System.IO.File]::WriteAllText($pair.Path, $text, [System.Text.Encoding]::Default)
+}
+
+Ok "  $($G.Tick) Wrapper scripts ready"
+
+
+
