@@ -129,20 +129,14 @@ $foundClaudeDesktop = Test-AnyPath @(
 
 $foundClaudeCode = Test-Command 'claude'
 
-$foundCursor = (Test-Command 'cursor') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\cursor\Cursor.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\Cursor\Cursor.exe')
-))
+$foundCursor = (Test-Command 'cursor') -or `
+    (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\cursor\Cursor.exe'))
 
-$foundWindsurf = (Test-Command 'windsurf') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\windsurf\Windsurf.exe')
-))
+$foundWindsurf = (Test-Command 'windsurf') -or `
+    (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'))
 
-$foundZed = (Test-Command 'zed') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\Zed\Zed.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Zed\Zed.exe')
-))
+# Zed's Windows installer doesn't register a PATH entry, so only probe the install dir.
+$foundZed = Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Zed\Zed.exe')
 
 $foundAgentsCount = 0
 foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCursor, $foundWindsurf, $foundZed)) {
