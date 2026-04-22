@@ -115,12 +115,10 @@ function Test-AnyPath([string[]]$paths) {
     return $false
 }
 
-# Codex: CLI on PATH, or app installed under LocalAppData\Programs.
-$foundCodex = (Test-Command 'codex') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\@openai\codex'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\codex'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\Codex')
-))
+# Codex: CLI on PATH (npm CLI or MSIX app execution alias), or the Microsoft
+# Store desktop app (distributed only as MSIX package "OpenAI.Codex").
+$foundCodex = (Test-Command 'codex') -or `
+    [bool](Get-AppxPackage -Name 'OpenAI.Codex' -ErrorAction SilentlyContinue)
 
 # Claude Desktop installs to %LOCALAPPDATA%\AnthropicClaude via Squirrel.
 $foundClaudeDesktop = Test-AnyPath @(
