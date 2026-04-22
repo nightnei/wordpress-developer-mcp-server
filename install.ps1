@@ -88,7 +88,7 @@ if (-not $nodeArch) {
 }
 
 Write-Host ""
-Ok "$($G.Tick) Detected: Windows on $procArch"
+Ok "  $($G.Tick) Detected: Windows on $procArch"
 
 # == WordPress Studio detection ==----------------------------------------------
 $studioExe = Join-Path $env:LOCALAPPDATA 'studio_app\Studio.exe'
@@ -169,7 +169,6 @@ if ($foundAgentsCount -eq 0) {
     if ($foundCursor)        { Ok "  $($G.Tick) Cursor" }
     if ($foundWindsurf)      { Ok "  $($G.Tick) Windsurf" }
     if ($foundZed)           { Ok "  $($G.Tick) Zed" }
-    Write-Host ""
     Write-Host "  MCP support will be added to all of them."
 }
 
@@ -239,7 +238,7 @@ if ($currentNodeVersion -eq $NodeVersion) {
         Err "$($G.Cross) Node.js installation failed (node.exe missing)."
         exit 1
     }
-    Ok "$($G.Tick) Runtime environment installed"
+    Ok "  $($G.Tick) Runtime environment installed"
 }
 
 # == MCP Server release ==------------------------------------------------------
@@ -350,9 +349,9 @@ if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $st
         if ($line -match '(?i)error') { Write-Host $line }
     }
     if ($currentStudioVersion) {
-        Ok "$($G.Tick) Studio CLI updated to $studioLatest"
+        Ok "  $($G.Tick) Studio CLI updated to $studioLatest"
     } else {
-        Ok "$($G.Tick) Studio CLI installed"
+        Ok "  $($G.Tick) Studio CLI installed"
     }
 }
 

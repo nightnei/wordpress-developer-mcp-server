@@ -107,7 +107,7 @@ echo ""
 echo -e "${YELLOW}Checking runtime environment...${NC}"
 CURRENT_NODE_VERSION=$("$NODE_BIN" --version 2>/dev/null | tr -d 'v' || echo "")
 if [ "$CURRENT_NODE_VERSION" = "$NODE_VERSION" ]; then
-	echo -e "${GREEN}✓ Runtime environment already installed${NC}"
+	echo -e "  ${GREEN}✓ Runtime environment already installed${NC}"
 else
 	echo -e "${YELLOW}Downloading runtime environment...${NC}"
 	rm -rf "$INSTALL_DIR/node"
@@ -115,7 +115,7 @@ else
 	NODE_ARCH=$(echo "$ARCH" | sed 's/x86_64/x64/')
 	NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-darwin-${NODE_ARCH}.tar.gz"
 	curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
-	echo -e "${GREEN}✓ Runtime environment installed${NC}"
+	echo -e "  ${GREEN}✓ Runtime environment installed${NC}"
 fi
 
 # ── MCP Server (this repo) ────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" 
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
 CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
-	echo -e "${GREEN}✓ MCP Server already up to date${NC}"
+	echo -e "  ${GREEN}✓ MCP Server already up to date${NC}"
 else
 	echo -e "${YELLOW}Downloading MCP Server...${NC}"
 	rm -rf "$INSTALL_DIR/mcp"
@@ -135,9 +135,9 @@ else
 		tar -xz -C "$INSTALL_DIR/mcp"
 	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
 	if [ -n "$CURRENT_MCP_VERSION" ]; then
-		echo -e "${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+		echo -e "  ${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
 	else
-		echo -e "${GREEN}✓ MCP Server installed${NC}"
+		echo -e "  ${GREEN}✓ MCP Server installed${NC}"
 	fi
 fi
 
@@ -147,14 +147,14 @@ echo -e "${YELLOW}Checking Studio CLI...${NC}"
 STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
 CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
-	echo -e "${GREEN}✓ Studio CLI already up to date${NC}"
+	echo -e "  ${GREEN}✓ Studio CLI already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing Studio CLI...${NC}"
 	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=silent 2>&1 | grep -i "error" || true
 	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
-		echo -e "${GREEN}✓ Studio CLI updated to $STUDIO_LATEST${NC}"
+		echo -e "  ${GREEN}✓ Studio CLI updated to $STUDIO_LATEST${NC}"
 	else
-		echo -e "${GREEN}✓ Studio CLI installed${NC}"
+		echo -e "  ${GREEN}✓ Studio CLI installed${NC}"
 	fi
 fi
 
@@ -181,7 +181,7 @@ else
 fi
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
-echo -e "${GREEN}✓ Wrapper scripts ready${NC}"
+echo -e "  ${GREEN}✓ Wrapper scripts ready${NC}"
 
 # ── Configure AI agents ───────────────────────────────────────────────────────
 CONFIGURED_AGENTS=()
