@@ -286,14 +286,29 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
         exit 1
     }
 
-    if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) {
-        Err "$($G.Cross) tar.exe not found. Windows 10 build 17063 or later is required."
-        exit 1
+    # Prefer Windows' built-in bsdtar at System32. GNU tar (e.g. from Git for
+    # Windows on PATH) treats arguments containing ':' as 'host:path' (rsh
+    # syntax), so `-C C:\...` fails with "Cannot connect to C: resolve failed".
+    $tarExe = Join-Path $env:SystemRoot 'System32\tar.exe'
+    if (-not (Test-Path -LiteralPath $tarExe)) {
+        $tarCmd = Get-Command tar.exe -ErrorAction SilentlyContinue
+        if (-not $tarCmd) {
+            Err "$($G.Cross) tar.exe not found. Windows 10 build 17063 or later is required."
+            exit 1
+        }
+        $tarExe = $tarCmd.Source
     }
 
-    # Run tar with -C to avoid relying on current directory.
-    & tar.exe -xzf $tarPath -C $McpDir
+    # Run tar with -C to avoid relying on current directory. --force-local is
+    # ignored by bsdtar but disables host:path parsing on GNU tar if that's
+    # what we ended up with.
+    & $tarExe --force-local -xzf $tarPath -C $McpDir 2>$null
     $tarRc = $LASTEXITCODE
+    if ($tarRc -ne 0) {
+        # bsdtar rejects --force-local; retry without it.
+        & $tarExe -xzf $tarPath -C $McpDir
+        $tarRc = $LASTEXITCODE
+    }
     Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
     if ($tarRc -ne 0) {
         Err "$($G.Cross) Failed to extract MCP Server (tar exit $tarRc)."
