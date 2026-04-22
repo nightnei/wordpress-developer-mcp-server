@@ -100,16 +100,6 @@ if ($studioFound) {
     Write-Host "  on both at the same time $($G.EmDash) your sites and data stay in sync."
 }
 
-# == Supported agents listing ==------------------------------------------------
-Write-Host ""
-Head "Supported AI agents:"
-Write-Host "  $($G.Bullet) Codex (app + CLI)"
-Write-Host "  $($G.Bullet) Claude Desktop"
-Write-Host "  $($G.Bullet) Claude Code (CLI)"
-Write-Host "  $($G.Bullet) Cursor"
-Write-Host "  $($G.Bullet) Windsurf"
-Write-Host "  $($G.Bullet) Zed"
-
 # == Detect installed agents ==-------------------------------------------------
 Write-Host ""
 Info "Detecting installed AI agents..."

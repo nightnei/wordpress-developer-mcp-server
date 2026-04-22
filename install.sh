@@ -33,16 +33,6 @@ if [ -d "/Applications/Studio.app" ]; then
 	echo "  on both at the same time — your sites and data stay in sync."
 fi
 
-# ── Supported agents ──────────────────────────────────────────────────────────
-echo ""
-echo -e "${BLUE}${BOLD}Supported AI agents:${NC}"
-echo "  • Codex (app + CLI)"
-echo "  • Claude Desktop"
-echo "  • Claude Code (CLI)"
-echo "  • Cursor"
-echo "  • Windsurf"
-echo "  • Zed"
-
 # ── Detect installed agents ───────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Detecting installed AI agents...${NC}"
