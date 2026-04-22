@@ -170,3 +170,207 @@ foreach ($d in @($InstallDir, $NodeDir, $McpDir, $BinDir)) {
         New-Item -ItemType Directory -Force -Path $d | Out-Null
     }
 }
+
+# == Node.js runtime ==---------------------------------------------------------
+Write-Host ""
+Info "Checking runtime environment..."
+
+$currentNodeVersion = ''
+if (Test-Path -LiteralPath $NodeBin) {
+    try {
+        $v = & $NodeBin --version 2>$null
+        if ($LASTEXITCODE -eq 0 -and $v) {
+            $currentNodeVersion = ($v -replace '^v', '').Trim()
+        }
+    } catch { $currentNodeVersion = '' }
+}
+
+if ($currentNodeVersion -eq $NodeVersion) {
+    Ok "  $($G.Tick) Runtime environment already installed"
+} else {
+    Info "Downloading runtime environment..."
+    if (Test-Path -LiteralPath $NodeDir) {
+        Remove-Item -LiteralPath $NodeDir -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $NodeDir | Out-Null
+
+    $nodeZipName = "node-v$NodeVersion-win-$nodeArch.zip"
+    $nodeUrl     = "https://nodejs.org/dist/v$NodeVersion/$nodeZipName"
+    $zipPath     = Join-Path $env:TEMP $nodeZipName
+    if (Test-Path -LiteralPath $zipPath) {
+        Remove-Item -LiteralPath $zipPath -Force
+    }
+
+    try {
+        Invoke-WebRequest -Uri $nodeUrl -OutFile $zipPath -UseBasicParsing
+    } catch {
+        Err "$($G.Cross) Failed to download Node.js: $($_.Exception.Message)"
+        exit 1
+    }
+
+    $extractRoot = Join-Path $env:TEMP ("wpmcp-node-" + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Force -Path $extractRoot | Out-Null
+    try {
+        Expand-Archive -LiteralPath $zipPath -DestinationPath $extractRoot -Force
+        $inner = Get-ChildItem -LiteralPath $extractRoot -Directory | Select-Object -First 1
+        if (-not $inner) { throw 'Unexpected Node.js archive layout (no top-level folder).' }
+        # Move (not copy) every child, including hidden, into $NodeDir.
+        Get-ChildItem -LiteralPath $inner.FullName -Force | ForEach-Object {
+            Move-Item -LiteralPath $_.FullName -Destination $NodeDir -Force
+        }
+    } catch {
+        Err "$($G.Cross) Failed to extract Node.js: $($_.Exception.Message)"
+        exit 1
+    } finally {
+        Remove-Item -LiteralPath $extractRoot -Recurse -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $zipPath     -Force          -ErrorAction SilentlyContinue
+    }
+
+    if (-not (Test-Path -LiteralPath $NodeBin)) {
+        Err "$($G.Cross) Node.js installation failed (node.exe missing)."
+        exit 1
+    }
+    Ok "  $($G.Tick) Runtime environment installed"
+}
+
+# == MCP Server release ==------------------------------------------------------
+Write-Host ""
+Info "Checking MCP Server..."
+
+$mcpLatest = $null
+try {
+    $release = Invoke-RestMethod `
+        -Uri "https://api.github.com/repos/$McpRepo/releases/latest" `
+        -Headers @{
+            Accept       = 'application/vnd.github.v3+json'
+            'User-Agent' = 'wordpress-developer-mcp-installer'
+        } `
+        -UseBasicParsing
+    $mcpLatest = $release.tag_name
+} catch {
+    Err "$($G.Cross) Failed to query latest MCP release: $($_.Exception.Message)"
+    exit 1
+}
+if (-not $mcpLatest) {
+    Err "$($G.Cross) Could not determine latest MCP release."
+    exit 1
+}
+
+$currentMcpVersion = ''
+if (Test-Path -LiteralPath $VersionFile) {
+    try {
+        $currentMcpVersion = (Get-Content -LiteralPath $VersionFile -Raw).Trim()
+    } catch { $currentMcpVersion = '' }
+}
+
+if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
+    Ok "  $($G.Tick) MCP Server already up to date"
+} else {
+    Info "Downloading MCP Server..."
+    if (Test-Path -LiteralPath $McpDir) {
+        Remove-Item -LiteralPath $McpDir -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $McpDir | Out-Null
+
+    $tarName = "wordpress-developer-mcp-server-$mcpLatest.tar.gz"
+    $tarUrl  = "https://github.com/$McpRepo/releases/download/$mcpLatest/$tarName"
+    $tarPath = Join-Path $env:TEMP $tarName
+    if (Test-Path -LiteralPath $tarPath) {
+        Remove-Item -LiteralPath $tarPath -Force
+    }
+
+    try {
+        Invoke-WebRequest -Uri $tarUrl -OutFile $tarPath -UseBasicParsing
+    } catch {
+        Err "$($G.Cross) Failed to download MCP Server: $($_.Exception.Message)"
+        exit 1
+    }
+
+    if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) {
+        Err "$($G.Cross) tar.exe not found. Windows 10 build 17063 or later is required."
+        exit 1
+    }
+
+    # Run tar with -C to avoid relying on current directory.
+    & tar.exe -xzf $tarPath -C $McpDir
+    $tarRc = $LASTEXITCODE
+    Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
+    if ($tarRc -ne 0) {
+        Err "$($G.Cross) Failed to extract MCP Server (tar exit $tarRc)."
+        exit 1
+    }
+
+    Set-Content -LiteralPath $VersionFile -Value $mcpLatest -NoNewline -Encoding ASCII
+
+    if ($currentMcpVersion) {
+        Ok "  $($G.Tick) MCP Server updated to $mcpLatest"
+    } else {
+        Ok "  $($G.Tick) MCP Server installed"
+    }
+}
+
+# == Studio CLI (wp-studio) ==--------------------------------------------------
+Write-Host ""
+Info "Checking Studio CLI..."
+
+# Put our bundled node first on PATH so npm.cmd finds its own node.exe.
+$env:PATH = "$NodeDir;$env:PATH"
+
+$studioLatest = ''
+try {
+    $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
+    if ($LASTEXITCODE -eq 0 -and $viewOut) {
+        $studioLatest = ($viewOut | Out-String).Trim()
+    }
+} catch { $studioLatest = '' }
+
+$currentStudioVersion = ''
+try {
+    $listOut = (& $NpmBin list -g wp-studio --depth=0 --loglevel=silent 2>&1 | Out-String)
+    if ($listOut -match 'wp-studio@([^\s\r\n]+)') {
+        $currentStudioVersion = $Matches[1].Trim()
+    }
+} catch { $currentStudioVersion = '' }
+
+if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $studioLatest)) {
+    Ok "  $($G.Tick) Studio CLI already up to date"
+} else {
+    Info "Installing Studio CLI..."
+    $npmOutput = (& $NpmBin install -g wp-studio --loglevel=silent 2>&1 | Out-String)
+    foreach ($line in ($npmOutput -split "`r?`n")) {
+        if ($line -match '(?i)error') { Write-Host $line }
+    }
+    if ($currentStudioVersion) {
+        Ok "  $($G.Tick) Studio CLI updated to $studioLatest"
+    } else {
+        Ok "  $($G.Tick) Studio CLI installed"
+    }
+}
+
+$studioMjsPath = $null
+try {
+    $npmRootG = (& $NpmBin root -g --loglevel=silent 2>$null | Out-String).Trim()
+    if ($npmRootG) {
+        $studioPkgJson = Join-Path $npmRootG 'wp-studio\package.json'
+        if (Test-Path -LiteralPath $studioPkgJson) {
+            $studioPkg = Get-Content -LiteralPath $studioPkgJson -Raw | ConvertFrom-Json
+            $binRel = $null
+            if ($studioPkg.bin -is [string]) {
+                $binRel = $studioPkg.bin
+            } elseif ($studioPkg.bin -and $studioPkg.bin.studio) {
+                $binRel = [string]$studioPkg.bin.studio
+            }
+            if ($binRel) {
+                $candidate = Join-Path (Join-Path $npmRootG 'wp-studio') ($binRel -replace '/', '\')
+                if (Test-Path -LiteralPath $candidate) {
+                    $studioMjsPath = $candidate
+                }
+            }
+        }
+    }
+} catch { $studioMjsPath = $null }
+
+if (-not $studioMjsPath) {
+    Err "$($G.Cross) Could not locate wp-studio's entry script. MCP spawning will fail."
+    exit 1
+}
