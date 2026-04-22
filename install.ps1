@@ -151,7 +151,6 @@ foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCurso
     if ($f) { $foundAgentsCount++ }
 }
 
-Write-Host ""
 if ($foundAgentsCount -eq 0) {
     Info "$($G.Warn)  No supported AI agents found on your system."
     Write-Host "  The MCP server will still be installed."
@@ -196,7 +195,7 @@ if (Test-Path -LiteralPath $NodeBin) {
 }
 
 if ($currentNodeVersion -eq $NodeVersion) {
-    Ok "$($G.Tick) Runtime environment already installed"
+    Ok "  $($G.Tick) Runtime environment already installed"
 } else {
     Info "Downloading runtime environment..."
     if (Test-Path -LiteralPath $NodeDir) {
@@ -274,7 +273,7 @@ if (Test-Path -LiteralPath $VersionFile) {
 }
 
 if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
-    Ok "$($G.Tick) MCP Server already up to date"
+    Ok "  $($G.Tick) MCP Server already up to date"
 } else {
     Info "Downloading MCP Server..."
     if (Test-Path -LiteralPath $McpDir) {
@@ -313,9 +312,9 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     Set-Content -LiteralPath $VersionFile -Value $mcpLatest -NoNewline -Encoding ASCII
 
     if ($currentMcpVersion) {
-        Ok "$($G.Tick) MCP Server updated to $mcpLatest"
+        Ok "  $($G.Tick) MCP Server updated to $mcpLatest"
     } else {
-        Ok "$($G.Tick) MCP Server installed"
+        Ok "  $($G.Tick) MCP Server installed"
     }
 }
 
@@ -343,7 +342,7 @@ try {
 } catch { $currentStudioVersion = '' }
 
 if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $studioLatest)) {
-    Ok "$($G.Tick) Studio CLI already up to date"
+    Ok "  $($G.Tick) Studio CLI already up to date"
 } else {
     Info "Installing Studio CLI..."
     $npmOutput = (& $NpmBin install -g wp-studio --loglevel=silent 2>&1 | Out-String)
@@ -430,7 +429,7 @@ foreach ($pair in @(
     [System.IO.File]::WriteAllText($pair.Path, $text, [System.Text.Encoding]::Default)
 }
 
-Ok "$($G.Tick) Wrapper scripts ready"
+Ok "  $($G.Tick) Wrapper scripts ready"
 
 # == Node-driven config helpers (parity with install.sh) ==--------------------
 # We reuse the same snippets install.sh uses - pass inputs via env vars to
