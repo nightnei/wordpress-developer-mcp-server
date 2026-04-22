@@ -91,7 +91,7 @@ Write-Host ""
 Ok "$($G.Tick) Detected: Windows on $procArch"
 
 # == WordPress Studio detection ==----------------------------------------------
-$studioExe = Join-Path $env:LOCALAPPDATA 'Programs\Studio\Studio.exe'
+$studioExe = Join-Path $env:LOCALAPPDATA 'studio_app\Studio.exe'
 $studioFound = Test-Path -LiteralPath $studioExe
 if ($studioFound) {
     Write-Host ""
