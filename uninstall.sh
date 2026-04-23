@@ -91,9 +91,9 @@ echo ""
 if [ -d "$INSTALL_DIR" ]; then
 	echo -e "${YELLOW}Removing installation directory...${NC}"
 	rm -rf "$INSTALL_DIR"
-	echo -e "${GREEN}✓ $INSTALL_DIR removed${NC}"
+	echo -e "  ${GREEN}✓ $INSTALL_DIR removed${NC}"
 else
-	echo -e "${YELLOW}Installation directory not found. Skipping.${NC}"
+	echo -e "  ${YELLOW}Installation directory not found. Skipping.${NC}"
 fi
 
 # ── Sites notice ──────────────────────────────────────────────────────────────
