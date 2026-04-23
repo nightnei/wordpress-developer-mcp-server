@@ -747,12 +747,11 @@ $needsRestart = [System.Collections.Generic.List[string]]::new()
 
 if ($configuredAgents.Contains('Codex')) {
     # Only suggest restart when the desktop app is present, not just the CLI.
-    $codexAppInstalled = Test-AnyPath @(
-        (Join-Path $env:LOCALAPPDATA 'Programs\@openai\codex'),
-        (Join-Path $env:LOCALAPPDATA 'Programs\codex'),
-        (Join-Path $env:LOCALAPPDATA 'Programs\Codex')
-    )
-    if ($codexAppInstalled) { $needsRestart.Add('Codex') | Out-Null }
+    # Codex for Windows ships as an MSIX (Microsoft Store) package, so probe
+    # via Get-AppxPackage — matches the detection at the top of the script.
+    if ([bool](Get-AppxPackage -Name 'OpenAI.Codex' -ErrorAction SilentlyContinue)) {
+        $needsRestart.Add('Codex') | Out-Null
+    }
 }
 if ($configuredAgents.Contains('Claude Desktop')) { $needsRestart.Add('Claude Desktop') | Out-Null }
 if ($configuredAgents.Contains('Windsurf'))       { $needsRestart.Add('Windsurf')       | Out-Null }
