@@ -339,9 +339,9 @@ try {
 } catch { $currentStudioVersion = '' }
 
 if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $studioLatest)) {
-    Ok "  $($G.Tick) Studio CLI already up to date"
+    Ok "  $($G.Tick) CLI already up to date"
 } else {
-    Info "Installing Studio CLI..."
+    Info "Installing CLI..."
     $npmOutput = (& $NpmBin install -g wp-studio --loglevel=silent 2>&1 | Out-String)
     foreach ($line in ($npmOutput -split "`r?`n")) {
         if ($line -match '(?i)error') { Write-Host $line }
