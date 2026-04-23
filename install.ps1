@@ -379,7 +379,7 @@ if %ERRORLEVEL% EQU 0 (
   studio %*
 ) else (
   set "PATH=$NodeDir;%PATH%"
-  call "$NodeDir\studio.cmd" %*
+  call "$NodeBin" "$NodeDir\node_modules\wp-studio\dist\cli\main.mjs" %*
 )
 exit /b %ERRORLEVEL%
 "@

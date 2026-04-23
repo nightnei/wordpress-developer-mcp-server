@@ -177,7 +177,7 @@ if command -v studio &>/dev/null; then
   studio "\$@"
 else
   export PATH="$INSTALL_DIR/node/bin:\$PATH"
-  "$INSTALL_DIR/node/bin/studio" "\$@"
+  "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/node/lib/node_modules/wp-studio/dist/cli/main.mjs" "\$@"
 fi
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
