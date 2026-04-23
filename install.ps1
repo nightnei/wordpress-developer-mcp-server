@@ -517,6 +517,22 @@ function Set-CodexTomlConfig { param([string]$ConfigFile)
     Invoke-NodeHelper -Script $codexTomlJsScript -ConfigFile $ConfigFile
 }
 
+function Resolve-NativeExecutable {
+    param([Parameter(Mandatory)][string]$Name)
+    # Absolute path or name with its own extension: trust the caller.
+    if ([System.IO.Path]::IsPathRooted($Name) -or $Name.Contains('.')) {
+        return $Name
+    }
+    # Skip .ps1 shims: those require matching PowerShell execution policy and
+    # fail opaquely (e.g. fnm installs claude.ps1 + claude.cmd side-by-side).
+    # Prefer native executables that don't depend on script execution policy.
+    $native = Get-Command $Name -CommandType Application -ErrorAction SilentlyContinue |
+              Where-Object { $_.Extension -in '.exe','.cmd','.bat','.com' } |
+              Select-Object -First 1
+    if ($native) { return $native.Source }
+    return $Name
+}
+
 function Invoke-ExternalQuiet {
     param(
         [Parameter(Mandatory)][string]$Exe,
@@ -528,7 +544,8 @@ function Invoke-ExternalQuiet {
     # stdout and some npm-shim CLIs (e.g. Claude Code) exit non-zero on a
     # broken pipe. Returning the output also lets callers surface real errors
     # instead of just "(failed)".
-    $output = & $Exe @Arguments 2>&1
+    $resolved = Resolve-NativeExecutable -Name $Exe
+    $output = & $resolved @Arguments 2>&1
     return [pscustomobject]@{
         ExitCode = $LASTEXITCODE
         Output   = ($output | Out-String).TrimEnd()
