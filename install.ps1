@@ -444,7 +444,6 @@ if (!config.context_servers || typeof config.context_servers !== 'object') {
   config.context_servers = {};
 }
 config.context_servers['wordpress-developer'] = {
-  source: 'custom',
   command: mcpCommand,
   args: []
 };
