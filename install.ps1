@@ -399,5 +399,131 @@ foreach ($pair in @(
 
 Ok "  $($G.Tick) Wrapper scripts ready"
 
+# == Node-driven config helpers ==----------------------------------------------
+$mcpServersJsScript = @'
+const fs = require('fs');
+const path = require('path');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+const mcpCommand = process.env.WPMCP_MCP_COMMAND;
 
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
+let config = {};
+try {
+  const raw = fs.readFileSync(configPath, 'utf8');
+  if (raw && raw.trim()) config = JSON.parse(raw);
+} catch (e) {
+  config = {};
+}
+if (!config || typeof config !== 'object') config = {};
+if (!config.mcpServers || typeof config.mcpServers !== 'object') {
+  config.mcpServers = {};
+}
+config.mcpServers['wordpress-developer'] = { command: mcpCommand };
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+'@
+
+$zedJsScript = @'
+const fs = require('fs');
+const path = require('path');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+const mcpCommand = process.env.WPMCP_MCP_COMMAND;
+
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
+
+let config = {};
+try {
+  const raw = fs.readFileSync(configPath, 'utf8');
+  if (raw && raw.trim()) config = JSON.parse(raw);
+} catch (e) {
+  config = {};
+}
+if (!config || typeof config !== 'object') config = {};
+if (!config.context_servers || typeof config.context_servers !== 'object') {
+  config.context_servers = {};
+}
+config.context_servers['wordpress-developer'] = {
+  source: 'custom',
+  command: mcpCommand,
+  args: []
+};
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+'@
+
+$codexTomlJsScript = @'
+const fs = require('fs');
+const path = require('path');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+// TOML basic string: escape backslashes and double quotes.
+const mcpCommand = process.env.WPMCP_MCP_COMMAND
+  .replace(/\\/g, '\\\\')
+  .replace(/"/g, '\\"');
+
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
+
+let content = '';
+try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = ''; }
+
+const newEntry = '[mcp_servers.wordpress-developer]\ncommand = "' + mcpCommand + '"';
+const sectionRegex = /\[mcp_servers\.wordpress-developer\][^\[]*/;
+
+if (sectionRegex.test(content)) {
+  content = content.replace(sectionRegex, newEntry + '\n\n');
+} else {
+  content = (content.trimEnd() ? content.trimEnd() + '\n\n' : '') + newEntry + '\n';
+}
+
+fs.writeFileSync(configPath, content);
+'@
+
+function Invoke-NodeHelper {
+    param(
+        [Parameter(Mandatory)][string]$Script,
+        [Parameter(Mandatory)][string]$ConfigFile
+    )
+    $tempJs = Join-Path $env:TEMP ("wpmcp-" + [Guid]::NewGuid().ToString('N') + '.js')
+    [System.IO.File]::WriteAllText(
+        $tempJs,
+        $Script,
+        (New-Object System.Text.UTF8Encoding($false))
+    )
+
+    $savedConfig = [Environment]::GetEnvironmentVariable('WPMCP_CONFIG_FILE', 'Process')
+    $savedCmd    = [Environment]::GetEnvironmentVariable('WPMCP_MCP_COMMAND', 'Process')
+    [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $ConfigFile, 'Process')
+    [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $McpCommand, 'Process')
+    try {
+        $output = & $NodeBin $tempJs 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            $detail = if ($output) { ($output | Out-String).Trim() } else { '(no output)' }
+            throw "Node helper exited with code $LASTEXITCODE`n$detail"
+        }
+    } finally {
+        Remove-Item -LiteralPath $tempJs -Force -ErrorAction SilentlyContinue
+        [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $savedConfig, 'Process')
+        [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $savedCmd,    'Process')
+    }
+}
+
+function Set-McpServersJson { param([string]$ConfigFile)
+    Invoke-NodeHelper -Script $mcpServersJsScript -ConfigFile $ConfigFile
+}
+function Set-ZedSettingsJson { param([string]$ConfigFile)
+    Invoke-NodeHelper -Script $zedJsScript -ConfigFile $ConfigFile
+}
+function Set-CodexTomlConfig { param([string]$ConfigFile)
+    Invoke-NodeHelper -Script $codexTomlJsScript -ConfigFile $ConfigFile
+}
+
+function Invoke-ExternalQuiet {
+    param(
+        [Parameter(Mandatory)][string]$Exe,
+        [Parameter(Mandatory)][string[]]$Arguments
+    )
+    # Splat the array; PowerShell forwards each element verbatim to the child
+    # process, so values containing spaces or `--` pass through unmodified.
+    & $Exe @Arguments 2>&1 | Out-Null
+    return $LASTEXITCODE
+}
