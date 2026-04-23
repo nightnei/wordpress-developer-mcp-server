@@ -89,7 +89,7 @@ else
 	echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
 	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex"
 	$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
-	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code"
 	$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
 	$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
 	$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
@@ -313,11 +313,11 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 
 	if $FOUND_CLAUDE_CODE; then
 		if configure_claude_code 2>/dev/null; then
-			CONFIGURED_AGENTS+=("Claude Code (CLI)")
-			echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+			CONFIGURED_AGENTS+=("Claude Code")
+			echo -e "  ${GREEN}✓${NC} Claude Code"
 		else
-			FAILED_AGENTS+=("Claude Code (CLI)")
-			echo -e "  ${RED}✗${NC} Claude Code (CLI) (failed)"
+			FAILED_AGENTS+=("Claude Code")
+			echo -e "  ${RED}✗${NC} Claude Code (failed)"
 		fi
 	fi
 

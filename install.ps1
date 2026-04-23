@@ -157,7 +157,7 @@ if ($foundAgentsCount -eq 0) {
     Ok "Found $foundAgentsCount AI agent(s):"
     if ($foundCodex)         { Ok "  $($G.Tick) Codex" }
     if ($foundClaudeDesktop) { Ok "  $($G.Tick) Claude Desktop" }
-    if ($foundClaudeCode)    { Ok "  $($G.Tick) Claude Code (CLI)" }
+    if ($foundClaudeCode)    { Ok "  $($G.Tick) Claude Code" }
     if ($foundCursor)        { Ok "  $($G.Tick) Cursor" }
     if ($foundWindsurf)      { Ok "  $($G.Tick) Windsurf" }
     if ($foundZed)           { Ok "  $($G.Tick) Zed" }
@@ -609,11 +609,11 @@ if ($foundAgentsCount -gt 0) {
             if ($res.ExitCode -ne 0) {
                 throw "claude mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
             }
-            $configuredAgents.Add('Claude Code (CLI)') | Out-Null
-            Ok "  $($G.Tick) Claude Code (CLI)"
+            $configuredAgents.Add('Claude Code') | Out-Null
+            Ok "  $($G.Tick) Claude Code"
         } catch {
-            $failedAgents.Add('Claude Code (CLI)') | Out-Null
-            Err "  $($G.Xmark) Claude Code (CLI) (failed)"
+            $failedAgents.Add('Claude Code') | Out-Null
+            Err "  $($G.Xmark) Claude Code (failed)"
             if ($_.Exception.Message) {
                 Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
             }
