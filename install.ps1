@@ -524,8 +524,15 @@ function Invoke-ExternalQuiet {
     )
     # Splat the array; PowerShell forwards each element verbatim to the child
     # process, so values containing spaces or `--` pass through unmodified.
-    & $Exe @Arguments 2>&1 | Out-Null
-    return $LASTEXITCODE
+    # Capture (don't discard) the output: piping to Out-Null closes the child's
+    # stdout and some npm-shim CLIs (e.g. Claude Code) exit non-zero on a
+    # broken pipe. Returning the output also lets callers surface real errors
+    # instead of just "(failed)".
+    $output = & $Exe @Arguments 2>&1
+    return [pscustomobject]@{
+        ExitCode = $LASTEXITCODE
+        Output   = ($output | Out-String).TrimEnd()
+    }
 }
 
 
@@ -542,9 +549,11 @@ if ($foundAgentsCount -gt 0) {
             if (Test-Command 'codex') {
                 $null = Invoke-ExternalQuiet -Exe 'codex' `
                     -Arguments @('mcp','remove','wordpress-developer')
-                $rc = Invoke-ExternalQuiet -Exe 'codex' `
+                $res = Invoke-ExternalQuiet -Exe 'codex' `
                     -Arguments @('mcp','add','wordpress-developer','--',$McpCommand)
-                if ($rc -ne 0) { throw "codex mcp add exited with $rc" }
+                if ($res.ExitCode -ne 0) {
+                    throw "codex mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
+                }
             } else {
                 Set-CodexTomlConfig -ConfigFile (Join-Path $env:USERPROFILE '.codex\config.toml')
             }
@@ -553,6 +562,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Codex') | Out-Null
             Err "  $($G.Xmark) Codex (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -565,6 +577,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Claude Desktop') | Out-Null
             Err "  $($G.Xmark) Claude Desktop (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -572,14 +587,19 @@ if ($foundAgentsCount -gt 0) {
         try {
             $null = Invoke-ExternalQuiet -Exe 'claude' `
                 -Arguments @('mcp','remove','wordpress-developer','--scope','user')
-            $rc = Invoke-ExternalQuiet -Exe 'claude' `
+            $res = Invoke-ExternalQuiet -Exe 'claude' `
                 -Arguments @('mcp','add','--scope','user','wordpress-developer','--',$McpCommand)
-            if ($rc -ne 0) { throw "claude mcp add exited with $rc" }
+            if ($res.ExitCode -ne 0) {
+                throw "claude mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
+            }
             $configuredAgents.Add('Claude Code (CLI)') | Out-Null
             Ok "  $($G.Tick) Claude Code (CLI)"
         } catch {
             $failedAgents.Add('Claude Code (CLI)') | Out-Null
             Err "  $($G.Xmark) Claude Code (CLI) (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -592,6 +612,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Cursor') | Out-Null
             Err "  $($G.Xmark) Cursor (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -604,6 +627,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Windsurf') | Out-Null
             Err "  $($G.Xmark) Windsurf (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -616,6 +642,10 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Zed') | Out-Null
             Err "  $($G.Xmark) Zed (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 }
+
