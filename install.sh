@@ -120,41 +120,41 @@ fi
 
 # ── MCP Server (this repo) ────────────────────────────────────────────────────
 echo ""
-echo -e "${YELLOW}Checking MCP Server...${NC}"
+echo -e "${YELLOW}Checking server...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
 CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
-	echo -e "  ${GREEN}✓ MCP Server already up to date${NC}"
+	echo -e "  ${GREEN}✓ Server already up to date${NC}"
 else
-	echo -e "${YELLOW}Downloading MCP Server...${NC}"
+	echo -e "${YELLOW}Downloading server...${NC}"
 	rm -rf "$INSTALL_DIR/mcp"
 	mkdir -p "$INSTALL_DIR/mcp"
 	curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
 		tar -xz -C "$INSTALL_DIR/mcp"
 	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
 	if [ -n "$CURRENT_MCP_VERSION" ]; then
-		echo -e "  ${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+		echo -e "  ${GREEN}✓ Server updated to $MCP_LATEST${NC}"
 	else
-		echo -e "  ${GREEN}✓ MCP Server installed${NC}"
+		echo -e "  ${GREEN}✓ Server installed${NC}"
 	fi
 fi
 
 # ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
 echo ""
-echo -e "${YELLOW}Checking Studio CLI...${NC}"
+echo -e "${YELLOW}Checking CLI...${NC}"
 STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
 CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
-	echo -e "  ${GREEN}✓ Studio CLI already up to date${NC}"
+	echo -e "  ${GREEN}✓ CLI already up to date${NC}"
 else
-	echo -e "${YELLOW}Installing Studio CLI...${NC}"
+	echo -e "${YELLOW}Installing CLI...${NC}"
 	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=silent 2>&1 | grep -i "error" || true
 	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
-		echo -e "  ${GREEN}✓ Studio CLI updated to $STUDIO_LATEST${NC}"
+		echo -e "  ${GREEN}✓ CLI updated to $STUDIO_LATEST${NC}"
 	else
-		echo -e "  ${GREEN}✓ Studio CLI installed${NC}"
+		echo -e "  ${GREEN}✓ CLI installed${NC}"
 	fi
 fi
 
