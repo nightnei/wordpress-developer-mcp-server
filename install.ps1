@@ -235,7 +235,7 @@ if ($currentNodeVersion -eq $NodeVersion) {
 
 # == MCP Server release ==------------------------------------------------------
 Write-Host ""
-Info "Checking MCP Server..."
+Info "Checking server..."
 
 $mcpLatest = $null
 try {
@@ -264,9 +264,9 @@ if (Test-Path -LiteralPath $VersionFile) {
 }
 
 if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
-    Ok "  $($G.Tick) MCP Server already up to date"
+    Ok "  $($G.Tick) Server already up to date"
 } else {
-    Info "Downloading MCP Server..."
+    Info "Downloading server..."
     if (Test-Path -LiteralPath $McpDir) {
         Remove-Item -LiteralPath $McpDir -Recurse -Force
     }
@@ -282,7 +282,7 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     try {
         Invoke-WebRequest -Uri $tarUrl -OutFile $tarPath -UseBasicParsing
     } catch {
-        Err "$($G.Cross) Failed to download MCP Server: $($_.Exception.Message)"
+        Err "$($G.Cross) Failed to download server: $($_.Exception.Message)"
         exit 1
     }
 
@@ -302,16 +302,16 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     $tarRc = $LASTEXITCODE
     Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
     if ($tarRc -ne 0) {
-        Err "$($G.Cross) Failed to extract MCP Server (tar exit $tarRc)."
+        Err "$($G.Cross) Failed to extract server (tar exit $tarRc)."
         exit 1
     }
 
     Set-Content -LiteralPath $VersionFile -Value $mcpLatest -NoNewline -Encoding ASCII
 
     if ($currentMcpVersion) {
-        Ok "  $($G.Tick) MCP Server updated to $mcpLatest"
+        Ok "  $($G.Tick) Server updated to $mcpLatest"
     } else {
-        Ok "  $($G.Tick) MCP Server installed"
+        Ok "  $($G.Tick) Server installed"
     }
 }
 
