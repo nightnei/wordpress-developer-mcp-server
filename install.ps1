@@ -527,3 +527,95 @@ function Invoke-ExternalQuiet {
     & $Exe @Arguments 2>&1 | Out-Null
     return $LASTEXITCODE
 }
+
+
+# == Configure AI agents ==-----------------------------------------------------
+$configuredAgents = [System.Collections.Generic.List[string]]::new()
+$failedAgents     = [System.Collections.Generic.List[string]]::new()
+
+if ($foundAgentsCount -gt 0) {
+    Write-Host ""
+    Info "Configuring AI agents..."
+
+    if ($foundCodex) {
+        try {
+            if (Test-Command 'codex') {
+                $null = Invoke-ExternalQuiet -Exe 'codex' `
+                    -Arguments @('mcp','remove','wordpress-developer')
+                $rc = Invoke-ExternalQuiet -Exe 'codex' `
+                    -Arguments @('mcp','add','wordpress-developer','--',$McpCommand)
+                if ($rc -ne 0) { throw "codex mcp add exited with $rc" }
+            } else {
+                Set-CodexTomlConfig -ConfigFile (Join-Path $env:USERPROFILE '.codex\config.toml')
+            }
+            $configuredAgents.Add('Codex') | Out-Null
+            Ok "  $($G.Tick) Codex"
+        } catch {
+            $failedAgents.Add('Codex') | Out-Null
+            Err "  $($G.Xmark) Codex (failed)"
+        }
+    }
+
+    if ($foundClaudeDesktop) {
+        try {
+            $claudeCfg = Join-Path $env:APPDATA 'Claude\claude_desktop_config.json'
+            Set-McpServersJson -ConfigFile $claudeCfg
+            $configuredAgents.Add('Claude Desktop') | Out-Null
+            Ok "  $($G.Tick) Claude Desktop"
+        } catch {
+            $failedAgents.Add('Claude Desktop') | Out-Null
+            Err "  $($G.Xmark) Claude Desktop (failed)"
+        }
+    }
+
+    if ($foundClaudeCode) {
+        try {
+            $null = Invoke-ExternalQuiet -Exe 'claude' `
+                -Arguments @('mcp','remove','wordpress-developer','--scope','user')
+            $rc = Invoke-ExternalQuiet -Exe 'claude' `
+                -Arguments @('mcp','add','--scope','user','wordpress-developer','--',$McpCommand)
+            if ($rc -ne 0) { throw "claude mcp add exited with $rc" }
+            $configuredAgents.Add('Claude Code (CLI)') | Out-Null
+            Ok "  $($G.Tick) Claude Code (CLI)"
+        } catch {
+            $failedAgents.Add('Claude Code (CLI)') | Out-Null
+            Err "  $($G.Xmark) Claude Code (CLI) (failed)"
+        }
+    }
+
+    if ($foundCursor) {
+        try {
+            $cursorCfg = Join-Path $env:USERPROFILE '.cursor\mcp.json'
+            Set-McpServersJson -ConfigFile $cursorCfg
+            $configuredAgents.Add('Cursor') | Out-Null
+            Ok "  $($G.Tick) Cursor"
+        } catch {
+            $failedAgents.Add('Cursor') | Out-Null
+            Err "  $($G.Xmark) Cursor (failed)"
+        }
+    }
+
+    if ($foundWindsurf) {
+        try {
+            $windsurfCfg = Join-Path $env:USERPROFILE '.codeium\windsurf\mcp_config.json'
+            Set-McpServersJson -ConfigFile $windsurfCfg
+            $configuredAgents.Add('Windsurf') | Out-Null
+            Ok "  $($G.Tick) Windsurf"
+        } catch {
+            $failedAgents.Add('Windsurf') | Out-Null
+            Err "  $($G.Xmark) Windsurf (failed)"
+        }
+    }
+
+    if ($foundZed) {
+        try {
+            $zedCfg = Join-Path $env:APPDATA 'Zed\settings.json'
+            Set-ZedSettingsJson -ConfigFile $zedCfg
+            $configuredAgents.Add('Zed') | Out-Null
+            Ok "  $($G.Tick) Zed"
+        } catch {
+            $failedAgents.Add('Zed') | Out-Null
+            Err "  $($G.Xmark) Zed (failed)"
+        }
+    }
+}
