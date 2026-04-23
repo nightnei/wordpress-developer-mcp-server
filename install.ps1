@@ -666,3 +666,120 @@ if ($foundAgentsCount -gt 0) {
     }
 }
 
+
+# == WordPress.com authentication ==--------------------------------------------
+Write-Host ""
+Link $HR
+Write-Host ""
+Info "$($G.Lock) Connect to WordPress.com"
+Write-Host ""
+
+$authOutput = ''
+try {
+    $authOutput = (& $StudioCliCmd auth status 2>&1 | Out-String)
+} catch {
+    $authOutput = $_.Exception.Message
+}
+
+if ($authOutput -match '(?i)Authenticated') {
+    $wpcomUser = 'your account'
+    if ($authOutput -match 'as\s+`([^`]+)`') {
+        $wpcomUser = $Matches[1]
+    } elseif ($authOutput -match "as\s+'([^']+)'") {
+        $wpcomUser = $Matches[1]
+    } elseif ($authOutput -match 'as\s+(\S+)') {
+        $wpcomUser = $Matches[1].TrimEnd('.', ',')
+    }
+
+    if ($studioFound) {
+        Ok "Connected as $wpcomUser (using your WordPress Studio account)."
+    } else {
+        Ok "Connected as $wpcomUser."
+    }
+    Write-Host "  Preview sites and other WordPress.com features are available."
+} else {
+    Write-Host "This unlocks extra powerful features provided by WordPress.com."
+    Write-Host ""
+    Ok "Connect now? [Y/n]"
+    $authResponse = Read-Host
+    if ($authResponse -match '^[Nn]$') {
+        Info "Skipped."
+    } else {
+        Write-Host ""
+        Info "Opening WordPress.com login in your browser..."
+        & $StudioCliCmd auth login
+        if ($LASTEXITCODE -eq 0) {
+            Ok "$($G.Tick) Connected to WordPress.com"
+        } else {
+            Err "Connection failed."
+        }
+    }
+}
+
+# == Summary ==-----------------------------------------------------------------
+Write-Host ""
+Ok "$($G.Check) Installation complete!"
+Write-Host ""
+
+if ($configuredAgents.Count -gt 0) {
+    Ok "Successfully configured agents:"
+    foreach ($agent in $configuredAgents) {
+        Ok "  $($G.Tick) $agent"
+    }
+}
+
+if ($failedAgents.Count -gt 0) {
+    Write-Host ""
+    Info "$($G.Warn)  Could not configure automatically:"
+    foreach ($agent in $failedAgents) {
+        Info "  $($G.Bullet) $agent"
+    }
+    Write-Host ""
+    Write-Host "  Add this to the agent's MCP configuration manually:"
+    Write-Host ""
+    Write-Host '    "mcpServers": {'
+    Write-Host '      "wordpress-developer": {'
+    Write-Host ("        `"command`": `"" + ($McpCommand -replace '\\', '\\') + "`"")
+    Write-Host '      }'
+    Write-Host '    }'
+}
+
+# == Restart reminder ==--------------------------------------------------------
+$needsRestart = [System.Collections.Generic.List[string]]::new()
+
+if ($configuredAgents.Contains('Codex')) {
+    # Only suggest restart when the desktop app is present, not just the CLI.
+    $codexAppInstalled = Test-AnyPath @(
+        (Join-Path $env:LOCALAPPDATA 'Programs\@openai\codex'),
+        (Join-Path $env:LOCALAPPDATA 'Programs\codex'),
+        (Join-Path $env:LOCALAPPDATA 'Programs\Codex')
+    )
+    if ($codexAppInstalled) { $needsRestart.Add('Codex') | Out-Null }
+}
+if ($configuredAgents.Contains('Claude Desktop')) { $needsRestart.Add('Claude Desktop') | Out-Null }
+if ($configuredAgents.Contains('Windsurf'))       { $needsRestart.Add('Windsurf')       | Out-Null }
+if ($configuredAgents.Contains('Zed'))            { $needsRestart.Add('Zed')            | Out-Null }
+
+if ($needsRestart.Count -gt 0) {
+    Write-Host ""
+    Info "$($G.Rot)  Please restart these apps to apply MCP configuration:"
+    foreach ($app in $needsRestart) {
+        Info "  $($G.Bullet) $app"
+    }
+}
+
+# == Footer ==------------------------------------------------------------------
+Write-Host ""
+Link $HR
+Ok "$($G.Rose) You're all set!"
+Write-Host ""
+Write-Host "Try asking your AI:"
+Write-Host '  "Create a new WordPress site named ''Flowers Shop''"'
+Write-Host '  "Install the WooCommerce plugin"'
+Write-Host '  "Add one demo product to the shop named ''Sunflower''"'
+Write-Host '  "Create shareable link for the shop"'
+Write-Host ""
+Link "$($G.Star) Star the repo: https://github.com/$McpRepo $($G.EmDash) it helps others discover the project."
+Write-Host ""
+Link $HR
+Write-Host ""
