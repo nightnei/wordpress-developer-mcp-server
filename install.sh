@@ -264,26 +264,59 @@ configure_zed() {
 	local config_file="$HOME/.config/zed/settings.json"
 	mkdir -p "$HOME/.config/zed"
 
-	"$NODE_BIN" -e "
+	ZED_SETTINGS="$config_file" ZED_MCP_COMMAND="$MCP_COMMAND" "$NODE_BIN" - <<'NODE'
 const fs = require('fs');
-const configPath = '$config_file';
-const mcpCommand = '$MCP_COMMAND';
-
+const configPath = process.env.ZED_SETTINGS;
+const mcpCommand = process.env.ZED_MCP_COMMAND;
+function stripTrailingCommas(input) {
+	let output = '';
+	let inString = false;
+	for (let i = 0; i < input.length; i++) {
+		const c = input[i];
+		if (inString) {
+			output += c;
+			if (c === '"') {
+				let bs = 0;
+				for (let j = i - 1; j >= 0 && input[j] === '\\'; j--) bs++;
+				if (bs % 2 === 0) inString = false;
+			}
+			continue;
+		}
+		if (c === '"') {
+			inString = true;
+			output += c;
+			continue;
+		}
+		if (c === ',') {
+			let j = i + 1;
+			while (j < input.length && /[\s\n\r\t]/.test(input[j])) j++;
+			if (j < input.length && (input[j] === '}' || input[j] === ']')) continue;
+		}
+		output += c;
+	}
+	return output;
+}
+function parseZedSettingsJson(raw) {
+	const s = raw.trim() === '' ? '{}' : raw;
+	return JSON.parse(stripTrailingCommas(s));
+}
+let raw = '';
+try {
+	raw = fs.readFileSync(configPath, 'utf8');
+} catch (e) {
+	raw = '';
+}
 let config = {};
 try {
-  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+	config = parseZedSettingsJson(raw);
 } catch (e) {
-  config = {};
+	console.error(e.message);
+	process.exit(1);
 }
-
-if (!config.context_servers) config.context_servers = {};
-config.context_servers['wordpress-developer'] = {
-  command: mcpCommand,
-  args: []
-};
-
+if (!config.context_servers || typeof config.context_servers !== 'object') config.context_servers = {};
+config.context_servers['wordpress-developer'] = { command: mcpCommand, args: [] };
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-"
+NODE
 }
 
 if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then

@@ -430,14 +430,54 @@ const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
 
+function stripTrailingCommas(input) {
+  let output = '';
+  let inString = false;
+  for (let i = 0; i < input.length; i++) {
+    const c = input[i];
+    if (inString) {
+      output += c;
+      if (c === '"') {
+        let bs = 0;
+        for (let j = i - 1; j >= 0 && input[j] === '\\'; j--) bs++;
+        if (bs % 2 === 0) inString = false;
+      }
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+      output += c;
+      continue;
+    }
+    if (c === ',') {
+      let j = i + 1;
+      while (j < input.length && /[\s\n\r\t]/.test(input[j])) j++;
+      if (j < input.length && (input[j] === '}' || input[j] === ']')) continue;
+    }
+    output += c;
+  }
+  return output;
+}
+
+function parseZedSettingsJson(raw) {
+  const s = raw.trim() === '' ? '{}' : raw;
+  return JSON.parse(stripTrailingCommas(s));
+}
+
 fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
+let raw = '';
+try {
+  raw = fs.readFileSync(configPath, 'utf8');
+} catch (e) {
+  raw = '';
+}
 let config = {};
 try {
-  const raw = fs.readFileSync(configPath, 'utf8');
-  if (raw && raw.trim()) config = JSON.parse(raw);
+  config = parseZedSettingsJson(raw);
 } catch (e) {
-  config = {};
+  console.error(e.message);
+  process.exit(1);
 }
 if (!config || typeof config !== 'object') config = {};
 if (!config.context_servers || typeof config.context_servers !== 'object') {

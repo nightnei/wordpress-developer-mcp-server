@@ -72,18 +72,64 @@ if app_installed "Windsurf.app"; then
 	echo -e "  ${GREEN}✓${NC} Windsurf"
 fi
 
-if app_installed "Zed.app" && [ -f "$HOME/.config/zed/settings.json" ]; then
-	"$NODE_BIN" -e "
+# Zed allows trailing commas in settings JSON; strip them before JSON.parse.
+ZED_SETTINGS="$HOME/.config/zed/settings.json"
+if [ -f "$ZED_SETTINGS" ]; then
+	if ZED_SETTINGS="$ZED_SETTINGS" "$NODE_BIN" - <<'NODE' 2>/dev/null
 const fs = require('fs');
-const configPath = process.env.HOME + '/.config/zed/settings.json';
-let config = {};
-try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch (e) { process.exit(0); }
-if (config.context_servers) {
-	delete config.context_servers['wordpress-developer'];
-	fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+const configPath = process.env.ZED_SETTINGS;
+function stripTrailingCommas(input) {
+	let output = '';
+	let inString = false;
+	for (let i = 0; i < input.length; i++) {
+		const c = input[i];
+		if (inString) {
+			output += c;
+			if (c === '"') {
+				let bs = 0;
+				for (let j = i - 1; j >= 0 && input[j] === '\\'; j--) bs++;
+				if (bs % 2 === 0) inString = false;
+			}
+			continue;
+		}
+		if (c === '"') {
+			inString = true;
+			output += c;
+			continue;
+		}
+		if (c === ',') {
+			let j = i + 1;
+			while (j < input.length && /[\s\n\r\t]/.test(input[j])) j++;
+			if (j < input.length && (input[j] === '}' || input[j] === ']')) continue;
+		}
+		output += c;
+	}
+	return output;
 }
-" 2>/dev/null
-	echo -e "  ${GREEN}✓${NC} Zed"
+function parseZedSettingsJson(raw) {
+	return JSON.parse(stripTrailingCommas(raw));
+}
+let raw;
+try {
+	raw = fs.readFileSync(configPath, 'utf8');
+} catch (e) {
+	process.exit(0);
+}
+let config;
+try {
+	config = parseZedSettingsJson(raw);
+} catch (e) {
+	process.exit(1);
+}
+if (!config.context_servers || typeof config.context_servers !== 'object') process.exit(0);
+if (!Object.prototype.hasOwnProperty.call(config.context_servers, 'wordpress-developer')) process.exit(0);
+delete config.context_servers['wordpress-developer'];
+if (Object.keys(config.context_servers).length === 0) delete config.context_servers;
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+NODE
+	then
+		echo -e "  ${GREEN}✓${NC} Zed"
+	fi
 fi
 
 # ── Remove install directory ──────────────────────────────────────────────────
