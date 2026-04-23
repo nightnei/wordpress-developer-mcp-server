@@ -681,16 +681,14 @@ try {
     $authOutput = $_.Exception.Message
 }
 
-if ($authOutput -match '(?i)Authenticated') {
-    $wpcomUser = 'your account'
-    if ($authOutput -match 'as\s+`([^`]+)`') {
-        $wpcomUser = $Matches[1]
-    } elseif ($authOutput -match "as\s+'([^']+)'") {
-        $wpcomUser = $Matches[1]
-    } elseif ($authOutput -match 'as\s+(\S+)') {
-        $wpcomUser = $Matches[1].TrimEnd('.', ',')
-    }
-
+# CLI output is localized (e.g. "Авторизовано через WordPress.com як `user`"
+# vs. "Authenticated with WordPress.com as `user`"), so match on two
+# locale-independent signals instead of an English phrase:
+#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
+#      does not)
+#   2) contains a backtick-quoted username
+$wpcomUser = if ($authOutput -match '`([^`]+)`') { $Matches[1] } else { '' }
+if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
     if ($studioFound) {
         Ok "Connected as $wpcomUser (using your WordPress Studio account)."
     } else {
