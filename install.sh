@@ -176,12 +176,15 @@ chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
-if command -v studio &>/dev/null; then
-  studio "\$@"
-else
-  export PATH="$INSTALL_DIR/node/bin:\$PATH"
-  "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/node/lib/node_modules/wp-studio/dist/cli/main.mjs" "\$@"
-fi
+
+#if command -v studio &>/dev/null; then
+#  studio "\$@"
+#else
+#  export PATH="$INSTALL_DIR/node/bin:\$PATH"
+#  "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/node/lib/node_modules/wp-studio/dist/cli/main.mjs" "\$@"
+#fi
+
+"$INSTALL_DIR/node/bin/studio" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
 echo -e "  ${GREEN}✓ Wrapper scripts ready${NC}"
