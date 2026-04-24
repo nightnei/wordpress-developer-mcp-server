@@ -17,7 +17,7 @@ export function formatCliFailure( cmd: string, res: CliResult ) {
 }
 
 function resolveSpawnTarget( command: string, args: string[] ) {
-	if ( process.platform === 'win32' && /\.(cmd|bat)$/i.test( command ) ) {
+	if ( process.platform === 'win32' ) {
 		// Node 20.12+ blocks direct .cmd/.bat spawns (CVE-2024-27980), so use
 		// shell:true (runs as `cmd.exe /d /s /c`). Node escapes args safely
 		// post-CVE, but NOT the command itself, so we quote it here to survive
