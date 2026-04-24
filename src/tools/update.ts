@@ -1,5 +1,5 @@
 import { homedir } from 'node:os';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
@@ -7,6 +7,8 @@ const INSTALL_DIR = `${ homedir() }/.wordpress-developer-mcp`;
 const VERSION_FILE = `${ INSTALL_DIR }/mcp/.version`;
 const MCP_REPO = 'nightnei/wordpress-developer-mcp-server';
 const GITHUB_API_URL = `https://api.github.com/repos/${ MCP_REPO }/releases/latest`;
+const INSTALL_SCRIPT_SH_URL = `https://raw.githubusercontent.com/${ MCP_REPO }/main/install.sh`;
+const INSTALL_SCRIPT_PS1_URL = `https://raw.githubusercontent.com/${ MCP_REPO }/main/install.ps1`;
 
 async function getCurrentVersion(): Promise< string | null > {
 	try {
@@ -119,67 +121,44 @@ export function registerUpdateTools( server: McpServer ) {
 				'save any unsent input or important context first. Only proceed after the user confirms.',
 		},
 		async () => {
-			const currentVersion = await getCurrentVersion();
+			const previousVersion = await getCurrentVersion();
+			let output = '';
 
-			if ( ! currentVersion ) {
-				return {
-					content: [
-						{
-							type: 'text' as const,
-							text: 'Cannot update: unable to determine install location.',
-						},
-					],
-				};
-			}
-
-			const latest = await getLatestRelease();
-
-			if ( ! latest ) {
-				return {
-					content: [
-						{
-							type: 'text' as const,
-							text: 'Failed to fetch latest release information from GitHub.',
-						},
-					],
-				};
-			}
-
-			if ( latest.tagName === currentVersion ) {
-				return {
-					content: [
-						{
-							type: 'text' as const,
-							text: `Already up to date (${ currentVersion }).`,
-						},
-					],
-				};
-			}
-
-			const mcpDir = `${ INSTALL_DIR }/mcp`;
+			// TODO: once install.ps1 gains an `-Update` flag (parity with
+			// install.sh --update), switch the Windows branch to
+			// `& ([scriptblock]::Create((irm '<url>'))) -Update` so it skips
+			// the interactive auth prompt and agent reconfiguration.
+			const command =
+				process.platform === 'win32'
+					? `powershell -NoProfile -Command "irm '${ INSTALL_SCRIPT_PS1_URL }' | iex" 2>&1`
+					: `curl -fsSL "${ INSTALL_SCRIPT_SH_URL }" | bash -s -- --update 2>&1`;
 
 			try {
-				execSync( `rm -rf "${ mcpDir }" && mkdir -p "${ mcpDir }" && curl -fsSL "${ latest.tarballUrl }" | tar -xz -C "${ mcpDir }"`, {
-					timeout: 60000,
-				} );
-				await writeFile( VERSION_FILE, latest.tagName );
+				output = execSync( command, { timeout: 300000, encoding: 'utf8' } );
 			} catch ( error: any ) {
+				const details = error.stdout?.toString?.() || error.message;
 				return {
 					content: [
 						{
 							type: 'text' as const,
-							text: `Update failed: ${ error.message }. You can try re-running the install script instead.`,
+							text: `Update failed:\n${ details }`,
 						},
 					],
 				};
 			}
+
+			const newVersion = ( await getCurrentVersion() ) || 'unknown';
+			const summary =
+				previousVersion && previousVersion !== newVersion
+					? `Updated MCP server from ${ previousVersion } to ${ newVersion }.`
+					: `MCP server is at ${ newVersion }.`;
 
 			return {
 				content: [
 					{
 						type: 'text' as const,
 						text:
-							`Successfully updated from ${ currentVersion } to ${ latest.tagName }. ` +
+							`${ summary }\n\n${ output }\n` +
 							'Please restart the AI assistant now to apply the new version. ' +
 							'The current session is still running the old version until restarted.',
 					},

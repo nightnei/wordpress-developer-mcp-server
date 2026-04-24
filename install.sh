@@ -12,8 +12,16 @@ INSTALL_DIR="$HOME/.wordpress-developer-mcp"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
 NODE_VERSION="24.13.1"
 
-echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
-echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+UPDATE_MODE=false
+[[ "${1:-}" == "--update" ]] && UPDATE_MODE=true
+FOUND_AGENTS_COUNT=0
+
+if $UPDATE_MODE; then
+	echo -e "${BLUE}${BOLD}🌸 Updating WordPress Developer MCP Server...${NC}"
+else
+	echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
+	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+fi
 
 # ── OS check ──────────────────────────────────────────────────────────────────
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -33,6 +41,7 @@ if [ -d "/Applications/Studio.app" ]; then
 	echo "  on both at the same time — your sites and data stay in sync."
 fi
 
+if ! $UPDATE_MODE; then
 # ── Detect installed agents ───────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Detecting installed AI agents...${NC}"
@@ -95,6 +104,7 @@ else
 	$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
 	echo ""
 	echo "  MCP support will be added to all of them."
+fi
 fi
 
 mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
@@ -390,6 +400,7 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 	fi
 fi
 
+if ! $UPDATE_MODE; then
 # ── WordPress.com authentication ──────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -431,6 +442,15 @@ else
 	else
 		echo -e "${YELLOW}Skipped.${NC}"
 	fi
+fi
+fi
+
+if $UPDATE_MODE; then
+	echo ""
+	echo -e "${GREEN}✅ Update complete!${NC}"
+	echo -e "${YELLOW}↺  Restart your AI assistant to apply the new version.${NC}"
+	echo ""
+	exit 0
 fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────
