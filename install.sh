@@ -42,68 +42,67 @@ if [ -d "/Applications/Studio.app" ]; then
 fi
 
 if ! $UPDATE_MODE; then
-# ── Detect installed agents ───────────────────────────────────────────────────
-echo ""
-echo -e "${YELLOW}Detecting installed AI agents...${NC}"
-
-FOUND_CODEX=false
-FOUND_CLAUDE_DESKTOP=false
-FOUND_CLAUDE_CODE=false
-FOUND_CURSOR=false
-FOUND_WINDSURF=false
-FOUND_ZED=false
-
-app_installed() {
-	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
-}
-
-if command -v codex &>/dev/null || app_installed "Codex.app"; then
-	FOUND_CODEX=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-if app_installed "Claude.app"; then
-	FOUND_CLAUDE_DESKTOP=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-if command -v claude &>/dev/null; then
-	FOUND_CLAUDE_CODE=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-if app_installed "Cursor.app"; then
-	FOUND_CURSOR=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-if app_installed "Windsurf.app"; then
-	FOUND_WINDSURF=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-if app_installed "Zed.app"; then
-	FOUND_ZED=true
-	FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
-fi
-
-echo ""
-if [ "$FOUND_AGENTS_COUNT" -eq 0 ]; then
-	echo -e "${YELLOW}⚠️  No supported AI agents found on your system.${NC}"
-	echo "  The MCP server will still be installed."
-	echo "  Install any supported agent and re-run this script."
+	# ── Detect installed agents ───────────────────────────────────────────────────
 	echo ""
-	echo -e "  Get Codex:          ${BLUE}https://openai.com/codex${NC}"
-	echo -e "  Get Claude:         ${BLUE}https://claude.ai/download${NC}"
-	echo -e "  Get Cursor:         ${BLUE}https://cursor.com${NC}"
-	echo -e "  Get Windsurf:       ${BLUE}https://windsurf.com${NC}"
-	echo -e "  Get Zed:            ${BLUE}https://zed.dev${NC}"
-else
-	echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
-	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex"
-	$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
-	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code"
-	$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
-	$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
-	$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
-	echo ""
-	echo "  MCP support will be added to all of them."
-fi
+	echo -e "${YELLOW}Detecting installed AI agents...${NC}"
+
+	FOUND_CODEX=false
+	FOUND_CLAUDE_DESKTOP=false
+	FOUND_CLAUDE_CODE=false
+	FOUND_CURSOR=false
+	FOUND_WINDSURF=false
+	FOUND_ZED=false
+
+	app_installed() {
+		[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
+	}
+
+	if command -v codex &>/dev/null || app_installed "Codex.app"; then
+		FOUND_CODEX=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+	if app_installed "Claude.app"; then
+		FOUND_CLAUDE_DESKTOP=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+	if command -v claude &>/dev/null; then
+		FOUND_CLAUDE_CODE=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+	if app_installed "Cursor.app"; then
+		FOUND_CURSOR=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+	if app_installed "Windsurf.app"; then
+		FOUND_WINDSURF=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+	if app_installed "Zed.app"; then
+		FOUND_ZED=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
+
+	if [ "$FOUND_AGENTS_COUNT" -eq 0 ]; then
+		echo -e "${YELLOW}⚠️  No supported AI agents found on your system.${NC}"
+		echo "  The MCP server will still be installed."
+		echo "  Install any supported agent and re-run this script."
+		echo ""
+		echo -e "  Get Codex:          ${BLUE}https://openai.com/codex${NC}"
+		echo -e "  Get Claude:         ${BLUE}https://claude.ai/download${NC}"
+		echo -e "  Get Cursor:         ${BLUE}https://cursor.com${NC}"
+		echo -e "  Get Windsurf:       ${BLUE}https://windsurf.com${NC}"
+		echo -e "  Get Zed:            ${BLUE}https://zed.dev${NC}"
+	else
+		echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
+		$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex"
+		$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
+		$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code"
+		$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
+		$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
+		$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
+		echo ""
+		echo "  MCP support will be added to all of them."
+	fi
 fi
 
 mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
@@ -400,48 +399,48 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 fi
 
 if ! $UPDATE_MODE; then
-# ── WordPress.com authentication ──────────────────────────────────────────────
-echo ""
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo ""
-echo -e "${YELLOW}🔐 Connect to WordPress.com${NC}"
-echo ""
-
-AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
-# CLI output is localized (e.g. "Авторизовано через WordPress.com як \`user\`"
-# vs. "Authenticated with WordPress.com as \`user\`"), so match on two
-# locale-independent signals instead of an English phrase:
-#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
-#      does not)
-#   2) contains a backtick-quoted username
-WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*`\([^`]*\)`.*/\1/p')
-if echo "$AUTH_OUTPUT" | grep -qi 'WordPress\.com' && [ -n "$WPCOM_USER" ]; then
-	if [ -d "/Applications/Studio.app" ]; then
-		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
-	else
-		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC}."
-	fi
-	echo "  Preview sites and other WordPress.com features are available."
-else
-	echo "This unlocks extra powerful features provided by WordPress.com."
+	# ── WordPress.com authentication ──────────────────────────────────────────────
 	echo ""
-	echo -e "${GREEN}Connect now? [Y/n]${NC}"
-	read -r auth_response < /dev/tty
+	echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+	echo ""
+	echo -e "${YELLOW}🔐 Connect to WordPress.com${NC}"
+	echo ""
 
-	if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
-		echo ""
-		echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
-		"$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
-
-		if [ $? -eq 0 ]; then
-			echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
+	AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
+	# CLI output is localized (e.g. "Авторизовано через WordPress.com як \`user\`"
+	# vs. "Authenticated with WordPress.com as \`user\`"), so match on two
+	# locale-independent signals instead of an English phrase:
+	#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
+	#      does not)
+	#   2) contains a backtick-quoted username
+	WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*`\([^`]*\)`.*/\1/p')
+	if echo "$AUTH_OUTPUT" | grep -qi 'WordPress\.com' && [ -n "$WPCOM_USER" ]; then
+		if [ -d "/Applications/Studio.app" ]; then
+			echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
 		else
-			echo -e "${RED}Connection failed.${NC}"
+			echo -e "Connected as ${GREEN}${WPCOM_USER}${NC}."
 		fi
+		echo "  Preview sites and other WordPress.com features are available."
 	else
-		echo -e "${YELLOW}Skipped.${NC}"
+		echo "This unlocks extra powerful features provided by WordPress.com."
+		echo ""
+		echo -e "${GREEN}Connect now? [Y/n]${NC}"
+		read -r auth_response < /dev/tty
+
+		if [[ ! "$auth_response" =~ ^[Nn]$ ]]; then
+			echo ""
+			echo -e "${YELLOW}Opening WordPress.com login in your browser...${NC}"
+			"$INSTALL_DIR/bin/studio-cli" auth login < /dev/tty
+
+			if [ $? -eq 0 ]; then
+				echo -e "${GREEN}✓ Connected to WordPress.com${NC}"
+			else
+				echo -e "${RED}Connection failed.${NC}"
+			fi
+		else
+			echo -e "${YELLOW}Skipped.${NC}"
+		fi
 	fi
-fi
 fi
 
 if $UPDATE_MODE; then
