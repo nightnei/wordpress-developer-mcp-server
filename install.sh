@@ -191,6 +191,7 @@ cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #  "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/node/lib/node_modules/wp-studio/dist/cli/main.mjs" "\$@"
 #fi
 
+export PATH="$INSTALL_DIR/node/bin:\$PATH"
 "$INSTALL_DIR/node/bin/studio" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
