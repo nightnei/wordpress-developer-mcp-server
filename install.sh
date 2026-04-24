@@ -31,8 +31,7 @@ if [[ "$OS" != "darwin" ]]; then
 	echo -e "${RED}❌ Currently only macOS is supported.${NC}"
 	exit 1
 fi
-echo ""
-echo -e "${GREEN}✓ Detected: macOS on ${ARCH}${NC}"
+echo -e "  ${GREEN}✓ Detected: macOS on ${ARCH}${NC}"
 
 if [ -d "/Applications/Studio.app" ]; then
 	echo ""
