@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.1...v2.0.2) (2026-04-24)
+
+
+### Bug Fixes
+
+* **install:** macOS installation and updating is improved and fixed a few bugs ([#21](https://github.com/nightnei/wordpress-developer-mcp-server/issues/21)) ([9dc33e4](https://github.com/nightnei/wordpress-developer-mcp-server/commit/9dc33e4558000c7e4142861a01bff3e250f63029))
+
 ## [2.0.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.0...v2.0.1) (2026-04-14)
 
 
