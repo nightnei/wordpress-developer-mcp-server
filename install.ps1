@@ -322,13 +322,17 @@ Info "Checking CLI..."
 # Put our bundled node first on PATH so npm.cmd finds its own node.exe.
 $env:PATH = "$NodeDir;$env:PATH"
 
-$studioLatest = ''
-try {
-    $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
-    if ($LASTEXITCODE -eq 0 -and $viewOut) {
-        $studioLatest = ($viewOut | Out-String).Trim()
-    }
-} catch { $studioLatest = '' }
+# Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
+# Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
+# $studioLatest = ''
+# try {
+#     $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
+#     if ($LASTEXITCODE -eq 0 -and $viewOut) {
+#         $studioLatest = ($viewOut | Out-String).Trim()
+#     }
+# } catch { $studioLatest = '' }
+
+$studioLatest = '1.7.8'
 
 $currentStudioVersion = ''
 try {
@@ -338,11 +342,11 @@ try {
     }
 } catch { $currentStudioVersion = '' }
 
-if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $studioLatest)) {
+if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest)) {
     Ok "  $($G.Tick) CLI already up to date"
 } else {
     Info "Installing CLI..."
-    $npmOutput = (& $NpmBin install -g wp-studio --loglevel=silent 2>&1 | Out-String)
+    $npmOutput = (& $NpmBin install -g "wp-studio@$studioLatest" --loglevel=silent 2>&1 | Out-String)
     foreach ($line in ($npmOutput -split "`r?`n")) {
         if ($line -match '(?i)error') { Write-Host $line }
     }

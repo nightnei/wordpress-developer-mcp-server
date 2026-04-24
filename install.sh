@@ -144,13 +144,16 @@ fi
 # ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Checking CLI...${NC}"
-STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
+# Pin wp-studio explicitly: bump STUDIO_LATEST when you intentionally ship a new CLI.
+# Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
+# STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
+STUDIO_LATEST=1.7.8
 CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
 	echo -e "  ${GREEN}✓ CLI already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing CLI...${NC}"
-	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=silent 2>&1 | grep -i "error" || true
+	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=silent 2>&1 | grep -i "error" || true
 	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
 		echo -e "  ${GREEN}✓ CLI updated to $STUDIO_LATEST${NC}"
 	else
