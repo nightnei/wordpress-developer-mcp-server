@@ -52,7 +52,6 @@ FOUND_CLAUDE_CODE=false
 FOUND_CURSOR=false
 FOUND_WINDSURF=false
 FOUND_ZED=false
-FOUND_AGENTS_COUNT=0
 
 app_installed() {
 	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
