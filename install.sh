@@ -12,8 +12,16 @@ INSTALL_DIR="$HOME/.wordpress-developer-mcp"
 MCP_REPO="nightnei/wordpress-developer-mcp-server"
 NODE_VERSION="24.13.1"
 
-echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
-echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+UPDATE_MODE=false
+[[ "${1:-}" == "--update" ]] && UPDATE_MODE=true
+FOUND_AGENTS_COUNT=0
+
+if $UPDATE_MODE; then
+	echo -e "${BLUE}${BOLD}🌸 Updating WordPress Developer MCP Server...${NC}"
+else
+	echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
+	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+fi
 
 # ── OS check ──────────────────────────────────────────────────────────────────
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -33,6 +41,7 @@ if [ -d "/Applications/Studio.app" ]; then
 	echo "  on both at the same time — your sites and data stay in sync."
 fi
 
+if ! $UPDATE_MODE; then
 # ── Detect installed agents ───────────────────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Detecting installed AI agents...${NC}"
@@ -43,7 +52,6 @@ FOUND_CLAUDE_CODE=false
 FOUND_CURSOR=false
 FOUND_WINDSURF=false
 FOUND_ZED=false
-FOUND_AGENTS_COUNT=0
 
 app_installed() {
 	[ -d "/Applications/$1" ] || [ -d "$HOME/Applications/$1" ]
@@ -89,12 +97,13 @@ else
 	echo -e "${GREEN}Found $FOUND_AGENTS_COUNT AI agent(s):${NC}"
 	$FOUND_CODEX          && echo -e "  ${GREEN}✓${NC} Codex"
 	$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
-	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+	$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code"
 	$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
 	$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
 	$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
 	echo ""
 	echo "  MCP support will be added to all of them."
+fi
 fi
 
 mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
@@ -107,7 +116,7 @@ echo ""
 echo -e "${YELLOW}Checking runtime environment...${NC}"
 CURRENT_NODE_VERSION=$("$NODE_BIN" --version 2>/dev/null | tr -d 'v' || echo "")
 if [ "$CURRENT_NODE_VERSION" = "$NODE_VERSION" ]; then
-	echo -e "${GREEN}✓ Runtime environment already installed${NC}"
+	echo -e "  ${GREEN}✓ Runtime environment already installed${NC}"
 else
 	echo -e "${YELLOW}Downloading runtime environment...${NC}"
 	rm -rf "$INSTALL_DIR/node"
@@ -115,46 +124,49 @@ else
 	NODE_ARCH=$(echo "$ARCH" | sed 's/x86_64/x64/')
 	NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-darwin-${NODE_ARCH}.tar.gz"
 	curl -fsSL "$NODE_URL" | tar -xz -C "$INSTALL_DIR/node" --strip-components=1
-	echo -e "${GREEN}✓ Runtime environment installed${NC}"
+	echo -e "  ${GREEN}✓ Runtime environment installed${NC}"
 fi
 
 # ── MCP Server (this repo) ────────────────────────────────────────────────────
 echo ""
-echo -e "${YELLOW}Checking MCP Server...${NC}"
+echo -e "${YELLOW}Checking server...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
 CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
-	echo -e "${GREEN}✓ MCP Server already up to date${NC}"
+	echo -e "  ${GREEN}✓ Server already up to date${NC}"
 else
-	echo -e "${YELLOW}Downloading MCP Server...${NC}"
+	echo -e "${YELLOW}Downloading server...${NC}"
 	rm -rf "$INSTALL_DIR/mcp"
 	mkdir -p "$INSTALL_DIR/mcp"
 	curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
 		tar -xz -C "$INSTALL_DIR/mcp"
 	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
 	if [ -n "$CURRENT_MCP_VERSION" ]; then
-		echo -e "${GREEN}✓ MCP Server updated to $MCP_LATEST${NC}"
+		echo -e "  ${GREEN}✓ Server updated to $MCP_LATEST${NC}"
 	else
-		echo -e "${GREEN}✓ MCP Server installed${NC}"
+		echo -e "  ${GREEN}✓ Server installed${NC}"
 	fi
 fi
 
 # ── Studio CLI (wp-studio) ────────────────────────────────────────────────────
 echo ""
-echo -e "${YELLOW}Checking Studio CLI...${NC}"
-STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
+echo -e "${YELLOW}Checking CLI...${NC}"
+# Pin wp-studio explicitly: bump STUDIO_LATEST when you intentionally ship a new CLI.
+# Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
+# STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
+STUDIO_LATEST=1.7.8
 CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
-	echo -e "${GREEN}✓ Studio CLI already up to date${NC}"
+	echo -e "  ${GREEN}✓ CLI already up to date${NC}"
 else
-	echo -e "${YELLOW}Installing Studio CLI...${NC}"
-	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g wp-studio --loglevel=silent 2>&1 | grep -i "error" || true
+	echo -e "${YELLOW}Installing CLI...${NC}"
+	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=silent 2>&1 | grep -i "error" || true
 	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
-		echo -e "${GREEN}✓ Studio CLI updated to $STUDIO_LATEST${NC}"
+		echo -e "  ${GREEN}✓ CLI updated to $STUDIO_LATEST${NC}"
 	else
-		echo -e "${GREEN}✓ Studio CLI installed${NC}"
+		echo -e "  ${GREEN}✓ CLI installed${NC}"
 	fi
 fi
 
@@ -173,15 +185,18 @@ chmod +x "$INSTALL_DIR/bin/studio-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
-export PATH="$INSTALL_DIR/node/bin:\$PATH"
-if command -v studio &>/dev/null; then
-  studio "\$@"
-else
-  "$INSTALL_DIR/node/bin/studio" "\$@"
-fi
+
+#if command -v studio &>/dev/null; then
+#  studio "\$@"
+#else
+#  export PATH="$INSTALL_DIR/node/bin:\$PATH"
+#  "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/node/lib/node_modules/wp-studio/dist/cli/main.mjs" "\$@"
+#fi
+
+"$INSTALL_DIR/node/bin/studio" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/studio-cli"
-echo -e "${GREEN}✓ Wrapper scripts ready${NC}"
+echo -e "  ${GREEN}✓ Wrapper scripts ready${NC}"
 
 # ── Configure AI agents ───────────────────────────────────────────────────────
 CONFIGURED_AGENTS=()
@@ -264,27 +279,59 @@ configure_zed() {
 	local config_file="$HOME/.config/zed/settings.json"
 	mkdir -p "$HOME/.config/zed"
 
-	"$NODE_BIN" -e "
+	ZED_SETTINGS="$config_file" ZED_MCP_COMMAND="$MCP_COMMAND" "$NODE_BIN" - <<'NODE'
 const fs = require('fs');
-const configPath = '$config_file';
-const mcpCommand = '$MCP_COMMAND';
-
+const configPath = process.env.ZED_SETTINGS;
+const mcpCommand = process.env.ZED_MCP_COMMAND;
+function stripTrailingCommas(input) {
+	let output = '';
+	let inString = false;
+	for (let i = 0; i < input.length; i++) {
+		const c = input[i];
+		if (inString) {
+			output += c;
+			if (c === '"') {
+				let bs = 0;
+				for (let j = i - 1; j >= 0 && input[j] === '\\'; j--) bs++;
+				if (bs % 2 === 0) inString = false;
+			}
+			continue;
+		}
+		if (c === '"') {
+			inString = true;
+			output += c;
+			continue;
+		}
+		if (c === ',') {
+			let j = i + 1;
+			while (j < input.length && /[\s\n\r\t]/.test(input[j])) j++;
+			if (j < input.length && (input[j] === '}' || input[j] === ']')) continue;
+		}
+		output += c;
+	}
+	return output;
+}
+function parseZedSettingsJson(raw) {
+	const s = raw.trim() === '' ? '{}' : raw;
+	return JSON.parse(stripTrailingCommas(s));
+}
+let raw = '';
+try {
+	raw = fs.readFileSync(configPath, 'utf8');
+} catch (e) {
+	raw = '';
+}
 let config = {};
 try {
-  config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+	config = parseZedSettingsJson(raw);
 } catch (e) {
-  config = {};
+	console.error(e.message);
+	process.exit(1);
 }
-
-if (!config.context_servers) config.context_servers = {};
-config.context_servers['wordpress-developer'] = {
-  source: 'custom',
-  command: mcpCommand,
-  args: []
-};
-
+if (!config.context_servers || typeof config.context_servers !== 'object') config.context_servers = {};
+config.context_servers['wordpress-developer'] = { command: mcpCommand, args: [] };
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-"
+NODE
 }
 
 if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
@@ -313,11 +360,11 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 
 	if $FOUND_CLAUDE_CODE; then
 		if configure_claude_code 2>/dev/null; then
-			CONFIGURED_AGENTS+=("Claude Code (CLI)")
-			echo -e "  ${GREEN}✓${NC} Claude Code (CLI)"
+			CONFIGURED_AGENTS+=("Claude Code")
+			echo -e "  ${GREEN}✓${NC} Claude Code"
 		else
-			FAILED_AGENTS+=("Claude Code (CLI)")
-			echo -e "  ${RED}✗${NC} Claude Code (CLI) (failed)"
+			FAILED_AGENTS+=("Claude Code")
+			echo -e "  ${RED}✗${NC} Claude Code (failed)"
 		fi
 	fi
 
@@ -352,6 +399,7 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 	fi
 fi
 
+if ! $UPDATE_MODE; then
 # ── WordPress.com authentication ──────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -360,8 +408,14 @@ echo -e "${YELLOW}🔐 Connect to WordPress.com${NC}"
 echo ""
 
 AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
-if echo "$AUTH_OUTPUT" | grep -qi "Authenticated"; then
-	WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*as `\(.*\)`.*/\1/p')
+# CLI output is localized (e.g. "Авторизовано через WordPress.com як \`user\`"
+# vs. "Authenticated with WordPress.com as \`user\`"), so match on two
+# locale-independent signals instead of an English phrase:
+#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
+#      does not)
+#   2) contains a backtick-quoted username
+WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*`\([^`]*\)`.*/\1/p')
+if echo "$AUTH_OUTPUT" | grep -qi 'WordPress\.com' && [ -n "$WPCOM_USER" ]; then
 	if [ -d "/Applications/Studio.app" ]; then
 		echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
 	else
@@ -387,6 +441,15 @@ else
 	else
 		echo -e "${YELLOW}Skipped.${NC}"
 	fi
+fi
+fi
+
+if $UPDATE_MODE; then
+	echo ""
+	echo -e "${GREEN}✅ Update complete!${NC}"
+	echo -e "${YELLOW}↺  Restart your AI assistant to apply the new version.${NC}"
+	echo ""
+	exit 0
 fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────
