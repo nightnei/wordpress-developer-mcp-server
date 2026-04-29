@@ -398,7 +398,7 @@ if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $s
         Ok "  $($G.Tick) CLI installed"
     }
 }
-exit 0
+
 # == Wrapper scripts (always regenerated) ==-----------------------------------
 Write-Host ""
 Info "Creating wrapper scripts..."
@@ -446,7 +446,7 @@ if ($Update) {
     Write-Host ""
     exit 0
 }
-
+exit 0
 # == Node-driven config helpers ==----------------------------------------------
 $mcpServersJsScript = @'
 const fs = require('fs');
