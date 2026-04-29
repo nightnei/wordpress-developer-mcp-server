@@ -1,13 +1,7 @@
 #Requires -Version 5.1
-<#
-.SYNOPSIS
-  Installs WordPress Developer MCP Server on Windows (parity with install.sh).
-
-.NOTES
-  This file is intentionally pure-ASCII. Unicode glyphs are built at runtime
-  via [char]::ConvertFromUtf32 so the script parses correctly regardless of
-  whether PowerShell reads .ps1 files as UTF-8 or the legacy ANSI code page.
-#>
+# This file is intentionally pure-ASCII. Unicode glyphs are built at runtime
+# via [char]::ConvertFromUtf32 so the script parses correctly regardless of
+# whether PowerShell reads .ps1 files as UTF-8 or the legacy ANSI code page.
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
