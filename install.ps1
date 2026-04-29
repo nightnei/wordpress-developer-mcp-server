@@ -44,9 +44,6 @@ $McpJs        = Join-Path $McpDir    'index.js'
 $VersionFile  = Join-Path $McpDir    '.version'
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 
-$McpLauncher  = 'cmd.exe'
-$McpArgs      = @('/d', '/s', '/c', $McpCommand)
-
 # == Unicode glyphs (ASCII-safe source) ==--------------------------------------
 function _U([int]$cp) { [char]::ConvertFromUtf32($cp) }
 $G = @{
@@ -473,14 +470,12 @@ if ($Update) {
     Write-Host ""
     exit 0
 }
-exit 0
 # == Node-driven config helpers ==----------------------------------------------
 $mcpServersJsScript = @'
 const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
-const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
 
 fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
@@ -496,8 +491,7 @@ if (!config.mcpServers || typeof config.mcpServers !== 'object') {
   config.mcpServers = {};
 }
 config.mcpServers['wordpress-developer'] = {
-  command: mcpCommand,
-  args: mcpArgs
+  command: mcpCommand
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -508,7 +502,6 @@ const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
-const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
 
 function stripTrailingCommas(input) {
   let output = '';
@@ -564,8 +557,7 @@ if (!config.context_servers || typeof config.context_servers !== 'object') {
   config.context_servers = {};
 }
 config.context_servers['wordpress-developer'] = {
-  command: mcpCommand,
-  args: mcpArgs
+  command: mcpCommand
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -576,7 +568,6 @@ const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
-const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
 
 function tomlString(value) {
   return '"' + value.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -589,8 +580,7 @@ try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = '';
 
 const newEntry =
   '[mcp_servers.wordpress-developer]\n' +
-  'command = ' + tomlString(mcpCommand) + '\n' +
-  'args = [' + mcpArgs.map(tomlString).join(', ') + ']';
+  'command = ' + tomlString(mcpCommand);
 const sectionRegex = /\[mcp_servers\.wordpress-developer\][^\[]*/;
 
 if (sectionRegex.test(content)) {
@@ -616,10 +606,8 @@ function Invoke-NodeHelper {
 
     $savedConfig = [Environment]::GetEnvironmentVariable('WPMCP_CONFIG_FILE', 'Process')
     $savedCmd    = [Environment]::GetEnvironmentVariable('WPMCP_MCP_COMMAND', 'Process')
-    $savedArgs   = [Environment]::GetEnvironmentVariable('WPMCP_MCP_ARGS', 'Process')
     [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $ConfigFile, 'Process')
-    [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $McpLauncher, 'Process')
-    [Environment]::SetEnvironmentVariable('WPMCP_MCP_ARGS', ($McpArgs | ConvertTo-Json -Compress), 'Process')
+    [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $McpCommand, 'Process')
     try {
         $output = & $NodeBin $tempJs 2>&1
         if ($LASTEXITCODE -ne 0) {
@@ -630,7 +618,6 @@ function Invoke-NodeHelper {
         Remove-Item -LiteralPath $tempJs -Force -ErrorAction SilentlyContinue
         [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $savedConfig, 'Process')
         [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $savedCmd,    'Process')
-        [Environment]::SetEnvironmentVariable('WPMCP_MCP_ARGS',    $savedArgs,   'Process')
     }
 }
 
@@ -694,7 +681,7 @@ if ($foundAgentsCount -gt 0) {
                 $null = Invoke-ExternalQuiet -Exe 'codex' `
                     -Arguments @('mcp','remove','wordpress-developer')
                 $res = Invoke-ExternalQuiet -Exe 'codex' `
-                    -Arguments (@('mcp','add','wordpress-developer','--',$McpLauncher) + $McpArgs)
+                    -Arguments @('mcp','add','wordpress-developer','--',$McpCommand)
                 if ($res.ExitCode -ne 0) {
                     throw "codex mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
                 }
@@ -732,7 +719,7 @@ if ($foundAgentsCount -gt 0) {
             $null = Invoke-ExternalQuiet -Exe 'claude' `
                 -Arguments @('mcp','remove','wordpress-developer','--scope','user')
             $res = Invoke-ExternalQuiet -Exe 'claude' `
-                -Arguments (@('mcp','add','--scope','user','wordpress-developer','--',$McpLauncher) + $McpArgs)
+                -Arguments @('mcp','add','--scope','user','wordpress-developer','--',$McpCommand)
             if ($res.ExitCode -ne 0) {
                 throw "claude mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
             }
@@ -861,12 +848,10 @@ if ($failedAgents.Count -gt 0) {
     Write-Host ""
     Write-Host "  Add this to the agent's MCP configuration manually:"
     Write-Host ""
-    $manualCommand = $McpLauncher | ConvertTo-Json -Compress
-    $manualArgs = $McpArgs | ConvertTo-Json -Compress
+    $manualCommand = $McpCommand | ConvertTo-Json -Compress
     Write-Host '    "mcpServers": {'
     Write-Host '      "wordpress-developer": {'
-    Write-Host "        `"command`": $manualCommand,"
-    Write-Host "        `"args`": $manualArgs"
+    Write-Host "        `"command`": $manualCommand"
     Write-Host '      }'
     Write-Host '    }'
 }
