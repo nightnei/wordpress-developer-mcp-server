@@ -40,10 +40,10 @@ $McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
-$VersionFile  = Join-Path $McpDir    '.version'
-
-$StudioShim   = Join-Path $NodeDir   'studio.cmd'
 $McpJs        = Join-Path $McpDir    'index.js'
+$VersionFile  = Join-Path $McpDir    '.version'
+$StudioShim   = Join-Path $NodeDir   'studio.cmd'
+
 $McpLauncher  = 'cmd.exe'
 $McpArgs      = @('/d', '/s', '/c', $McpCommand)
 
