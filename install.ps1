@@ -87,20 +87,39 @@ if ($env:OS -ne 'Windows_NT') {
     exit 1
 }
 
-$procArch = $env:PROCESSOR_ARCHITECTURE
-$nodeArch = switch ($procArch) {
+function Get-NativeProcessorArchitecture {
+    try {
+        $cpu = Get-CimInstance -ClassName Win32_Processor -ErrorAction Stop | Select-Object -First 1
+        switch ([int]$cpu.Architecture) {
+            9  { return 'AMD64' }
+            12 { return 'ARM64' }
+        }
+    } catch { }
+
+    foreach ($candidate in @($env:PROCESSOR_ARCHITEW6432, $env:PROCESSOR_ARCHITECTURE)) {
+        switch ($candidate) {
+            'AMD64' { return 'AMD64' }
+            'ARM64' { return 'ARM64' }
+        }
+    }
+
+    return $null
+}
+
+$processorArch = Get-NativeProcessorArchitecture
+$nodeArch = switch ($processorArch) {
     'AMD64' { 'x64' }
     'ARM64' { 'arm64' }
     default { $null }
 }
 if (-not $nodeArch) {
     Write-Host ""
-    Err "$($G.Cross) Unsupported CPU architecture: $procArch (need AMD64 or ARM64)."
+    Err "$($G.Cross) Unsupported CPU architecture: $processorArch (need AMD64 or ARM64)."
     exit 1
 }
 
 Write-Host ""
-Ok "  $($G.Tick) Detected: Windows on $procArch"
+Ok "  $($G.Tick) Detected: Windows on $processorArch"
 
 # == WordPress Studio detection ==----------------------------------------------
 $studioExe = Join-Path $env:LOCALAPPDATA 'studio_app\Studio.exe'
