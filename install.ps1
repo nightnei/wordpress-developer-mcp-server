@@ -199,7 +199,7 @@ foreach ($d in @($InstallDir, $NodeDir, $McpDir, $BinDir)) {
         New-Item -ItemType Directory -Force -Path $d | Out-Null
     }
 }
-exit 0
+
 # == Node.js runtime ==---------------------------------------------------------
 Write-Host ""
 Info "Checking runtime environment..."
@@ -261,7 +261,7 @@ if (($currentNodeVersion -eq $NodeVersion) -and (Test-Path -LiteralPath $NpmBin)
     }
     Ok "  $($G.Tick) Runtime environment installed"
 }
-
+exit 0
 # == MCP Server release ==------------------------------------------------------
 Write-Host ""
 Info "Checking server..."
