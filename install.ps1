@@ -35,11 +35,13 @@ $NodeVersion  = '24.13.1'
 $NodeDir      = Join-Path $InstallDir 'node'
 $McpDir       = Join-Path $InstallDir 'mcp'
 $BinDir       = Join-Path $InstallDir 'bin'
+
+$VersionFile  = Join-Path $McpDir    '.version'
+
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 $McpJs        = Join-Path $McpDir    'index.js'
-$VersionFile  = Join-Path $McpDir    '.version'
 $McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
 $McpLauncher  = 'cmd.exe'
 $McpArgs      = @('/d', '/s', '/c', $McpCommand)
@@ -351,9 +353,6 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
 # == Studio CLI (wp-studio) ==--------------------------------------------------
 Write-Host ""
 Info "Checking CLI..."
-
-# Put our bundled node first on PATH so npm.cmd finds its own node.exe.
-$env:PATH = "$NodeDir;$env:PATH"
 
 # Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
 # Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
