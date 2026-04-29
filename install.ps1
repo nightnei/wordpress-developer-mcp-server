@@ -192,14 +192,14 @@ if (-not $Update) {
         Write-Host "  MCP support will be added to all of them."
     }
 }
-exit 0
+
 # == Prepare install directory ==-----------------------------------------------
 foreach ($d in @($InstallDir, $NodeDir, $McpDir, $BinDir)) {
     if (-not (Test-Path -LiteralPath $d)) {
         New-Item -ItemType Directory -Force -Path $d | Out-Null
     }
 }
-
+exit 0
 # == Node.js runtime ==---------------------------------------------------------
 Write-Host ""
 Info "Checking runtime environment..."
