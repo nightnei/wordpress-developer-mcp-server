@@ -385,6 +385,9 @@ Info "Checking CLI..."
 
 $studioLatest = '1.7.8'
 
+$savedPath = $env:PATH
+$env:PATH = "$NodeDir;$savedPath"
+
 $currentStudioVersion = ''
 try {
     $listOut = (& $NpmBin list -g wp-studio --depth=0 --loglevel=silent --prefix $NodeDir 2>&1 | Out-String)
@@ -393,29 +396,34 @@ try {
     }
 } catch { $currentStudioVersion = '' }
 
-$studioShimExists = Test-Path -LiteralPath $StudioShim
-if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $studioShimExists) {
-    Ok "  $($G.Tick) CLI already up to date"
-} else {
-    Info "Installing CLI..."
-    $npmOutput = (& $NpmBin install -g "wp-studio@$studioLatest" --loglevel=silent --prefix $NodeDir 2>&1 | Out-String)
-    $npmExitCode = $LASTEXITCODE
-    foreach ($line in ($npmOutput -split "`r?`n")) {
-        if ($line -match '(?i)error') { Write-Host $line }
-    }
-    if ($npmExitCode -ne 0) {
-        Err "$($G.Cross) Failed to install CLI (npm exit $npmExitCode)."
-        exit 1
-    }
-    if (-not (Test-Path -LiteralPath $StudioShim)) {
-        Err "$($G.Cross) CLI installation failed (studio.cmd missing)."
-        exit 1
-    }
-    if ($currentStudioVersion) {
-        Ok "  $($G.Tick) CLI updated to $studioLatest"
+try {
+    $studioShimExists = Test-Path -LiteralPath $StudioShim
+    if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $studioShimExists) {
+        Ok "  $($G.Tick) CLI already up to date"
     } else {
-        Ok "  $($G.Tick) CLI installed"
+        Info "Installing CLI..."
+        $npmOutput = (& $NpmBin install -g "wp-studio@$studioLatest" --loglevel=silent --prefix $NodeDir 2>&1 | Out-String)
+        $npmExitCode = $LASTEXITCODE
+        foreach ($line in ($npmOutput -split "`r?`n")) {
+            if ($line -match '(?i)error') { Write-Host $line }
+        }
+        if ($npmExitCode -ne 0) {
+            if ($npmOutput.Trim()) { Write-Host $npmOutput.Trim() }
+            Err "$($G.Cross) Failed to install CLI (npm exit $npmExitCode)."
+            exit 1
+        }
+        if (-not (Test-Path -LiteralPath $StudioShim)) {
+            Err "$($G.Cross) CLI installation failed (studio.cmd missing)."
+            exit 1
+        }
+        if ($currentStudioVersion) {
+            Ok "  $($G.Tick) CLI updated to $studioLatest"
+        } else {
+            Ok "  $($G.Tick) CLI installed"
+        }
     }
+} finally {
+    $env:PATH = $savedPath
 }
 
 # == Wrapper scripts (always regenerated) ==-----------------------------------
