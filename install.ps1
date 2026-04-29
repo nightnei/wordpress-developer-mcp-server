@@ -12,6 +12,15 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
+$Update = $false
+foreach ($arg in $args) {
+    if ($arg -ieq '-Update' -or $arg -ieq '--update') {
+        $Update = $true
+    } else {
+        throw "Unknown argument: $arg"
+    }
+}
+
 # Force console I/O to UTF-8 so emoji + box-drawing glyphs render.
 try {
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -34,9 +43,12 @@ $McpDir       = Join-Path $InstallDir 'mcp'
 $BinDir       = Join-Path $InstallDir 'bin'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
+$StudioShim   = Join-Path $NodeDir   'studio.cmd'
 $McpJs        = Join-Path $McpDir    'index.js'
 $VersionFile  = Join-Path $McpDir    '.version'
 $McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
+$McpLauncher  = 'cmd.exe'
+$McpArgs      = @('/d', '/s', '/c', $McpCommand)
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 
 # == Unicode glyphs (ASCII-safe source) ==--------------------------------------
@@ -65,8 +77,12 @@ function Head([string]$m) { Write-Host $m -ForegroundColor Cyan }
 function Link([string]$m) { Write-Host $m -ForegroundColor Blue }
 
 Head ""
-Head "$($G.Rose) Installing WordPress Developer MCP Server..."
-Ok   "Turn your AI into a full-stack WordPress developer."
+if ($Update) {
+    Head "$($G.Rose) Updating WordPress Developer MCP Server..."
+} else {
+    Head "$($G.Rose) Installing WordPress Developer MCP Server..."
+    Ok   "Turn your AI into a full-stack WordPress developer."
+}
 
 # == OS / arch check ==---------------------------------------------------------
 if ($env:OS -ne 'Windows_NT') {
@@ -88,7 +104,7 @@ if (-not $nodeArch) {
 }
 
 Write-Host ""
-Ok "$($G.Tick) Detected: Windows on $procArch"
+Ok "  $($G.Tick) Detected: Windows on $procArch"
 
 # == WordPress Studio detection ==----------------------------------------------
 $studioExe = Join-Path $env:LOCALAPPDATA 'studio_app\Studio.exe'
@@ -100,12 +116,19 @@ if ($studioFound) {
     Write-Host "  on both at the same time $($G.EmDash) your sites and data stay in sync."
 }
 
-# == Detect installed agents ==-------------------------------------------------
-Write-Host ""
-Info "Detecting installed AI agents..."
-
 function Test-Command([string]$name) {
     [bool](Get-Command $name -ErrorAction SilentlyContinue)
+}
+
+function Test-AppxPackage([string]$name) {
+    if (-not (Get-Command Get-AppxPackage -ErrorAction SilentlyContinue)) {
+        return $false
+    }
+    try {
+        return [bool](Get-AppxPackage -Name $name -ErrorAction SilentlyContinue)
+    } catch {
+        return $false
+    }
 }
 
 function Test-AnyPath([string[]]$paths) {
@@ -115,63 +138,65 @@ function Test-AnyPath([string[]]$paths) {
     return $false
 }
 
-# Codex: CLI on PATH, or app installed under LocalAppData\Programs.
-$foundCodex = (Test-Command 'codex') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\@openai\codex'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\codex'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\Codex')
-))
-
-# Claude Desktop installs to %LOCALAPPDATA%\AnthropicClaude via Squirrel.
-$foundClaudeDesktop = Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'AnthropicClaude'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\Claude'),
-    (Join-Path ${env:ProgramFiles} 'Claude')
-)
-
-$foundClaudeCode = Test-Command 'claude'
-
-$foundCursor = (Test-Command 'cursor') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\cursor\Cursor.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\Cursor\Cursor.exe')
-))
-
-$foundWindsurf = (Test-Command 'windsurf') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Programs\windsurf\Windsurf.exe')
-))
-
-$foundZed = (Test-Command 'zed') -or (Test-AnyPath @(
-    (Join-Path $env:LOCALAPPDATA 'Programs\Zed\Zed.exe'),
-    (Join-Path $env:LOCALAPPDATA 'Zed\Zed.exe')
-))
-
+$foundCodex = $false
+$foundClaudeDesktop = $false
+$foundClaudeCode = $false
+$foundCursor = $false
+$foundWindsurf = $false
+$foundZed = $false
 $foundAgentsCount = 0
-foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCursor, $foundWindsurf, $foundZed)) {
-    if ($f) { $foundAgentsCount++ }
-}
 
-Write-Host ""
-if ($foundAgentsCount -eq 0) {
-    Info "$($G.Warn)  No supported AI agents found on your system."
-    Write-Host "  The MCP server will still be installed."
-    Write-Host "  Install any supported agent and re-run this script."
+if (-not $Update) {
+    # == Detect installed agents ==---------------------------------------------
     Write-Host ""
-    Link "  Get Codex:          https://openai.com/codex"
-    Link "  Get Claude:         https://claude.ai/download"
-    Link "  Get Cursor:         https://cursor.com"
-    Link "  Get Windsurf:       https://windsurf.com"
-    Link "  Get Zed:            https://zed.dev"
-} else {
-    Ok "Found $foundAgentsCount AI agent(s):"
-    if ($foundCodex)         { Ok "  $($G.Tick) Codex" }
-    if ($foundClaudeDesktop) { Ok "  $($G.Tick) Claude Desktop" }
-    if ($foundClaudeCode)    { Ok "  $($G.Tick) Claude Code (CLI)" }
-    if ($foundCursor)        { Ok "  $($G.Tick) Cursor" }
-    if ($foundWindsurf)      { Ok "  $($G.Tick) Windsurf" }
-    if ($foundZed)           { Ok "  $($G.Tick) Zed" }
-    Write-Host ""
-    Write-Host "  MCP support will be added to all of them."
+    Info "Detecting installed AI agents..."
+
+    # Codex: CLI on PATH (npm CLI or MSIX app execution alias), or the Microsoft
+    # Store desktop app (distributed only as MSIX package "OpenAI.Codex").
+    $foundCodex = (Test-Command 'codex') -or (Test-AppxPackage 'OpenAI.Codex')
+
+    # Claude Desktop installs to %LOCALAPPDATA%\AnthropicClaude via Squirrel.
+    $foundClaudeDesktop = Test-AnyPath @(
+        (Join-Path $env:LOCALAPPDATA 'AnthropicClaude'),
+        (Join-Path $env:LOCALAPPDATA 'Programs\Claude'),
+        (Join-Path ${env:ProgramFiles} 'Claude')
+    )
+
+    $foundClaudeCode = Test-Command 'claude'
+
+    $foundCursor = (Test-Command 'cursor') -or `
+        (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\cursor\Cursor.exe'))
+
+    $foundWindsurf = (Test-Command 'windsurf') -or `
+        (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'))
+
+    # Zed's Windows installer doesn't register a PATH entry, so only probe the install dir.
+    $foundZed = Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Zed\Zed.exe')
+
+    foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCursor, $foundWindsurf, $foundZed)) {
+        if ($f) { $foundAgentsCount++ }
+    }
+
+    if ($foundAgentsCount -eq 0) {
+        Info "$($G.Warn)  No supported AI agents found on your system."
+        Write-Host "  The MCP server will still be installed."
+        Write-Host "  Install any supported agent and re-run this script."
+        Write-Host ""
+        Link "  Get Codex:          https://openai.com/codex"
+        Link "  Get Claude:         https://claude.ai/download"
+        Link "  Get Cursor:         https://cursor.com"
+        Link "  Get Windsurf:       https://windsurf.com"
+        Link "  Get Zed:            https://zed.dev"
+    } else {
+        Ok "Found $foundAgentsCount AI agent(s):"
+        if ($foundCodex)         { Ok "  $($G.Tick) Codex" }
+        if ($foundClaudeDesktop) { Ok "  $($G.Tick) Claude Desktop" }
+        if ($foundClaudeCode)    { Ok "  $($G.Tick) Claude Code" }
+        if ($foundCursor)        { Ok "  $($G.Tick) Cursor" }
+        if ($foundWindsurf)      { Ok "  $($G.Tick) Windsurf" }
+        if ($foundZed)           { Ok "  $($G.Tick) Zed" }
+        Write-Host "  MCP support will be added to all of them."
+    }
 }
 
 # == Prepare install directory ==-----------------------------------------------
@@ -195,8 +220,8 @@ if (Test-Path -LiteralPath $NodeBin) {
     } catch { $currentNodeVersion = '' }
 }
 
-if ($currentNodeVersion -eq $NodeVersion) {
-    Ok "$($G.Tick) Runtime environment already installed"
+if (($currentNodeVersion -eq $NodeVersion) -and (Test-Path -LiteralPath $NpmBin)) {
+    Ok "  $($G.Tick) Runtime environment already installed"
 } else {
     Info "Downloading runtime environment..."
     if (Test-Path -LiteralPath $NodeDir) {
@@ -236,16 +261,16 @@ if ($currentNodeVersion -eq $NodeVersion) {
         Remove-Item -LiteralPath $zipPath     -Force          -ErrorAction SilentlyContinue
     }
 
-    if (-not (Test-Path -LiteralPath $NodeBin)) {
-        Err "$($G.Cross) Node.js installation failed (node.exe missing)."
+    if (-not (Test-Path -LiteralPath $NodeBin) -or -not (Test-Path -LiteralPath $NpmBin)) {
+        Err "$($G.Cross) Node.js installation failed (node.exe or npm.cmd missing)."
         exit 1
     }
-    Ok "$($G.Tick) Runtime environment installed"
+    Ok "  $($G.Tick) Runtime environment installed"
 }
 
 # == MCP Server release ==------------------------------------------------------
 Write-Host ""
-Info "Checking MCP Server..."
+Info "Checking server..."
 
 $mcpLatest = $null
 try {
@@ -274,9 +299,9 @@ if (Test-Path -LiteralPath $VersionFile) {
 }
 
 if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
-    Ok "$($G.Tick) MCP Server already up to date"
+    Ok "  $($G.Tick) Server already up to date"
 } else {
-    Info "Downloading MCP Server..."
+    Info "Downloading server..."
     if (Test-Path -LiteralPath $McpDir) {
         Remove-Item -LiteralPath $McpDir -Recurse -Force
     }
@@ -292,114 +317,108 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     try {
         Invoke-WebRequest -Uri $tarUrl -OutFile $tarPath -UseBasicParsing
     } catch {
-        Err "$($G.Cross) Failed to download MCP Server: $($_.Exception.Message)"
+        Err "$($G.Cross) Failed to download server: $($_.Exception.Message)"
         exit 1
     }
 
-    if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) {
-        Err "$($G.Cross) tar.exe not found. Windows 10 build 17063 or later is required."
+    # Pin to Windows' built-in bsdtar at System32. PATH lookup is unreliable
+    # here: if PowerShell was launched from Git Bash, MSYS's GNU tar at
+    # C:\Program Files\Git\usr\bin\tar.exe wins the lookup, and GNU tar treats
+    # arguments containing ':' as 'host:path' (rsh syntax), so `-C C:\...`
+    # fails with "Cannot connect to C: resolve failed".
+    $tarExe = Join-Path $env:SystemRoot 'System32\tar.exe'
+    if (-not (Test-Path -LiteralPath $tarExe)) {
+        Err "$($G.Cross) tar.exe not found at $tarExe. Windows 10 build 17063 or later is required."
         exit 1
     }
 
-    # Run tar with -C to avoid relying on current directory.
-    & tar.exe -xzf $tarPath -C $McpDir
+    # -C avoids relying on the current directory.
+    & $tarExe -xzf $tarPath -C $McpDir
     $tarRc = $LASTEXITCODE
     Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
     if ($tarRc -ne 0) {
-        Err "$($G.Cross) Failed to extract MCP Server (tar exit $tarRc)."
+        Err "$($G.Cross) Failed to extract server (tar exit $tarRc)."
+        exit 1
+    }
+    if (-not (Test-Path -LiteralPath $McpJs)) {
+        Err "$($G.Cross) Server installation failed (index.js missing)."
         exit 1
     }
 
     Set-Content -LiteralPath $VersionFile -Value $mcpLatest -NoNewline -Encoding ASCII
 
     if ($currentMcpVersion) {
-        Ok "$($G.Tick) MCP Server updated to $mcpLatest"
+        Ok "  $($G.Tick) Server updated to $mcpLatest"
     } else {
-        Ok "$($G.Tick) MCP Server installed"
+        Ok "  $($G.Tick) Server installed"
     }
 }
 
 # == Studio CLI (wp-studio) ==--------------------------------------------------
 Write-Host ""
-Info "Checking Studio CLI..."
+Info "Checking CLI..."
 
 # Put our bundled node first on PATH so npm.cmd finds its own node.exe.
 $env:PATH = "$NodeDir;$env:PATH"
 
-$studioLatest = ''
-try {
-    $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
-    if ($LASTEXITCODE -eq 0 -and $viewOut) {
-        $studioLatest = ($viewOut | Out-String).Trim()
-    }
-} catch { $studioLatest = '' }
+# Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
+# Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
+# $studioLatest = ''
+# try {
+#     $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
+#     if ($LASTEXITCODE -eq 0 -and $viewOut) {
+#         $studioLatest = ($viewOut | Out-String).Trim()
+#     }
+# } catch { $studioLatest = '' }
+
+$studioLatest = '1.7.8'
 
 $currentStudioVersion = ''
 try {
-    $listOut = (& $NpmBin list -g wp-studio --depth=0 --loglevel=silent 2>&1 | Out-String)
+    $listOut = (& $NpmBin list -g wp-studio --depth=0 --loglevel=silent --prefix $NodeDir 2>&1 | Out-String)
     if ($listOut -match 'wp-studio@([^\s\r\n]+)') {
         $currentStudioVersion = $Matches[1].Trim()
     }
 } catch { $currentStudioVersion = '' }
 
-if ($currentStudioVersion -and $studioLatest -and ($currentStudioVersion -eq $studioLatest)) {
-    Ok "$($G.Tick) Studio CLI already up to date"
+$studioShimExists = Test-Path -LiteralPath $StudioShim
+if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $studioShimExists) {
+    Ok "  $($G.Tick) CLI already up to date"
 } else {
-    Info "Installing Studio CLI..."
-    $npmOutput = (& $NpmBin install -g wp-studio --loglevel=silent 2>&1 | Out-String)
+    Info "Installing CLI..."
+    $npmOutput = (& $NpmBin install -g "wp-studio@$studioLatest" --loglevel=silent --prefix $NodeDir 2>&1 | Out-String)
+    $npmExitCode = $LASTEXITCODE
     foreach ($line in ($npmOutput -split "`r?`n")) {
         if ($line -match '(?i)error') { Write-Host $line }
     }
+    if ($npmExitCode -ne 0) {
+        Err "$($G.Cross) Failed to install CLI (npm exit $npmExitCode)."
+        exit 1
+    }
+    if (-not (Test-Path -LiteralPath $StudioShim)) {
+        Err "$($G.Cross) CLI installation failed (studio.cmd missing)."
+        exit 1
+    }
     if ($currentStudioVersion) {
-        Ok "$($G.Tick) Studio CLI updated to $studioLatest"
+        Ok "  $($G.Tick) CLI updated to $studioLatest"
     } else {
-        Ok "$($G.Tick) Studio CLI installed"
+        Ok "  $($G.Tick) CLI installed"
     }
-}
-
-# Resolve wp-studio's real entry .mjs (from its package.json `bin.studio`).
-# The MCP server spawns STUDIO_CLI_PATH directly, so pointing at the .mjs
-# lets it use `node <script>` and avoids Windows' spawn-EINVAL on .cmd shims.
-$studioMjsPath = $null
-try {
-    $npmRootG = (& $NpmBin root -g --loglevel=silent 2>$null | Out-String).Trim()
-    if ($npmRootG) {
-        $studioPkgJson = Join-Path $npmRootG 'wp-studio\package.json'
-        if (Test-Path -LiteralPath $studioPkgJson) {
-            $studioPkg = Get-Content -LiteralPath $studioPkgJson -Raw | ConvertFrom-Json
-            $binRel = $null
-            if ($studioPkg.bin -is [string]) {
-                $binRel = $studioPkg.bin
-            } elseif ($studioPkg.bin -and $studioPkg.bin.studio) {
-                $binRel = [string]$studioPkg.bin.studio
-            }
-            if ($binRel) {
-                $candidate = Join-Path (Join-Path $npmRootG 'wp-studio') ($binRel -replace '/', '\')
-                if (Test-Path -LiteralPath $candidate) {
-                    $studioMjsPath = $candidate
-                }
-            }
-        }
-    }
-} catch { $studioMjsPath = $null }
-
-if (-not $studioMjsPath) {
-    Err "$($G.Cross) Could not locate wp-studio's entry script. MCP spawning will fail."
-    exit 1
 }
 
 # == Wrapper scripts (always regenerated) ==-----------------------------------
 Write-Host ""
 Info "Creating wrapper scripts..."
 
-# The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule
-# that triggers when a line starts with `"` and ends with `"`.
-# STUDIO_CLI_PATH points straight at wp-studio's .mjs so the MCP can launch
-# it via `node <script>` (dodges Windows spawn-EINVAL on .cmd shims).
+# STUDIO_CLI_PATH points at studio-cli.cmd. The MCP server recognizes
+# .cmd/.bat in this env var and spawns with shell:true (Node 18.20+/20.12+/22+
+# escapes args safely under shell).
+# The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule that
+# triggers when a line starts with `"` and ends with `"`.
 $studioMcpContent = @"
 @echo off
 setlocal
-set "STUDIO_CLI_PATH=$studioMjsPath"
+set "STUDIO_CLI_PATH=$StudioCliCmd"
 call "$NodeBin" "$McpJs" %*
 exit /b %ERRORLEVEL%
 "@
@@ -408,12 +427,7 @@ $studioCliContent = @"
 @echo off
 setlocal
 set "PATH=$NodeDir;%PATH%"
-where /q studio
-if %ERRORLEVEL% EQU 0 (
-  studio %*
-) else (
-  call "$NodeDir\studio.cmd" %*
-)
+call "$StudioShim" %*
 exit /b %ERRORLEVEL%
 "@
 
@@ -430,17 +444,23 @@ foreach ($pair in @(
     [System.IO.File]::WriteAllText($pair.Path, $text, [System.Text.Encoding]::Default)
 }
 
-Ok "$($G.Tick) Wrapper scripts ready"
+Ok "  $($G.Tick) Wrapper scripts ready"
 
-# == Node-driven config helpers (parity with install.sh) ==--------------------
-# We reuse the same snippets install.sh uses - pass inputs via env vars to
-# sidestep shell/argument quoting issues.
+if ($Update) {
+    Write-Host ""
+    Ok "$($G.Check) Update complete!"
+    Info "$($G.Rot)  Restart your AI assistant to apply the new version."
+    Write-Host ""
+    exit 0
+}
 
+# == Node-driven config helpers ==----------------------------------------------
 $mcpServersJsScript = @'
 const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
+const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
 
 fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
@@ -455,7 +475,10 @@ if (!config || typeof config !== 'object') config = {};
 if (!config.mcpServers || typeof config.mcpServers !== 'object') {
   config.mcpServers = {};
 }
-config.mcpServers['wordpress-developer'] = { command: mcpCommand };
+config.mcpServers['wordpress-developer'] = {
+  command: mcpCommand,
+  args: mcpArgs
+};
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
@@ -465,24 +488,64 @@ const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
 const mcpCommand = process.env.WPMCP_MCP_COMMAND;
+const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
+
+function stripTrailingCommas(input) {
+  let output = '';
+  let inString = false;
+  for (let i = 0; i < input.length; i++) {
+    const c = input[i];
+    if (inString) {
+      output += c;
+      if (c === '"') {
+        let bs = 0;
+        for (let j = i - 1; j >= 0 && input[j] === '\\'; j--) bs++;
+        if (bs % 2 === 0) inString = false;
+      }
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+      output += c;
+      continue;
+    }
+    if (c === ',') {
+      let j = i + 1;
+      while (j < input.length && /[\s\n\r\t]/.test(input[j])) j++;
+      if (j < input.length && (input[j] === '}' || input[j] === ']')) continue;
+    }
+    output += c;
+  }
+  return output;
+}
+
+function parseZedSettingsJson(raw) {
+  const s = raw.trim() === '' ? '{}' : raw;
+  return JSON.parse(stripTrailingCommas(s));
+}
 
 fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
+let raw = '';
+try {
+  raw = fs.readFileSync(configPath, 'utf8');
+} catch (e) {
+  raw = '';
+}
 let config = {};
 try {
-  const raw = fs.readFileSync(configPath, 'utf8');
-  if (raw && raw.trim()) config = JSON.parse(raw);
+  config = parseZedSettingsJson(raw);
 } catch (e) {
-  config = {};
+  console.error(e.message);
+  process.exit(1);
 }
 if (!config || typeof config !== 'object') config = {};
 if (!config.context_servers || typeof config.context_servers !== 'object') {
   config.context_servers = {};
 }
 config.context_servers['wordpress-developer'] = {
-  source: 'custom',
   command: mcpCommand,
-  args: []
+  args: mcpArgs
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -492,17 +555,22 @@ $codexTomlJsScript = @'
 const fs = require('fs');
 const path = require('path');
 const configPath = process.env.WPMCP_CONFIG_FILE;
-// TOML basic string: escape backslashes and double quotes.
-const mcpCommand = process.env.WPMCP_MCP_COMMAND
-  .replace(/\\/g, '\\\\')
-  .replace(/"/g, '\\"');
+const mcpCommand = process.env.WPMCP_MCP_COMMAND;
+const mcpArgs = JSON.parse(process.env.WPMCP_MCP_ARGS || '[]');
+
+function tomlString(value) {
+  return '"' + value.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+}
 
 fs.mkdirSync(path.dirname(configPath), { recursive: true });
 
 let content = '';
 try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = ''; }
 
-const newEntry = '[mcp_servers.wordpress-developer]\ncommand = "' + mcpCommand + '"';
+const newEntry =
+  '[mcp_servers.wordpress-developer]\n' +
+  'command = ' + tomlString(mcpCommand) + '\n' +
+  'args = [' + mcpArgs.map(tomlString).join(', ') + ']';
 const sectionRegex = /\[mcp_servers\.wordpress-developer\][^\[]*/;
 
 if (sectionRegex.test(content)) {
@@ -528,17 +596,21 @@ function Invoke-NodeHelper {
 
     $savedConfig = [Environment]::GetEnvironmentVariable('WPMCP_CONFIG_FILE', 'Process')
     $savedCmd    = [Environment]::GetEnvironmentVariable('WPMCP_MCP_COMMAND', 'Process')
+    $savedArgs   = [Environment]::GetEnvironmentVariable('WPMCP_MCP_ARGS', 'Process')
     [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $ConfigFile, 'Process')
-    [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $McpCommand, 'Process')
+    [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $McpLauncher, 'Process')
+    [Environment]::SetEnvironmentVariable('WPMCP_MCP_ARGS', ($McpArgs | ConvertTo-Json -Compress), 'Process')
     try {
-        & $NodeBin $tempJs 2>&1 | Out-Null
+        $output = & $NodeBin $tempJs 2>&1
         if ($LASTEXITCODE -ne 0) {
-            throw "Node helper exited with code $LASTEXITCODE"
+            $detail = if ($output) { ($output | Out-String).Trim() } else { '(no output)' }
+            throw "Node helper exited with code $LASTEXITCODE`n$detail"
         }
     } finally {
         Remove-Item -LiteralPath $tempJs -Force -ErrorAction SilentlyContinue
         [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $savedConfig, 'Process')
         [Environment]::SetEnvironmentVariable('WPMCP_MCP_COMMAND', $savedCmd,    'Process')
+        [Environment]::SetEnvironmentVariable('WPMCP_MCP_ARGS',    $savedArgs,   'Process')
     }
 }
 
@@ -552,6 +624,22 @@ function Set-CodexTomlConfig { param([string]$ConfigFile)
     Invoke-NodeHelper -Script $codexTomlJsScript -ConfigFile $ConfigFile
 }
 
+function Resolve-NativeExecutable {
+    param([Parameter(Mandatory)][string]$Name)
+    # Absolute path or name with its own extension: trust the caller.
+    if ([System.IO.Path]::IsPathRooted($Name) -or $Name.Contains('.')) {
+        return $Name
+    }
+    # Skip .ps1 shims: those require matching PowerShell execution policy and
+    # fail opaquely (e.g. fnm installs claude.ps1 + claude.cmd side-by-side).
+    # Prefer native executables that don't depend on script execution policy.
+    $native = Get-Command $Name -CommandType Application -ErrorAction SilentlyContinue |
+              Where-Object { $_.Extension -in '.exe','.cmd','.bat','.com' } |
+              Select-Object -First 1
+    if ($native) { return $native.Source }
+    return $Name
+}
+
 function Invoke-ExternalQuiet {
     param(
         [Parameter(Mandatory)][string]$Exe,
@@ -559,9 +647,18 @@ function Invoke-ExternalQuiet {
     )
     # Splat the array; PowerShell forwards each element verbatim to the child
     # process, so values containing spaces or `--` pass through unmodified.
-    & $Exe @Arguments 2>&1 | Out-Null
-    return $LASTEXITCODE
+    # Capture (don't discard) the output: piping to Out-Null closes the child's
+    # stdout and some npm-shim CLIs (e.g. Claude Code) exit non-zero on a
+    # broken pipe. Returning the output also lets callers surface real errors
+    # instead of just "(failed)".
+    $resolved = Resolve-NativeExecutable -Name $Exe
+    $output = & $resolved @Arguments 2>&1
+    return [pscustomobject]@{
+        ExitCode = $LASTEXITCODE
+        Output   = ($output | Out-String).TrimEnd()
+    }
 }
+
 
 # == Configure AI agents ==-----------------------------------------------------
 $configuredAgents = [System.Collections.Generic.List[string]]::new()
@@ -576,9 +673,11 @@ if ($foundAgentsCount -gt 0) {
             if (Test-Command 'codex') {
                 $null = Invoke-ExternalQuiet -Exe 'codex' `
                     -Arguments @('mcp','remove','wordpress-developer')
-                $rc = Invoke-ExternalQuiet -Exe 'codex' `
-                    -Arguments @('mcp','add','wordpress-developer','--',$McpCommand)
-                if ($rc -ne 0) { throw "codex mcp add exited with $rc" }
+                $res = Invoke-ExternalQuiet -Exe 'codex' `
+                    -Arguments (@('mcp','add','wordpress-developer','--',$McpLauncher) + $McpArgs)
+                if ($res.ExitCode -ne 0) {
+                    throw "codex mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
+                }
             } else {
                 Set-CodexTomlConfig -ConfigFile (Join-Path $env:USERPROFILE '.codex\config.toml')
             }
@@ -587,6 +686,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Codex') | Out-Null
             Err "  $($G.Xmark) Codex (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -599,6 +701,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Claude Desktop') | Out-Null
             Err "  $($G.Xmark) Claude Desktop (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -606,14 +711,19 @@ if ($foundAgentsCount -gt 0) {
         try {
             $null = Invoke-ExternalQuiet -Exe 'claude' `
                 -Arguments @('mcp','remove','wordpress-developer','--scope','user')
-            $rc = Invoke-ExternalQuiet -Exe 'claude' `
-                -Arguments @('mcp','add','--scope','user','wordpress-developer','--',$McpCommand)
-            if ($rc -ne 0) { throw "claude mcp add exited with $rc" }
-            $configuredAgents.Add('Claude Code (CLI)') | Out-Null
-            Ok "  $($G.Tick) Claude Code (CLI)"
+            $res = Invoke-ExternalQuiet -Exe 'claude' `
+                -Arguments (@('mcp','add','--scope','user','wordpress-developer','--',$McpLauncher) + $McpArgs)
+            if ($res.ExitCode -ne 0) {
+                throw "claude mcp add exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
+            }
+            $configuredAgents.Add('Claude Code') | Out-Null
+            Ok "  $($G.Tick) Claude Code"
         } catch {
-            $failedAgents.Add('Claude Code (CLI)') | Out-Null
-            Err "  $($G.Xmark) Claude Code (CLI) (failed)"
+            $failedAgents.Add('Claude Code') | Out-Null
+            Err "  $($G.Xmark) Claude Code (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -626,6 +736,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Cursor') | Out-Null
             Err "  $($G.Xmark) Cursor (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -638,6 +751,9 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Windsurf') | Out-Null
             Err "  $($G.Xmark) Windsurf (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 
@@ -650,9 +766,13 @@ if ($foundAgentsCount -gt 0) {
         } catch {
             $failedAgents.Add('Zed') | Out-Null
             Err "  $($G.Xmark) Zed (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
         }
     }
 }
+
 
 # == WordPress.com authentication ==--------------------------------------------
 Write-Host ""
@@ -668,16 +788,13 @@ try {
     $authOutput = $_.Exception.Message
 }
 
-if ($authOutput -match '(?i)Authenticated') {
-    $wpcomUser = 'your account'
-    if ($authOutput -match 'as\s+`([^`]+)`') {
-        $wpcomUser = $Matches[1]
-    } elseif ($authOutput -match "as\s+'([^']+)'") {
-        $wpcomUser = $Matches[1]
-    } elseif ($authOutput -match 'as\s+(\S+)') {
-        $wpcomUser = $Matches[1].TrimEnd('.', ',')
-    }
-
+# CLI output is localized, so match on two locale-independent signals instead
+# of an English phrase:
+#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
+#      does not)
+#   2) contains a backtick-quoted username
+$wpcomUser = if ($authOutput -match '`([^`]+)`') { $Matches[1] } else { '' }
+if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
     if ($studioFound) {
         Ok "Connected as $wpcomUser (using your WordPress Studio account)."
     } else {
@@ -724,9 +841,12 @@ if ($failedAgents.Count -gt 0) {
     Write-Host ""
     Write-Host "  Add this to the agent's MCP configuration manually:"
     Write-Host ""
+    $manualCommand = $McpLauncher | ConvertTo-Json -Compress
+    $manualArgs = $McpArgs | ConvertTo-Json -Compress
     Write-Host '    "mcpServers": {'
     Write-Host '      "wordpress-developer": {'
-    Write-Host ("        `"command`": `"" + ($McpCommand -replace '\\', '\\') + "`"")
+    Write-Host "        `"command`": $manualCommand,"
+    Write-Host "        `"args`": $manualArgs"
     Write-Host '      }'
     Write-Host '    }'
 }
@@ -736,12 +856,11 @@ $needsRestart = [System.Collections.Generic.List[string]]::new()
 
 if ($configuredAgents.Contains('Codex')) {
     # Only suggest restart when the desktop app is present, not just the CLI.
-    $codexAppInstalled = Test-AnyPath @(
-        (Join-Path $env:LOCALAPPDATA 'Programs\@openai\codex'),
-        (Join-Path $env:LOCALAPPDATA 'Programs\codex'),
-        (Join-Path $env:LOCALAPPDATA 'Programs\Codex')
-    )
-    if ($codexAppInstalled) { $needsRestart.Add('Codex') | Out-Null }
+    # Codex for Windows ships as an MSIX (Microsoft Store) package, so probe
+    # via Test-AppxPackage, matching the detection at the top of the script.
+    if (Test-AppxPackage 'OpenAI.Codex') {
+        $needsRestart.Add('Codex') | Out-Null
+    }
 }
 if ($configuredAgents.Contains('Claude Desktop')) { $needsRestart.Add('Claude Desktop') | Out-Null }
 if ($configuredAgents.Contains('Windsurf'))       { $needsRestart.Add('Windsurf')       | Out-Null }
