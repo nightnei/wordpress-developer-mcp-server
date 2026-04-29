@@ -261,7 +261,7 @@ if (($currentNodeVersion -eq $NodeVersion) -and (Test-Path -LiteralPath $NpmBin)
     }
     Ok "  $($G.Tick) Runtime environment installed"
 }
-exit 0
+
 # == MCP Server release ==------------------------------------------------------
 Write-Host ""
 Info "Checking server..."
@@ -399,7 +399,7 @@ if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $s
         Ok "  $($G.Tick) CLI installed"
     }
 }
-
+exit 0
 # == Wrapper scripts (always regenerated) ==-----------------------------------
 Write-Host ""
 Info "Creating wrapper scripts..."
