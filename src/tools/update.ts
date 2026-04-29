@@ -124,13 +124,9 @@ export function registerUpdateTools( server: McpServer ) {
 			const previousVersion = await getCurrentVersion();
 			let output = '';
 
-			// TODO: once install.ps1 gains an `-Update` flag (parity with
-			// install.sh --update), switch the Windows branch to
-			// `& ([scriptblock]::Create((irm '<url>'))) -Update` so it skips
-			// the interactive auth prompt and agent reconfiguration.
 			const command =
 				process.platform === 'win32'
-					? `powershell -NoProfile -Command "irm '${ INSTALL_SCRIPT_PS1_URL }' | iex" 2>&1`
+					? `powershell -NoProfile -Command "& ([scriptblock]::Create((irm '${ INSTALL_SCRIPT_PS1_URL }'))) -Update" 2>&1`
 					: `curl -fsSL "${ INSTALL_SCRIPT_SH_URL }" | bash -s -- --update 2>&1`;
 
 			try {
