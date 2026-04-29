@@ -36,16 +36,16 @@ $NodeDir      = Join-Path $InstallDir 'node'
 $McpDir       = Join-Path $InstallDir 'mcp'
 $BinDir       = Join-Path $InstallDir 'bin'
 
-$VersionFile  = Join-Path $McpDir    '.version'
-
+$McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
+$StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
+$VersionFile  = Join-Path $McpDir    '.version'
+
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 $McpJs        = Join-Path $McpDir    'index.js'
-$McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
 $McpLauncher  = 'cmd.exe'
 $McpArgs      = @('/d', '/s', '/c', $McpCommand)
-$StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 
 # == Unicode glyphs (ASCII-safe source) ==--------------------------------------
 function _U([int]$cp) { [char]::ConvertFromUtf32($cp) }
