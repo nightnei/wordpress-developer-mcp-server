@@ -236,7 +236,7 @@ if (Test-Path -LiteralPath $NodeBin) {
 }
 
 if (($currentNodeVersion -eq $NodeVersion) -and (Test-Path -LiteralPath $NpmBin)) {
-    Ok "  $($G.Tick) Runtime environment already installed"
+    Ok "  $($G.Tick) Runtime environment already up to date"
 } else {
     Info "Downloading runtime environment..."
     if (Test-Path -LiteralPath $NodeDir) {
