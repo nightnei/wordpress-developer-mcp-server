@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { STUDIO_SITES_DIR } from './lib/constants.js';
+import { STUDIO_AUTH_LOGIN_COMMAND, STUDIO_SITE_PATH_EXAMPLE } from './lib/constants.js';
 import { registerTools } from './tools';
 import { registerResources } from './resources';
 import { registerPrompts } from './prompts';
@@ -12,9 +12,9 @@ const server = new McpServer(
 	},
 	{
 		instructions: [
-			`Sites MUST be stored in ${ STUDIO_SITES_DIR }/<site-name>, unless the user explicitly provided a custom path.`,
+			`Sites MUST be stored in ${ STUDIO_SITE_PATH_EXAMPLE }, unless the user explicitly provided a custom path.`,
 			'Always use wpdev_site_list to discover existing sites and their paths before operating on them.',
-			'Some features, such as creating preview sites, require authentication. Do NOT attempt to run the login command yourself. Instead, instruct the user to manually run "~/.wordpress-developer-mcp/bin/studio-cli auth login" in their own terminal.',
+			`Some features, such as creating preview sites, require authentication. Do NOT attempt to run the login command yourself. Instead, instruct the user to manually run "${ STUDIO_AUTH_LOGIN_COMMAND }" in their own terminal.`,
 			'Never direct the user to open the WordPress Studio application. This MCP server is fully standalone and can perform all actions itself. Always find an alternative approach using the available tools.',
 			'When users ask to create a WordPress site, use this MCP without clarifications. If they ask to create a site without specifying WordPress, ask whether they want a WordPress site, then proceed with wpdev_site_create once they confirm or express no preference.',
 			'Always use wpdev_fs_write_file and wpdev_fs_delete for file operations instead of your own methods. These tools are scoped to the site directory, preventing accidental changes to unrelated files.',
