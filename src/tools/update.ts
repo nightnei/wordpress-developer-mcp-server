@@ -126,6 +126,9 @@ export function registerUpdateTools( server: McpServer ) {
 
 			const command =
 				process.platform === 'win32'
+					// PowerShell cannot pipe downloaded script text and pass arguments
+					// cleanly. Create a scriptblock, then invoke it with -Update so
+					// install.ps1 skips install-only auth and agent configuration.
 					? `powershell -NoProfile -Command "& ([scriptblock]::Create((irm '${ INSTALL_SCRIPT_PS1_URL }'))) -Update" 2>&1`
 					: `curl -fsSL "${ INSTALL_SCRIPT_SH_URL }" | bash -s -- --update 2>&1`;
 

@@ -4,6 +4,9 @@
 # whether PowerShell reads .ps1 files as UTF-8 or the legacy ANSI code page.
 
 param(
+    # The MCP update tool invokes the downloaded script as a scriptblock and
+    # passes -Update. Keep this as a real PowerShell switch so update mode is
+    # bound before any install-only detection/configuration runs.
     [switch]$Update
 )
 
@@ -75,6 +78,7 @@ if ($Update) {
 # == OS / arch check ==---------------------------------------------------------
 $isWindows = $false
 try {
+    # $env:OS fails during -Update flow (install.ps1 is invoked as a scriptblock).
     $isWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
         [System.Runtime.InteropServices.OSPlatform]::Windows
     )
@@ -89,6 +93,9 @@ if (-not $isWindows) {
 
 function Get-NativeProcessorArchitecture {
     try {
+        # $env:PROCESSOR_ARCHITECTURE reports the current process architecture.
+        # Git Bash / emulated shells on Windows ARM64 can report AMD64 there, so
+        # prefer the native CPU architecture before choosing the Node.js archive.
         $cpu = Get-CimInstance -ClassName Win32_Processor -ErrorAction Stop | Select-Object -First 1
         switch ([int]$cpu.Architecture) {
             9  { return 'AMD64' }
@@ -375,16 +382,11 @@ Info "Checking CLI..."
 
 # Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
 # Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
-# $studioLatest = ''
-# try {
-#     $viewOut = & $NpmBin view wp-studio version --loglevel=silent 2>$null
-#     if ($LASTEXITCODE -eq 0 -and $viewOut) {
-#         $studioLatest = ($viewOut | Out-String).Trim()
-#     }
-# } catch { $studioLatest = '' }
-
 $studioLatest = '1.7.8'
 
+# Keep PATH scoped to npm's work. npm.cmd is called by absolute path, but its
+# generated shims and child commands still expect the bundled node directory to
+# be first on PATH in plain PowerShell.
 $savedPath = $env:PATH
 $env:PATH = "$NodeDir;$savedPath"
 
@@ -398,6 +400,8 @@ try {
 
 try {
     $studioShimExists = Test-Path -LiteralPath $StudioShim
+    # npm metadata alone is not enough: the wrapper below directly calls
+    # studio.cmd, so a missing shim must force reinstall instead of "up to date".
     if ($currentStudioVersion -and ($currentStudioVersion -eq $studioLatest) -and $studioShimExists) {
         Ok "  $($G.Tick) CLI already up to date"
     } else {
@@ -467,6 +471,8 @@ foreach ($pair in @(
 Ok "  $($G.Tick) Wrapper scripts ready"
 
 if ($Update) {
+    # Programmatic updates should refresh runtime/server/wrappers only. Agent
+    # config and WordPress.com auth are install-time work and can block an AI run.
     Write-Host ""
     Ok "$($G.Check) Update complete!"
     Info "$($G.Rot)  Restart your AI assistant to apply the new version."
@@ -588,6 +594,8 @@ const newEntry =
   'command = ' + tomlString(mcpCommand) + '\n' +
   'args = []\n' +
   'enabled = true';
+// Match by TOML lines, not "until next [". The entry itself contains
+// args = [], and an older regex treated that array as a new section.
 const sectionRegex = /^\[mcp_servers\.wordpress-developer\](?:\r?\n(?!\[)[^\r\n]*)*/m;
 
 if (sectionRegex.test(content)) {
@@ -667,6 +675,8 @@ function Invoke-ExternalQuiet {
     # instead of just "(failed)".
     $resolved = Resolve-NativeExecutable -Name $Exe
     $savedErrorActionPreference = $ErrorActionPreference
+    # Native CLIs may write normal progress to stderr. With the script-wide
+    # Stop policy, PowerShell can promote that to NativeCommandError.
     $ErrorActionPreference = 'Continue'
     try {
         $output = & $resolved @Arguments 2>&1
@@ -729,6 +739,8 @@ if ($foundAgentsCount -gt 0) {
 
     if ($foundClaudeCode) {
         try {
+            # Claude reports "not found" on first install. Removing is only a
+            # cleanup step; the following add is the operation that must succeed.
             try {
                 $null = Invoke-ExternalQuiet -Exe 'claude' `
                     -Arguments @('mcp','remove','wordpress-developer','--scope','user')
@@ -813,6 +825,8 @@ $authExitCode = $authStatus.ExitCode
 #   1) mentions "WordPress.com" (the error path "Authentication token invalid"
 #      does not)
 #   2) contains a backtick-quoted username
+# The status command also writes localized progress to stderr, so it must run
+# through Invoke-ExternalQuiet rather than direct PowerShell invocation.
 $wpcomUser = if ($authOutput -match '`([^`]+)`') { $Matches[1] } else { '' }
 if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
     if ($studioFound) {

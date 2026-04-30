@@ -70,6 +70,8 @@ function Invoke-ExternalQuiet {
     )
     $resolved = Resolve-NativeExecutable -Name $Exe
     $savedErrorActionPreference = $ErrorActionPreference
+    # Native CLIs can write expected messages to stderr. Do not let the
+    # script-wide Stop policy turn those into terminating errors.
     $ErrorActionPreference = 'Continue'
     try {
         $output = & $resolved @Arguments 2>&1
@@ -89,6 +91,9 @@ function Remove-McpServersJson {
     }
 
     if (Test-Path -LiteralPath $NodeBin) {
+        # Prefer Node for JSON rewrites. PowerShell's ConvertTo-Json produces
+        # very wide spacing in nested objects, and Claude Desktop has been
+        # sensitive to config files rewritten that way.
         $script = @'
 const fs = require('fs');
 const configPath = process.env.WPMCP_CONFIG_FILE;
@@ -150,6 +155,8 @@ function Remove-ZedSettings {
     }
 
     if (Test-Path -LiteralPath $NodeBin) {
+        # Zed settings allow trailing commas, so plain ConvertFrom-Json can fail.
+        # Reuse the small JS parser that strips only structural trailing commas.
         $script = @'
 const fs = require('fs');
 const configPath = process.env.WPMCP_CONFIG_FILE;
@@ -229,6 +236,8 @@ function Remove-CodexToml {
 
     try {
         $content = Get-Content -LiteralPath $configFile -Raw
+        # Remove the main server section and nested per-tool approval sections,
+        # e.g. [mcp_servers.wordpress-developer.tools.studio_site_list].
         $content = $content -replace '(?m)^\[mcp_servers\.wordpress-developer(?:\.[^\]]+)?\](?:\r?\n(?!\[)[^\r\n]*)*', ''
         Set-Content -LiteralPath $configFile -Value ($content.TrimEnd() + "`n") -Encoding UTF8
         return $true
@@ -293,6 +302,8 @@ if ($zedFound) {
 Write-Host ""
 Info "Installation directory left in place:"
 Write-Host "  $InstallDir"
+# The installer directory contains the bundled runtime and helper files. Leave it
+# for manual removal so uninstalling MCP config cannot delete useful local state.
 Write-Host "  You can remove it manually if you no longer need the bundled runtime and files."
 
 $sitesDir = Join-Path $env:USERPROFILE 'Studio'
