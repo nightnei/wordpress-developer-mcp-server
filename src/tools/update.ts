@@ -47,14 +47,14 @@ async function getLatestRelease(): Promise< { tagName: string; tarballUrl: strin
 
 export function registerUpdateTools( server: McpServer ) {
 	server.registerTool(
-		'studio_check_for_mcp_updates',
+		'wpdev_check_for_mcp_updates',
 		{
 			description:
 				'Check if a newer version of the WordPress Developer MCP Server is available. ' +
 				'Proactively call this tool as soon as you use any other tool from this MCP server ' +
 				'for the first time — include it in parallel in the same tool call batch, never ' +
-				'on its own. For example: if the user asks to list sites, call studio_site_list ' +
-				'and studio_check_for_mcp_updates together in the same batch. ' +
+				'on its own. For example: if the user asks to list sites, call wpdev_site_list ' +
+				'and wpdev_check_for_mcp_updates together in the same batch. ' +
 				'Do not call it more than once per day — if you already checked today, ' +
 				'do not check again. If an update is available, briefly let the user know and ' +
 				'offer to install it — do not interrupt their workflow.',
@@ -103,7 +103,7 @@ export function registerUpdateTools( server: McpServer ) {
 						type: 'text' as const,
 						text:
 							`Update available! Current: ${ currentVersion }, Latest: ${ latest.tagName }. ` +
-							'Use studio_update_mcp to install the update. ' +
+							'Use wpdev_update_mcp to install the update. ' +
 							'IMPORTANT: After updating, the AI assistant must be restarted for changes to take effect.',
 					},
 				],
@@ -112,7 +112,7 @@ export function registerUpdateTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_update_mcp',
+		'wpdev_update_mcp',
 		{
 			description:
 				'Update the WordPress Developer MCP Server to the latest version. ' +

@@ -10,14 +10,6 @@ param(
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
-foreach ($arg in $args) {
-    if ($arg -ieq '--update') {
-        $Update = $true
-    } else {
-        throw "Unknown argument: $arg"
-    }
-}
-
 # Force console I/O to UTF-8 so emoji + box-drawing glyphs render.
 try {
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
