@@ -187,7 +187,7 @@ function Remove-CodexToml {
 
     try {
         $content = Get-Content -LiteralPath $configFile -Raw
-        $content = $content -replace '(?m)^\[mcp_servers\.wordpress-developer\](?:\r?\n(?!\[)[^\r\n]*)*', ''
+        $content = $content -replace '(?m)^\[mcp_servers\.wordpress-developer(?:\.[^\]]+)?\](?:\r?\n(?!\[)[^\r\n]*)*', ''
         Set-Content -LiteralPath $configFile -Value ($content.TrimEnd() + "`n") -Encoding UTF8
         return $true
     } catch {
