@@ -491,7 +491,8 @@ if (!config.mcpServers || typeof config.mcpServers !== 'object') {
   config.mcpServers = {};
 }
 config.mcpServers['wordpress-developer'] = {
-  command: mcpCommand
+  command: mcpCommand,
+  args: []
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -557,7 +558,8 @@ if (!config.context_servers || typeof config.context_servers !== 'object') {
   config.context_servers = {};
 }
 config.context_servers['wordpress-developer'] = {
-  command: mcpCommand
+  command: mcpCommand,
+  args: []
 };
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
@@ -580,7 +582,8 @@ try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = '';
 
 const newEntry =
   '[mcp_servers.wordpress-developer]\n' +
-  'command = ' + tomlString(mcpCommand);
+  'command = ' + tomlString(mcpCommand) + '\n' +
+  'args = []';
 const sectionRegex = /\[mcp_servers\.wordpress-developer\][^\[]*/;
 
 if (sectionRegex.test(content)) {
@@ -866,7 +869,8 @@ if ($failedAgents.Count -gt 0) {
     $manualCommand = $McpCommand | ConvertTo-Json -Compress
     Write-Host '    "mcpServers": {'
     Write-Host '      "wordpress-developer": {'
-    Write-Host "        `"command`": $manualCommand"
+    Write-Host "        `"command`": $manualCommand,"
+    Write-Host '        "args": []'
     Write-Host '      }'
     Write-Host '    }'
 }
