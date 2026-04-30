@@ -794,11 +794,8 @@ Info "$($G.Lock) Connect to WordPress.com"
 Write-Host ""
 
 $authOutput = ''
-try {
-    $authOutput = (& $StudioCliCmd auth status 2>&1 | Out-String)
-} catch {
-    $authOutput = $_.Exception.Message
-}
+$authOutput = (& $StudioCliCmd auth status 2>&1 | Out-String)
+$authExitCode = $LASTEXITCODE
 
 # CLI output is localized, so match on two locale-independent signals instead
 # of an English phrase:
@@ -814,6 +811,10 @@ if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
     }
     Write-Host "  Preview sites and other WordPress.com features are available."
 } else {
+    if ($authExitCode -ne 0 -and $authOutput.Trim()) {
+        Write-Host $authOutput.Trim() -ForegroundColor DarkGray
+        Write-Host ""
+    }
     Write-Host "This unlocks extra powerful features provided by WordPress.com."
     Write-Host ""
     Ok "Connect now? [Y/n]"
