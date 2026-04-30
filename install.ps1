@@ -666,6 +666,21 @@ function Invoke-ExternalQuiet {
     }
 }
 
+function Invoke-McpRemoveQuiet {
+    param(
+        [Parameter(Mandatory)][string]$Exe,
+        [Parameter(Mandatory)][string[]]$Arguments
+    )
+    $res = Invoke-ExternalQuiet -Exe $Exe -Arguments $Arguments
+    if ($res.ExitCode -eq 0) {
+        return
+    }
+    if ($res.Output -match '(?i)(not found|no .*found|does not exist)') {
+        return
+    }
+    throw "$Exe mcp remove exited with $($res.ExitCode)$(if ($res.Output) { ": $($res.Output)" })"
+}
+
 
 # == Configure AI agents ==-----------------------------------------------------
 $configuredAgents = [System.Collections.Generic.List[string]]::new()
@@ -678,7 +693,7 @@ if ($foundAgentsCount -gt 0) {
     if ($foundCodex) {
         try {
             if (Test-Command 'codex') {
-                $null = Invoke-ExternalQuiet -Exe 'codex' `
+                Invoke-McpRemoveQuiet -Exe 'codex' `
                     -Arguments @('mcp','remove','wordpress-developer')
                 $res = Invoke-ExternalQuiet -Exe 'codex' `
                     -Arguments @('mcp','add','wordpress-developer','--',$McpCommand)
@@ -716,7 +731,7 @@ if ($foundAgentsCount -gt 0) {
 
     if ($foundClaudeCode) {
         try {
-            $null = Invoke-ExternalQuiet -Exe 'claude' `
+            Invoke-McpRemoveQuiet -Exe 'claude' `
                 -Arguments @('mcp','remove','wordpress-developer','--scope','user')
             $res = Invoke-ExternalQuiet -Exe 'claude' `
                 -Arguments @('mcp','add','--scope','user','wordpress-developer','--',$McpCommand)
