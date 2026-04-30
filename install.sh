@@ -21,6 +21,11 @@ if $UPDATE_MODE; then
 else
 	echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
 	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+	echo ""
+	echo "This script will detect your locally installed AI agents"
+	echo "(Codex, Claude, Cursor, Windsurf, Zed) and configure them"
+	echo "for WordPress development, so you can build sites with"
+	echo "natural language instead of code."
 fi
 
 # ── OS check ──────────────────────────────────────────────────────────────────

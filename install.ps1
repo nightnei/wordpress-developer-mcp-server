@@ -73,6 +73,11 @@ if ($Update) {
 } else {
     Head "$($G.Rose) Installing WordPress Developer MCP Server..."
     Ok   "Turn your AI into a full-stack WordPress developer."
+    Write-Host ""
+    Write-Host "This script will detect your locally installed AI agents"
+    Write-Host "(Codex, Claude, Cursor, Windsurf, Zed) and configure them"
+    Write-Host "for WordPress development, so you can build sites with"
+    Write-Host "natural language instead of code."
 }
 
 # == OS / arch check ==---------------------------------------------------------
