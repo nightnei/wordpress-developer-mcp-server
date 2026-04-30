@@ -583,7 +583,8 @@ try { content = fs.readFileSync(configPath, 'utf8'); } catch (e) { content = '';
 const newEntry =
   '[mcp_servers.wordpress-developer]\n' +
   'command = ' + tomlString(mcpCommand) + '\n' +
-  'args = []';
+  'args = []\n' +
+  'enabled = true';
 const sectionRegex = /^\[mcp_servers\.wordpress-developer\](?:\r?\n(?!\[)[^\r\n]*)*/m;
 
 if (sectionRegex.test(content)) {
