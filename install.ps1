@@ -3,12 +3,15 @@
 # via [char]::ConvertFromUtf32 so the script parses correctly regardless of
 # whether PowerShell reads .ps1 files as UTF-8 or the legacy ANSI code page.
 
+param(
+    [switch]$Update
+)
+
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
-$Update = $false
 foreach ($arg in $args) {
-    if ($arg -ieq '-Update' -or $arg -ieq '--update') {
+    if ($arg -ieq '--update') {
         $Update = $true
     } else {
         throw "Unknown argument: $arg"
@@ -78,7 +81,15 @@ if ($Update) {
 }
 
 # == OS / arch check ==---------------------------------------------------------
-if ($env:OS -ne 'Windows_NT') {
+$isWindows = $false
+try {
+    $isWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
+        [System.Runtime.InteropServices.OSPlatform]::Windows
+    )
+} catch {
+    $isWindows = ($env:OS -eq 'Windows_NT')
+}
+if (-not $isWindows) {
     Write-Host ""
     Err "$($G.Cross) This installer is for Windows only."
     exit 1
