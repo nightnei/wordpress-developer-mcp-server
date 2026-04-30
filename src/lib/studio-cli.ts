@@ -8,10 +8,6 @@ type CliResult = {
 	exitCode: number;
 };
 
-function quoteCmdArg( value: string ) {
-	return `"${ value.replace( /"/g, '""' ) }"`;
-}
-
 export function formatCliFailure( cmd: string, res: CliResult ) {
 	return (
 		`${ cmd } failed (exit ${ res.exitCode }).\n\n` +
@@ -22,14 +18,10 @@ export function formatCliFailure( cmd: string, res: CliResult ) {
 
 function resolveSpawnTarget( command: string, args: string[] ) {
 	if ( process.platform === 'win32' ) {
-		// Node 20.12+ blocks direct .cmd/.bat spawns (CVE-2024-27980).
-		// Avoid shell:true because arguments with spaces (site names, paths)
-		// then depend on Node/cmd.exe joining rules. Instead, call cmd.exe
-		// explicitly and pass one fully quoted command line after /c.
-		return {
-			exe: 'cmd.exe',
-			spawnArgs: [ '/d', '/s', '/c', [ command, ...args ].map( quoteCmdArg ).join( ' ' ) ],
-		};
+		// Direct .cmd spawning fails on current Node/Windows paths (EINVAL).
+		// Invoke cmd.exe explicitly, but pass command/args as argv entries
+		// instead of using shell:true or embedding extra quotes in the command.
+		return { exe: 'cmd.exe', spawnArgs: [ '/d', '/s', '/c', command, ...args ] };
 	}
 	return { exe: command, spawnArgs: args };
 }
@@ -49,11 +41,20 @@ export function runStudioCli( args: string[] ) {
 
 		let stdout = '';
 		let stderr = '';
+		let settled = false;
 
 		child.stdout.on( 'data', ( d ) => ( stdout += d.toString( 'utf8' ) ) );
 		child.stderr.on( 'data', ( d ) => ( stderr += d.toString( 'utf8' ) ) );
 
+		child.on( 'error', ( error ) => {
+			if ( settled ) return;
+			settled = true;
+			resolve( { stdout, stderr: stderr || error.message, exitCode: 1 } );
+		} );
+
 		child.on( 'close', ( code: number | null ) => {
+			if ( settled ) return;
+			settled = true;
 			resolve( { stdout, stderr, exitCode: code ?? 0 } );
 		} );
 	} );
