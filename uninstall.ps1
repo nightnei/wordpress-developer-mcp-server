@@ -249,13 +249,9 @@ if ($zedFound) {
 }
 
 Write-Host ""
-if (Test-Path -LiteralPath $InstallDir) {
-    Info "Removing installation directory..."
-    Remove-Item -LiteralPath $InstallDir -Recurse -Force
-    Ok "  $($G.Tick) $InstallDir removed"
-} else {
-    Info "Installation directory not found. Skipping."
-}
+Info "Installation directory left in place:"
+Write-Host "  $InstallDir"
+Write-Host "  You can remove it manually if you no longer need the bundled runtime and files."
 
 $sitesDir = Join-Path $env:USERPROFILE 'Studio'
 if (Test-Path -LiteralPath $sitesDir) {
