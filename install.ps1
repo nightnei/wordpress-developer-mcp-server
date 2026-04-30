@@ -818,10 +818,6 @@ if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
     }
     Write-Host "  Preview sites and other WordPress.com features are available."
 } else {
-    if ($authExitCode -ne 0 -and $authOutput.Trim()) {
-        Write-Host $authOutput.Trim() -ForegroundColor DarkGray
-        Write-Host ""
-    }
     Write-Host "This unlocks extra powerful features provided by WordPress.com."
     Write-Host ""
     Ok "Connect now? [Y/n]"
