@@ -88,6 +88,45 @@ function Remove-McpServersJson {
         return $false
     }
 
+    if (Test-Path -LiteralPath $NodeBin) {
+        $script = @'
+const fs = require('fs');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+
+let config = {};
+try {
+  const raw = fs.readFileSync(configPath, 'utf8');
+  if (raw && raw.trim()) config = JSON.parse(raw);
+} catch (e) {
+  process.exit(0);
+}
+
+if (!config || typeof config !== 'object' || !config.mcpServers || typeof config.mcpServers !== 'object') {
+  process.exit(0);
+}
+
+delete config.mcpServers['wordpress-developer'];
+if (Object.keys(config.mcpServers).length === 0) {
+  delete config.mcpServers;
+}
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+'@
+        $tempJs = Join-Path $env:TEMP ("wpmcp-uninstall-" + [Guid]::NewGuid().ToString('N') + '.js')
+        [System.IO.File]::WriteAllText($tempJs, $script, (New-Object System.Text.UTF8Encoding($false)))
+        $savedConfig = [Environment]::GetEnvironmentVariable('WPMCP_CONFIG_FILE', 'Process')
+        [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $ConfigFile, 'Process')
+        try {
+            $null = & $NodeBin $tempJs 2>&1
+            return ($LASTEXITCODE -eq 0)
+        } catch {
+            return $false
+        } finally {
+            Remove-Item -LiteralPath $tempJs -Force -ErrorAction SilentlyContinue
+            [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $savedConfig, 'Process')
+        }
+    }
+
     try {
         $raw = Get-Content -LiteralPath $ConfigFile -Raw
         if (-not $raw.Trim()) { return $false }
