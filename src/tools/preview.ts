@@ -4,7 +4,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 export function registerPreviewTools( server: McpServer ) {
 	server.registerTool(
-		'studio_preview_list',
+		'wpdev_preview_list',
 		{
 			description: 'List Studio preview sites for a given path of the original Studio site.',
 			inputSchema: {
@@ -35,7 +35,7 @@ export function registerPreviewTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_preview_create',
+		'wpdev_preview_create',
 		{
 			description: 'Create a Studio preview site for a given path of the original Studio site.',
 			inputSchema: {
@@ -70,10 +70,10 @@ export function registerPreviewTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_preview_update',
+		'wpdev_preview_update',
 		{
 			description:
-				'Update a Studio preview site for a given original site path (wraps `studio preview update <host>`).',
+				'Update a Studio preview site for a given original site path.',
 			inputSchema: {
 				host: z
 					.string()
@@ -108,7 +108,7 @@ export function registerPreviewTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_preview_delete',
+		'wpdev_preview_delete',
 		{
 			description:
 				'Delete a Studio preview site by its hostname (e.g. "my-preview-site.wp.build"). Destructive: requires confirm=true.',

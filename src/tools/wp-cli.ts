@@ -39,10 +39,10 @@ function parseCommand( command: string ): string[] {
 
 export function registerWpCliTools( server: McpServer ) {
 	server.registerTool(
-		'studio_wp',
+		'wpdev_wp',
 		{
 			description:
-				'Run WP-CLI commands on a Studio site (wraps `studio wp`). Examples: "plugin list", "theme activate flavor", "user list". Supports quoted strings for values with spaces.',
+				'Run WP-CLI commands on a Studio site. Examples: "plugin list", "theme activate flavor", "user list". Supports quoted strings for values with spaces.',
 			inputSchema: {
 				path: z.string().describe( SITE_PATH_DESCRIPTION ),
 				command: z

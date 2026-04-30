@@ -33,7 +33,7 @@ async function isDirectory( p: string ) {
 
 export function registerFsTools( server: McpServer ) {
 	server.registerTool(
-		'studio_fs_list_dir',
+		'wpdev_fs_list_dir',
 		{
 			description:
 				'List files/folders inside a Studio site directory. Safe: only allows paths within the given sitePath.',
@@ -62,7 +62,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use wpdev_site_list to see available sites or wpdev_site_create to create a new one.`,
 						},
 					],
 				};
@@ -110,7 +110,7 @@ export function registerFsTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_fs_read_file',
+		'wpdev_fs_read_file',
 		{
 			description:
 				'Read a text file inside a Studio site directory. Safe: only allows files within the given sitePath. Has a size limit.',
@@ -141,7 +141,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use wpdev_site_list to see available sites or wpdev_site_create to create a new one.`,
 						},
 					],
 				};
@@ -186,7 +186,7 @@ export function registerFsTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_fs_write_file',
+		'wpdev_fs_write_file',
 		{
 			description:
 				'Write content to a file inside a Studio site directory. Safe: only allows paths within the given sitePath.',
@@ -214,7 +214,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use wpdev_site_list to see available sites or wpdev_site_create to create a new one.`,
 						},
 					],
 				};
@@ -254,7 +254,7 @@ export function registerFsTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_fs_delete',
+		'wpdev_fs_delete',
 		{
 			description:
 				'Delete a file or folder inside a Studio site directory. Safe: only allows paths within the given sitePath.',
@@ -279,7 +279,7 @@ export function registerFsTools( server: McpServer ) {
 					content: [
 						{
 							type: 'text',
-							text: `sitePath is not a known Studio site: ${ sitePath }. Use studio_site_list to see available sites or studio_site_create to create a new one.`,
+							text: `sitePath is not a known Studio site: ${ sitePath }. Use wpdev_site_list to see available sites or wpdev_site_create to create a new one.`,
 						},
 					],
 				};

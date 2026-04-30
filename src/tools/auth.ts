@@ -3,9 +3,9 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 export function registerAuthTools( server: McpServer ) {
 	server.registerTool(
-		'studio_auth_status',
+		'wpdev_auth_status',
 		{
-			description: 'Check Studio authentication status (wraps `studio auth status`).',
+			description: 'Check Studio authentication status.',
 		},
 		async () => {
 			const res = await runStudioCli( [ 'auth', 'status' ] );
@@ -21,10 +21,10 @@ export function registerAuthTools( server: McpServer ) {
 	);
 
 	server.registerTool(
-		'studio_auth_logout',
+		'wpdev_auth_logout',
 		{
 			description:
-				'Log out and clear WordPress.com authentication for Studio (wraps `studio auth logout`).',
+				'Log out and clear WordPress.com authentication for Studio.',
 		},
 		async () => {
 			const res = await runStudioCli( [ 'auth', 'logout' ] );

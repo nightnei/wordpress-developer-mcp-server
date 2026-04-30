@@ -28,9 +28,9 @@
 
 | Category     | Tools                                                                                                                                            |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Sites**    | `studio_site_list`, `studio_site_status`, `studio_site_start`, `studio_site_stop`, `studio_site_create`, `studio_site_delete`, `studio_site_set` |
-| **Files**    | `studio_fs_list_dir`, `studio_fs_read_file`, `studio_fs_write_file`, `studio_fs_delete`                                                          |
-| **Previews** | `studio_preview_list`, `studio_preview_create`, `studio_preview_update`, `studio_preview_delete`                                                 |
-| **Auth**     | `studio_auth_status`, `studio_auth_logout`                                                                                                       |
-| **WP-CLI**   | `studio_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.)                                                              |
-| **Updates**  | `studio_check_for_mcp_updates`, `studio_update_mcp`                                                                                              |
+| **Sites**    | `wpdev_site_list`, `wpdev_site_status`, `wpdev_site_start`, `wpdev_site_stop`, `wpdev_site_create`, `wpdev_site_delete`, `wpdev_site_set`        |
+| **Files**    | `wpdev_fs_list_dir`, `wpdev_fs_read_file`, `wpdev_fs_write_file`, `wpdev_fs_delete`                                                              |
+| **Previews** | `wpdev_preview_list`, `wpdev_preview_create`, `wpdev_preview_update`, `wpdev_preview_delete`                                                     |
+| **Auth**     | `wpdev_auth_status`, `wpdev_auth_logout`                                                                                                         |
+| **WP-CLI**   | `wpdev_wp` — run any WP-CLI command (plugins, themes, posts, users, options, etc.)                                                               |
+| **Updates**  | `wpdev_check_for_mcp_updates`, `wpdev_update_mcp`                                                                                                |
