@@ -94,6 +94,9 @@ function Remove-McpServersJson {
         $config = $raw | ConvertFrom-Json
         if (-not $config.mcpServers) { return $false }
         $config.mcpServers.PSObject.Properties.Remove('wordpress-developer')
+        if ($config.mcpServers.PSObject.Properties.Count -eq 0) {
+            $config.PSObject.Properties.Remove('mcpServers')
+        }
         $config | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $ConfigFile -Encoding UTF8
         return $true
     } catch {
