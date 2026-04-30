@@ -662,10 +662,16 @@ function Invoke-ExternalQuiet {
     # broken pipe. Returning the output also lets callers surface real errors
     # instead of just "(failed)".
     $resolved = Resolve-NativeExecutable -Name $Exe
-    $output = & $resolved @Arguments 2>&1
-    return [pscustomobject]@{
-        ExitCode = $LASTEXITCODE
-        Output   = ($output | Out-String).TrimEnd()
+    $savedErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $output = & $resolved @Arguments 2>&1
+        return [pscustomobject]@{
+            ExitCode = $LASTEXITCODE
+            Output   = ($output | Out-String).TrimEnd()
+        }
+    } finally {
+        $ErrorActionPreference = $savedErrorActionPreference
     }
 }
 
@@ -794,8 +800,9 @@ Info "$($G.Lock) Connect to WordPress.com"
 Write-Host ""
 
 $authOutput = ''
-$authOutput = (& $StudioCliCmd auth status 2>&1 | Out-String)
-$authExitCode = $LASTEXITCODE
+$authStatus = Invoke-ExternalQuiet -Exe $StudioCliCmd -Arguments @('auth','status')
+$authOutput = $authStatus.Output
+$authExitCode = $authStatus.ExitCode
 
 # CLI output is localized, so match on two locale-independent signals instead
 # of an English phrase:
