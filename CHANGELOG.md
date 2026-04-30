@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.8](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.7...v2.0.8) (2026-04-30)
+
+
+### Bug Fixes
+
+* **tools:** avoid quoting cli on windows ([#36](https://github.com/nightnei/wordpress-developer-mcp-server/issues/36)) ([12da548](https://github.com/nightnei/wordpress-developer-mcp-server/commit/12da5482c0b4fe0213f299b64854cd33a697b5dc))
+
 ## [2.0.7](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.6...v2.0.7) (2026-04-30)
 
 
