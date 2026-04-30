@@ -11,9 +11,8 @@ function resolveInsideRoot( root: string, rel: string ) {
 	const rootReal = path.resolve( root );
 	const target = path.resolve( rootReal, rel );
 
-	// Ensure target is inside root
-	const rootRealWithTrailingSlash = rootReal.endsWith( path.sep ) ? rootReal : rootReal + path.sep;
-	if ( target !== rootReal && ! target.startsWith( rootRealWithTrailingSlash ) ) {
+	const relative = path.relative( rootReal, target );
+	if ( relative.startsWith( '..' ) || path.isAbsolute( relative ) ) {
 		throw new Error(
 			`Path escapes site root. root="${ rootReal }", requested="${ rel }", resolved="${ target }"`
 		);
@@ -72,7 +71,7 @@ export function registerFsTools( server: McpServer ) {
 			try {
 				target = resolveInsideRoot( sitePath, rel );
 			} catch ( e: any ) {
-				return { content: [ { type: 'text', text: e?.message || 'Unknown error' } ] };
+				return { content: [ { type: 'text', text: e?.message || 'resolveInsideRoot error' } ] };
 			}
 
 			const entries = await fs.readdir( target, { withFileTypes: true } );
@@ -151,7 +150,7 @@ export function registerFsTools( server: McpServer ) {
 			try {
 				target = resolveInsideRoot( sitePath, relPath );
 			} catch ( e: any ) {
-				return { content: [ { type: 'text', text: e?.message || 'Unknown error' } ] };
+				return { content: [ { type: 'text', text: e?.message || 'resolveInsideRoot error' } ] };
 			}
 
 			const st = await fs.stat( target );
@@ -224,7 +223,7 @@ export function registerFsTools( server: McpServer ) {
 			try {
 				target = resolveInsideRoot( sitePath, relPath );
 			} catch ( e: any ) {
-				return { content: [ { type: 'text', text: e?.message || 'Unknown error' } ] };
+				return { content: [ { type: 'text', text: e?.message || 'resolveInsideRoot error' } ] };
 			}
 
 			// Optionally create parent directories
@@ -289,7 +288,7 @@ export function registerFsTools( server: McpServer ) {
 			try {
 				target = resolveInsideRoot( sitePath, relPath );
 			} catch ( e: any ) {
-				return { content: [ { type: 'text', text: e?.message || 'Unknown error' } ] };
+				return { content: [ { type: 'text', text: e?.message || 'resolveInsideRoot error' } ] };
 			}
 
 			let st;
