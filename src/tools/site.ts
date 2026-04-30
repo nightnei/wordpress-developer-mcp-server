@@ -245,9 +245,9 @@ export function registerSiteTools( server: McpServer ) {
 					.optional()
 					.describe( 'WordPress version (e.g., "latest", "6.4", "6.4.1"). Default: "latest".' ),
 				php: z
-					.enum( [ '8.4', '8.3', '8.2', '8.1', '8.0', '7.4', '7.3', '7.2' ] )
+					.enum( [ '8.5', '8.4', '8.3', '8.2', '8.1', '8.0', '7.4', '7.3', '7.2' ] )
 					.optional()
-					.describe( 'PHP version. Default: "8.3".' ),
+					.describe( 'PHP version. Default: "8.4".' ),
 				blueprint: z.string().optional().describe( 'Path or URL to Blueprint JSON file.' ),
 			},
 		},
