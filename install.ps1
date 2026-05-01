@@ -387,7 +387,7 @@ Info "Checking CLI..."
 
 # Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
 # Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
-$studioLatest = '1.8.1'
+$studioLatest = '1.7.8'
 
 # Keep PATH scoped to npm's work. npm.cmd is called by absolute path, but its
 # generated shims and child commands still expect the bundled node directory to
@@ -439,9 +439,8 @@ try {
 Write-Host ""
 Info "Creating wrapper scripts..."
 
-# STUDIO_CLI_PATH points at studio-cli.cmd. The MCP server recognizes
-# .cmd/.bat in this env var and spawns with shell:true (Node 18.20+/20.12+/22+
-# escapes args safely under shell).
+# STUDIO_CLI_PATH points at studio-cli.cmd. The MCP server invokes it through
+# cmd.exe so Windows can run the npm .cmd shim without Node's direct-spawn EINVAL.
 # The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule that
 # triggers when a line starts with `"` and ends with `"`.
 $studioMcpContent = @"
