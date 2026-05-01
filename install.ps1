@@ -387,7 +387,7 @@ Info "Checking CLI..."
 
 # Pin wp-studio explicitly: bump $studioLatest when you intentionally ship a new CLI.
 # Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
-$studioLatest = '1.7.8'
+$studioLatest = '1.8.1'
 
 # Keep PATH scoped to npm's work. npm.cmd is called by absolute path, but its
 # generated shims and child commands still expect the bundled node directory to
