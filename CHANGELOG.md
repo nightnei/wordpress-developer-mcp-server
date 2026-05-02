@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.9](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.8...v2.0.9) (2026-05-01)
+
+
+### Bug Fixes
+
+* **install:** use cli 1.7.8 ([daf93ad](https://github.com/nightnei/wordpress-developer-mcp-server/commit/daf93ad6e796dbeb72f375e432b347cc251b00d8))
+* **install:** use cli 1.8.1 ([7e6eead](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7e6eead2a36ad3b0cf20fa9606230b005e1c2406))
+* **install:** use cli 1.8.1 ([f159b0d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f159b0db5ec1820a7785e0ca3801ba1b727e7dd9))
+
 ## [2.0.8](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.7...v2.0.8) (2026-04-30)
 
 
