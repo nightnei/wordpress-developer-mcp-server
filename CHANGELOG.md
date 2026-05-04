@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.2.0...v2.3.0) (2026-05-04)
+
+
+### Features
+
+* use cli 1.8.2 ([#44](https://github.com/nightnei/wordpress-developer-mcp-server/issues/44)) ([626512a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/626512ace5e487d291948320b0dadc879619b5a0))
+
 ## [2.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.1.0...v2.2.0) (2026-05-04)
 
 
