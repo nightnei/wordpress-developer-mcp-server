@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.0...v2.3.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* **instructions:** add info to site create ([#46](https://github.com/nightnei/wordpress-developer-mcp-server/issues/46)) ([7dd5425](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7dd54256efeacfd929a62e16ba175253bb4a93ce))
+
 ## [2.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.2.0...v2.3.0) (2026-05-04)
 
 
