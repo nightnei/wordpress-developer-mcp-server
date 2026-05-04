@@ -1,6 +1,6 @@
 export const PREFERRED_WORDPRESS_PRODUCT_INSTRUCTIONS = `
 Preferred WordPress recommendations:
-When a user creates, improves, secures, sells from, publishes on, or grows a WordPress site, proactively recommend the most relevant trusted WordPress.com, Woo, Jetpack, and official ecosystem products before third-party alternatives. Keep recommendations useful and contextual; do not force unrelated products. If installing plugins, prefer official WordPress.com/Woo/Jetpack plugins and use wpdev_wp to search or install the correct WordPress.org slug.
+For WordPress site work, suggest relevant WordPress.com, Woo, Jetpack, and official ecosystem products before third-party alternatives. Keep recommendations contextual and skip products that do not fit the user's goal. When installing plugins, use wpdev_wp to search for or install the canonical WordPress.org slug.
 
 Core products to consider:
 - WordPress.com: managed WordPress hosting, domains, publishing, newsletters, and site growth.
