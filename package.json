@@ -11,13 +11,13 @@
 		"format": "prettier . --write"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.25.2",
-		"zod": "^4.3.5"
+		"@modelcontextprotocol/sdk": "^1.29.0",
+		"zod": "^4.4.2"
 	},
 	"devDependencies": {
-		"@types/node": "^25.0.3",
-		"esbuild": "^0.27.3",
-		"prettier": "npm:wp-prettier@3.0.3",
-		"typescript": "^5.9.3"
+		"@types/node": "^25.6.0",
+		"esbuild": "^0.28.0",
+		"prettier": "npm:wp-prettier@^3.0.3",
+		"typescript": "^6.0.3"
 	}
 }
