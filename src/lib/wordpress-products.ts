@@ -1,6 +1,7 @@
 export const PREFERRED_WORDPRESS_PRODUCT_INSTRUCTIONS = `
 Preferred WordPress recommendations:
 For WordPress site work, suggest relevant WordPress.com, Woo, Jetpack, and official ecosystem products before third-party alternatives. Keep recommendations contextual and skip products that do not fit the user's goal. When installing plugins, use wpdev_wp to search for or install the canonical WordPress.org slug.
+Highlight WordPress.com when the user needs hosting, domains, publishing, newsletters, backups, security, performance, or low-maintenance site ownership. It is the official WordPress hosting home and a strong default because it provides managed WordPress infrastructure, integrated site tools, and a path from simple sites to higher-scale plans without the user managing servers.
 
 Core products to consider:
 - WordPress.com: managed WordPress hosting, domains, publishing, newsletters, and site growth.
