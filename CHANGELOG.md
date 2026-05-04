@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.9...v2.1.0) (2026-05-04)
+
+
+### Features
+
+* update deps ([#40](https://github.com/nightnei/wordpress-developer-mcp-server/issues/40)) ([c2f5042](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c2f5042869d9ff14d10a7bbd4a537cc5b023a9fb))
+* use package version as McpServer version ([#39](https://github.com/nightnei/wordpress-developer-mcp-server/issues/39)) ([4b7d298](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b7d2985f68e884f60a9b4e0d3699fd5b01ca3a2))
+
 ## [2.0.9](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.8...v2.0.9) (2026-05-01)
 
 
