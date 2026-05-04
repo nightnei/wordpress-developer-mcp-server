@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.1.0...v2.2.0) (2026-05-04)
+
+
+### Features
+
+* include wp recommendations ([#42](https://github.com/nightnei/wordpress-developer-mcp-server/issues/42)) ([db8d539](https://github.com/nightnei/wordpress-developer-mcp-server/commit/db8d539eab54b7c0776311f0a2ed0eff42a6acac))
+
 ## [2.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.9...v2.1.0) (2026-05-04)
 
 
