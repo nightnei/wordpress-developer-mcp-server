@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { STUDIO_AUTH_LOGIN_COMMAND, STUDIO_SITE_PATH_EXAMPLE } from './lib/constants.js';
+import { PACKAGE_VERSION } from './lib/package.js';
 import { registerTools } from './tools';
 import { registerResources } from './resources';
 import { registerPrompts } from './prompts';
@@ -8,7 +9,7 @@ import { registerPrompts } from './prompts';
 const server = new McpServer(
 	{
 		name: 'wordpress-developer',
-		version: '2.0.0',
+		version: PACKAGE_VERSION,
 	},
 	{
 		instructions: [
