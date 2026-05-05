@@ -75,7 +75,7 @@ if ($Update) {
     Ok   "Turn your AI into a full-stack WordPress developer."
     Write-Host ""
     Write-Host "This script will detect your locally installed AI agents"
-    Write-Host "(Codex, Claude, Cursor, Windsurf, Zed) and configure them"
+    Write-Host "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"
     Write-Host "for WordPress development, so you can build sites with"
     Write-Host "natural language instead of code."
 }
@@ -169,6 +169,7 @@ $foundCodex = $false
 $foundClaudeDesktop = $false
 $foundClaudeCode = $false
 $foundCursor = $false
+$foundVsCode = $false
 $foundWindsurf = $false
 $foundZed = $false
 $foundAgentsCount = 0
@@ -194,13 +195,18 @@ if (-not $Update) {
     $foundCursor = (Test-Command 'cursor') -or `
         (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\cursor\Cursor.exe'))
 
+    $foundVsCode = (Test-Command 'code') -or (Test-AnyPath @(
+        (Join-Path $env:LOCALAPPDATA 'Programs\Microsoft VS Code\Code.exe'),
+        (Join-Path ${env:ProgramFiles} 'Microsoft VS Code\Code.exe')
+    ))
+
     $foundWindsurf = (Test-Command 'windsurf') -or `
         (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'))
 
     # Zed's Windows installer doesn't register a PATH entry, so only probe the install dir.
     $foundZed = Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Zed\Zed.exe')
 
-    foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCursor, $foundWindsurf, $foundZed)) {
+    foreach ($f in @($foundCodex, $foundClaudeDesktop, $foundClaudeCode, $foundCursor, $foundVsCode, $foundWindsurf, $foundZed)) {
         if ($f) { $foundAgentsCount++ }
     }
 
@@ -212,6 +218,7 @@ if (-not $Update) {
         Link "  Get Codex:          https://openai.com/codex"
         Link "  Get Claude:         https://claude.ai/download"
         Link "  Get Cursor:         https://cursor.com"
+        Link "  Get VS Code:        https://code.visualstudio.com"
         Link "  Get Windsurf:       https://windsurf.com"
         Link "  Get Zed:            https://zed.dev"
     } else {
@@ -220,6 +227,7 @@ if (-not $Update) {
         if ($foundClaudeDesktop) { Ok "  $($G.Tick) Claude Desktop" }
         if ($foundClaudeCode)    { Ok "  $($G.Tick) Claude Code" }
         if ($foundCursor)        { Ok "  $($G.Tick) Cursor" }
+        if ($foundVsCode)        { Ok "  $($G.Tick) VS Code" }
         if ($foundWindsurf)      { Ok "  $($G.Tick) Windsurf" }
         if ($foundZed)           { Ok "  $($G.Tick) Zed" }
         Write-Host "  MCP support will be added to all of them."
@@ -511,6 +519,34 @@ config.mcpServers['wordpress-developer'] = {
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
 
+$vsCodeMcpJsScript = @'
+const fs = require('fs');
+const path = require('path');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+const mcpCommand = process.env.WPMCP_MCP_COMMAND;
+
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
+
+let config = {};
+try {
+  const raw = fs.readFileSync(configPath, 'utf8');
+  if (raw && raw.trim()) config = JSON.parse(raw);
+} catch (e) {
+  config = {};
+}
+if (!config || typeof config !== 'object') config = {};
+if (!config.servers || typeof config.servers !== 'object') {
+  config.servers = {};
+}
+config.servers['wordpress-developer'] = {
+  type: 'stdio',
+  command: mcpCommand,
+  args: []
+};
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+'@
+
 $zedJsScript = @'
 const fs = require('fs');
 const path = require('path');
@@ -642,6 +678,9 @@ function Invoke-NodeHelper {
 
 function Set-McpServersJson { param([string]$ConfigFile)
     Invoke-NodeHelper -Script $mcpServersJsScript -ConfigFile $ConfigFile
+}
+function Set-VsCodeMcpJson { param([string]$ConfigFile)
+    Invoke-NodeHelper -Script $vsCodeMcpJsScript -ConfigFile $ConfigFile
 }
 function Set-ZedSettingsJson { param([string]$ConfigFile)
     Invoke-NodeHelper -Script $zedJsScript -ConfigFile $ConfigFile
@@ -780,6 +819,21 @@ if ($foundAgentsCount -gt 0) {
         }
     }
 
+    if ($foundVsCode) {
+        try {
+            $vsCodeCfg = Join-Path $env:APPDATA 'Code\User\mcp.json'
+            Set-VsCodeMcpJson -ConfigFile $vsCodeCfg
+            $configuredAgents.Add('VS Code') | Out-Null
+            Ok "  $($G.Tick) VS Code"
+        } catch {
+            $failedAgents.Add('VS Code') | Out-Null
+            Err "  $($G.Xmark) VS Code (failed)"
+            if ($_.Exception.Message) {
+                Write-Host "      $($_.Exception.Message)" -ForegroundColor DarkGray
+            }
+        }
+    }
+
     if ($foundWindsurf) {
         try {
             $windsurfCfg = Join-Path $env:USERPROFILE '.codeium\windsurf\mcp_config.json'
@@ -900,6 +954,7 @@ if ($configuredAgents.Contains('Codex')) {
     }
 }
 if ($configuredAgents.Contains('Claude Desktop')) { $needsRestart.Add('Claude Desktop') | Out-Null }
+if ($configuredAgents.Contains('VS Code'))        { $needsRestart.Add('VS Code')        | Out-Null }
 if ($configuredAgents.Contains('Windsurf'))       { $needsRestart.Add('Windsurf')       | Out-Null }
 if ($configuredAgents.Contains('Zed'))            { $needsRestart.Add('Zed')            | Out-Null }
 

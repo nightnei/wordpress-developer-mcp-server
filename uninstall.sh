@@ -36,6 +36,22 @@ if (config.mcpServers) {
 " 2>/dev/null
 }
 
+remove_vscode_mcp_json() {
+	local config_file="$1"
+	[ -f "$config_file" ] || return 0
+	"$NODE_BIN" -e "
+const fs = require('fs');
+const configPath = '$config_file';
+let config = {};
+try { config = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch (e) { process.exit(0); }
+if (config.servers && typeof config.servers === 'object') {
+	delete config.servers['wordpress-developer'];
+	if (Object.keys(config.servers).length === 0) delete config.servers;
+	fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
+" 2>/dev/null
+}
+
 if app_installed "Codex.app" || command -v codex &>/dev/null; then
 	if command -v codex &>/dev/null; then
 		codex mcp remove wordpress-developer &>/dev/null || true
@@ -65,6 +81,11 @@ fi
 if app_installed "Cursor.app"; then
 	remove_mcpservers_json "$HOME/.cursor/mcp.json"
 	echo -e "  ${GREEN}✓${NC} Cursor"
+fi
+
+if app_installed "Visual Studio Code.app" || command -v code &>/dev/null; then
+	remove_vscode_mcp_json "$HOME/Library/Application Support/Code/User/mcp.json"
+	echo -e "  ${GREEN}✓${NC} VS Code"
 fi
 
 if app_installed "Windsurf.app"; then
@@ -157,6 +178,7 @@ echo -e "${GREEN}✅ Uninstall complete!${NC}"
 echo ""
 echo -e "${YELLOW}↺  Restart these apps to apply the changes:${NC}"
 app_installed "Claude.app"   && echo -e "  ${YELLOW}•${NC} Claude Desktop"
+app_installed "Visual Studio Code.app" && echo -e "  ${YELLOW}•${NC} VS Code"
 app_installed "Windsurf.app" && echo -e "  ${YELLOW}•${NC} Windsurf"
 app_installed "Zed.app"      && echo -e "  ${YELLOW}•${NC} Zed"
 app_installed "Codex.app"    && echo -e "  ${YELLOW}•${NC} Codex"

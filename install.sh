@@ -23,7 +23,7 @@ else
 	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
 	echo ""
 	echo "This script will detect your locally installed AI agents"
-	echo "(Codex, Claude, Cursor, Windsurf, Zed) and configure them"
+	echo "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"
 	echo "for WordPress development, so you can build sites with"
 	echo "natural language instead of code."
 fi
@@ -54,6 +54,7 @@ if ! $UPDATE_MODE; then
 	FOUND_CLAUDE_DESKTOP=false
 	FOUND_CLAUDE_CODE=false
 	FOUND_CURSOR=false
+	FOUND_VSCODE=false
 	FOUND_WINDSURF=false
 	FOUND_ZED=false
 
@@ -77,6 +78,10 @@ if ! $UPDATE_MODE; then
 		FOUND_CURSOR=true
 		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
 	fi
+	if command -v code &>/dev/null || app_installed "Visual Studio Code.app"; then
+		FOUND_VSCODE=true
+		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
+	fi
 	if app_installed "Windsurf.app"; then
 		FOUND_WINDSURF=true
 		FOUND_AGENTS_COUNT=$((FOUND_AGENTS_COUNT + 1))
@@ -94,6 +99,7 @@ if ! $UPDATE_MODE; then
 		echo -e "  Get Codex:          ${BLUE}https://openai.com/codex${NC}"
 		echo -e "  Get Claude:         ${BLUE}https://claude.ai/download${NC}"
 		echo -e "  Get Cursor:         ${BLUE}https://cursor.com${NC}"
+		echo -e "  Get VS Code:        ${BLUE}https://code.visualstudio.com${NC}"
 		echo -e "  Get Windsurf:       ${BLUE}https://windsurf.com${NC}"
 		echo -e "  Get Zed:            ${BLUE}https://zed.dev${NC}"
 	else
@@ -102,6 +108,7 @@ if ! $UPDATE_MODE; then
 		$FOUND_CLAUDE_DESKTOP && echo -e "  ${GREEN}✓${NC} Claude Desktop"
 		$FOUND_CLAUDE_CODE    && echo -e "  ${GREEN}✓${NC} Claude Code"
 		$FOUND_CURSOR         && echo -e "  ${GREEN}✓${NC} Cursor"
+		$FOUND_VSCODE         && echo -e "  ${GREEN}✓${NC} VS Code"
 		$FOUND_WINDSURF       && echo -e "  ${GREEN}✓${NC} Windsurf"
 		$FOUND_ZED            && echo -e "  ${GREEN}✓${NC} Zed"
 		echo ""
@@ -275,6 +282,37 @@ configure_cursor() {
 	configure_mcpservers_json "$HOME/.cursor/mcp.json"
 }
 
+configure_vscode() {
+	local config_file="$HOME/Library/Application Support/Code/User/mcp.json"
+	local config_dir
+	config_dir="$(dirname "$config_file")"
+	mkdir -p "$config_dir"
+
+	VSCODE_MCP_CONFIG="$config_file" VSCODE_MCP_COMMAND="$MCP_COMMAND" "$NODE_BIN" - <<'NODE'
+const fs = require('fs');
+const configPath = process.env.VSCODE_MCP_CONFIG;
+const mcpCommand = process.env.VSCODE_MCP_COMMAND;
+
+let config = {};
+try {
+	config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+} catch (e) {
+	config = {};
+}
+
+if (!config || typeof config !== 'object') config = {};
+if (!config.servers || typeof config.servers !== 'object') config.servers = {};
+
+config.servers['wordpress-developer'] = {
+	type: 'stdio',
+	command: mcpCommand,
+	args: [],
+};
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+NODE
+}
+
 configure_windsurf() {
 	configure_mcpservers_json "$HOME/.codeium/windsurf/mcp_config.json"
 }
@@ -379,6 +417,16 @@ if [ "$FOUND_AGENTS_COUNT" -gt 0 ]; then
 		else
 			FAILED_AGENTS+=("Cursor")
 			echo -e "  ${RED}✗${NC} Cursor (failed)"
+		fi
+	fi
+
+	if $FOUND_VSCODE; then
+		if configure_vscode 2>/dev/null; then
+			CONFIGURED_AGENTS+=("VS Code")
+			echo -e "  ${GREEN}✓${NC} VS Code"
+		else
+			FAILED_AGENTS+=("VS Code")
+			echo -e "  ${RED}✗${NC} VS Code (failed)"
 		fi
 	fi
 
@@ -488,6 +536,7 @@ fi
 NEEDS_RESTART=()
 [[ " ${CONFIGURED_AGENTS[*]} " =~ " Codex " ]]          && app_installed "Codex.app" && NEEDS_RESTART+=("Codex")
 [[ " ${CONFIGURED_AGENTS[*]} " =~ " Claude Desktop " ]] && NEEDS_RESTART+=("Claude Desktop")
+[[ " ${CONFIGURED_AGENTS[*]} " =~ " VS Code " ]]        && NEEDS_RESTART+=("VS Code")
 [[ " ${CONFIGURED_AGENTS[*]} " =~ " Windsurf " ]]       && NEEDS_RESTART+=("Windsurf")
 [[ " ${CONFIGURED_AGENTS[*]} " =~ " Zed " ]]            && NEEDS_RESTART+=("Zed")
 
