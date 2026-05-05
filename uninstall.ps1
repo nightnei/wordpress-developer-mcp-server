@@ -148,6 +148,67 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
     }
 }
 
+function Remove-VsCodeMcpJson {
+    param([Parameter(Mandatory)][string]$ConfigFile)
+    if (-not (Test-Path -LiteralPath $ConfigFile)) {
+        return $false
+    }
+
+    if (Test-Path -LiteralPath $NodeBin) {
+        $script = @'
+const fs = require('fs');
+const configPath = process.env.WPMCP_CONFIG_FILE;
+
+let config = {};
+try {
+  const raw = fs.readFileSync(configPath, 'utf8');
+  if (raw && raw.trim()) config = JSON.parse(raw);
+} catch (e) {
+  process.exit(0);
+}
+
+if (!config || typeof config !== 'object' || !config.servers || typeof config.servers !== 'object') {
+  process.exit(0);
+}
+
+delete config.servers['wordpress-developer'];
+if (Object.keys(config.servers).length === 0) {
+  delete config.servers;
+}
+
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+'@
+        $tempJs = Join-Path $env:TEMP ("wpmcp-uninstall-" + [Guid]::NewGuid().ToString('N') + '.js')
+        [System.IO.File]::WriteAllText($tempJs, $script, (New-Object System.Text.UTF8Encoding($false)))
+        $savedConfig = [Environment]::GetEnvironmentVariable('WPMCP_CONFIG_FILE', 'Process')
+        [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $ConfigFile, 'Process')
+        try {
+            $null = & $NodeBin $tempJs 2>&1
+            return ($LASTEXITCODE -eq 0)
+        } catch {
+            return $false
+        } finally {
+            Remove-Item -LiteralPath $tempJs -Force -ErrorAction SilentlyContinue
+            [Environment]::SetEnvironmentVariable('WPMCP_CONFIG_FILE', $savedConfig, 'Process')
+        }
+    }
+
+    try {
+        $raw = Get-Content -LiteralPath $ConfigFile -Raw
+        if (-not $raw.Trim()) { return $false }
+        $config = $raw | ConvertFrom-Json
+        if (-not $config.servers) { return $false }
+        $config.servers.PSObject.Properties.Remove('wordpress-developer')
+        if ($config.servers.PSObject.Properties.Count -eq 0) {
+            $config.PSObject.Properties.Remove('servers')
+        }
+        $config | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $ConfigFile -Encoding UTF8
+        return $true
+    } catch {
+        return $false
+    }
+}
+
 function Remove-ZedSettings {
     param([Parameter(Mandatory)][string]$ConfigFile)
     if (-not (Test-Path -LiteralPath $ConfigFile)) {
@@ -284,6 +345,16 @@ if ($cursorFound) {
     Ok "  $($G.Tick) Cursor"
 }
 
+$vsCodeFound = (Test-Command 'code') -or (Test-AnyPath @(
+    (Join-Path $env:LOCALAPPDATA 'Programs\Microsoft VS Code\Code.exe'),
+    (Join-Path ${env:ProgramFiles} 'Microsoft VS Code\Code.exe')
+))
+if ($vsCodeFound) {
+    $vsCodeCfg = Join-Path $env:APPDATA 'Code\User\mcp.json'
+    $null = Remove-VsCodeMcpJson -ConfigFile $vsCodeCfg
+    Ok "  $($G.Tick) VS Code"
+}
+
 $windsurfFound = (Test-Command 'windsurf') -or `
     (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Programs\Windsurf\Windsurf.exe'))
 if ($windsurfFound) {
@@ -318,6 +389,7 @@ Ok "$($G.Check) Uninstall complete!"
 Write-Host ""
 Info "$($G.Rot)  Restart these apps to apply the changes:"
 if ($claudeDesktopFound) { Info "  $($G.Bullet) Claude Desktop" }
+if ($vsCodeFound) { Info "  $($G.Bullet) VS Code" }
 if ($windsurfFound) { Info "  $($G.Bullet) Windsurf" }
 if ($zedFound) { Info "  $($G.Bullet) Zed" }
 if (Test-AppxPackage 'OpenAI.Codex') { Info "  $($G.Bullet) Codex" }

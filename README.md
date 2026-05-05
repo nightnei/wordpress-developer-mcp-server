@@ -1,6 +1,6 @@
 # Turn your AI assistant into a WordPress developer 🌸
 
-Codex · Claude Desktop · Claude Code · Cursor · Windsurf · Zed
+Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
 
 ## Quick Start
 
@@ -12,7 +12,7 @@ curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-se
 
 ## What it does
 
-Open Codex, Claude, Cursor or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
+Open Codex, Claude, Cursor, VS Code or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
 
 ## Platform support
 macOS only — Windows support coming soon.
