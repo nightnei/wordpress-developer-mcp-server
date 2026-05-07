@@ -459,15 +459,17 @@ if ! $UPDATE_MODE; then
 	echo -e "${YELLOW}🔐 Connect to WordPress.com${NC}"
 	echo ""
 
-	AUTH_OUTPUT=$("$INSTALL_DIR/bin/studio-cli" auth status 2>&1 || true)
-	# CLI output is localized (e.g. "Авторизовано через WordPress.com як \`user\`"
-	# vs. "Authenticated with WordPress.com as \`user\`"), so match on two
-	# locale-independent signals instead of an English phrase:
-	#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
-	#      does not)
-	#   2) contains a backtick-quoted username
-	WPCOM_USER=$(echo "$AUTH_OUTPUT" | sed -n 's/.*`\([^`]*\)`.*/\1/p')
-	if echo "$AUTH_OUTPUT" | grep -qi 'WordPress\.com' && [ -n "$WPCOM_USER" ]; then
+	AUTH_JSON=$("$INSTALL_DIR/bin/studio-cli" auth status --format=json 2>/dev/null || true)
+	WPCOM_USER=$(AUTH_JSON="$AUTH_JSON" "$NODE_BIN" -e "
+const raw = process.env.AUTH_JSON || '';
+try {
+	const auth = JSON.parse(raw);
+	if (auth && auth.authenticated && auth.username) {
+		process.stdout.write(auth.username);
+	}
+} catch {}
+")
+	if [ -n "$WPCOM_USER" ]; then
 		if [ -d "/Applications/Studio.app" ]; then
 			echo -e "Connected as ${GREEN}${WPCOM_USER}${NC} (using your WordPress Studio account)."
 		else

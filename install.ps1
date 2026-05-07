@@ -873,20 +873,17 @@ Write-Host ""
 Info "$($G.Lock) Connect to WordPress.com"
 Write-Host ""
 
-$authOutput = ''
-$authStatus = Invoke-ExternalQuiet -Exe $StudioCliCmd -Arguments @('auth','status')
-$authOutput = $authStatus.Output
-$authExitCode = $authStatus.ExitCode
+$authStatus = Invoke-ExternalQuiet -Exe $StudioCliCmd -Arguments @('auth','status','--format=json')
+$authJson = $null
+try {
+    $authJson = $authStatus.Output | ConvertFrom-Json
+} catch { }
 
-# CLI output is localized, so match on two locale-independent signals instead
-# of an English phrase:
-#   1) mentions "WordPress.com" (the error path "Authentication token invalid"
-#      does not)
-#   2) contains a backtick-quoted username
-# The status command also writes localized progress to stderr, so it must run
-# through Invoke-ExternalQuiet rather than direct PowerShell invocation.
-$wpcomUser = if ($authOutput -match '`([^`]+)`') { $Matches[1] } else { '' }
-if ($authOutput -match 'WordPress\.com' -and $wpcomUser) {
+$wpcomUser = ''
+if ($authJson -and $authJson.authenticated -and $authJson.username) {
+    $wpcomUser = [string]$authJson.username
+}
+if ($wpcomUser) {
     if ($studioFound) {
         Ok "Connected as $wpcomUser (using your WordPress Studio account)."
     } else {
