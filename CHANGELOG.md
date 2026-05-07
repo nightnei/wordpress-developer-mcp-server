@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.1...v2.3.2) (2026-05-07)
+
+
+### Bug Fixes
+
+* handle empty Studio site list output ([#50](https://github.com/nightnei/wordpress-developer-mcp-server/issues/50)) ([0f39b50](https://github.com/nightnei/wordpress-developer-mcp-server/commit/0f39b500cc950aa25128f0cca2ffaf05ba7056ac))
+
 ## [2.3.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.0...v2.3.1) (2026-05-04)
 
 
