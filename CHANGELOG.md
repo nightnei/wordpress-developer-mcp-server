@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.4](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.3...v2.3.4) (2026-05-07)
+
+
+### Bug Fixes
+
+* **uninstall:** remove trailing line for windows jsons ([bffb5a6](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bffb5a67e3ee546f97f14b66d8af065d88116837))
+
 ## [2.3.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.2...v2.3.3) (2026-05-07)
 
 
