@@ -4,18 +4,23 @@ Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
 
 ## Quick Start
 
-Install in one line:
+Copy the command for your operating system into a terminal:
+
+- **macOS**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.sh | bash
 ```
 
+- **Windows**
+
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.ps1 | iex"
+```
+
 ## What it does
 
 Open Codex, Claude, Cursor, VS Code or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
-
-## Platform support
-macOS only — Windows support coming soon.
 
 ## How to get updates
 
