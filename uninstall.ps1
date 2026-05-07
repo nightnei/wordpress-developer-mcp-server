@@ -111,9 +111,6 @@ if (!config || typeof config !== 'object' || !config.mcpServers || typeof config
 }
 
 delete config.mcpServers['wordpress-developer'];
-if (Object.keys(config.mcpServers).length === 0) {
-  delete config.mcpServers;
-}
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
@@ -138,9 +135,6 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         $config = $raw | ConvertFrom-Json
         if (-not $config.mcpServers) { return $false }
         $config.mcpServers.PSObject.Properties.Remove('wordpress-developer')
-        if ($config.mcpServers.PSObject.Properties.Count -eq 0) {
-            $config.PSObject.Properties.Remove('mcpServers')
-        }
         [System.IO.File]::WriteAllText(
             $ConfigFile,
             ($config | ConvertTo-Json -Depth 100),
