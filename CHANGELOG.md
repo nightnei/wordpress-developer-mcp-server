@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.2...v2.3.3) (2026-05-07)
+
+
+### Bug Fixes
+
+* **install:** use auth json format in installers ([#52](https://github.com/nightnei/wordpress-developer-mcp-server/issues/52)) ([80e2ba9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/80e2ba91937f3cca993ddcf265c4b6e6e5a54a59))
+
 ## [2.3.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.1...v2.3.2) (2026-05-07)
 
 
