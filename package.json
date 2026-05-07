@@ -8,6 +8,7 @@
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
 		"inspect": "npx @modelcontextprotocol/inspector node ./dist/index.js",
+		"typecheck": "tsc --noEmit",
 		"format": "prettier . --write"
 	},
 	"dependencies": {
