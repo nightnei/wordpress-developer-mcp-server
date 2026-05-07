@@ -111,6 +111,7 @@ if (!config || typeof config !== 'object' || !config.mcpServers || typeof config
 }
 
 delete config.mcpServers['wordpress-developer'];
+// Keep the empty wrapper because Cursor errors if mcpServers is missing.
 
 fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
@@ -135,6 +136,7 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         $config = $raw | ConvertFrom-Json
         if (-not $config.mcpServers) { return $false }
         $config.mcpServers.PSObject.Properties.Remove('wordpress-developer')
+        # Keep the empty wrapper because Cursor errors if mcpServers is missing.
         [System.IO.File]::WriteAllText(
             $ConfigFile,
             ($config | ConvertTo-Json -Depth 100),
