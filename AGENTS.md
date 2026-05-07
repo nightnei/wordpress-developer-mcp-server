@@ -81,5 +81,43 @@ After Release Please opens and merges a release PR, GitHub Actions builds `dist/
 
 ## Pull Requests
 
-- Keep PRs focused on one behavioral change.
-- Mention platform coverage explicitly when touching installers or process execution.
+When asked to prepare a PR, do the full PR preparation work unless the user asks only for a summary.
+
+Before opening a PR:
+
+- Keep the PR focused on one logical change.
+- Do not include unrelated formatting, dependency, lockfile, or generated-file changes unless required.
+- Run the relevant verification commands and include the results in the PR body.
+- If a verification step cannot be run, explain why in the PR body.
+
+Use Conventional Commit-style PR titles:
+
+- `fix: ...` for bug fixes.
+- `feat: ...` for user-visible behavior or capability.
+- `docs: ...` for documentation-only changes.
+- `chore: ...` for maintenance that should not trigger a release.
+- `refactor: ...` for internal code changes without behavior changes.
+
+Use this PR body structure:
+
+```md
+## Summary
+
+- ...
+
+## Verification
+
+- [x] `npm run build`
+- [x] `npm run typecheck`
+
+## Platform Notes
+
+- macOS:
+- Windows:
+```
+
+Because this repo uses Release Please, choose the PR title prefix deliberately:
+
+- Use `fix:` when the PR should create a patch release.
+- Use `feat:` when it should create a minor release.
+- Use `chore:`, `docs:`, or `refactor:` when it should not force a release by itself.
