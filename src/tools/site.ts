@@ -23,12 +23,26 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
-			// TODO Studio CLI should return empty array if no sites are found
 			let sites = [];
-			try {
-				sites = JSON.parse( res.stdout.trim() );
-			} catch {
-				// noop
+			const stdout = res.stdout.trim();
+			if ( stdout ) {
+				try {
+					const parsed = JSON.parse( stdout );
+					if ( ! Array.isArray( parsed ) ) {
+						throw new Error( 'expected an array' );
+					}
+					sites = parsed;
+				} catch {
+					return {
+						content: [
+							{
+								type: 'text',
+								text: `studio site list returned unexpected output:\n\n${ stdout }`,
+							},
+						],
+						isError: true,
+					};
+				}
 			}
 			const structuredContent = { sites };
 
