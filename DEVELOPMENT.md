@@ -63,4 +63,4 @@ Commits without a conventional prefix (e.g. `chore:`, `docs:`, `refactor:`) don'
 2. A release PR is automatically opened with a version bump and changelog. New commits update the same PR.
 3. Merge the release PR when you're ready to release.
 4. A GitHub Release is created.
-5. Users running `install.sh` automatically get the latest release.
+5. Users running `install.sh` or `install.ps1` automatically get the latest release.
