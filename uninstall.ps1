@@ -115,7 +115,7 @@ if (Object.keys(config.mcpServers).length === 0) {
   delete config.mcpServers;
 }
 
-fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
         $tempJs = Join-Path $env:TEMP ("wpmcp-uninstall-" + [Guid]::NewGuid().ToString('N') + '.js')
         [System.IO.File]::WriteAllText($tempJs, $script, (New-Object System.Text.UTF8Encoding($false)))
@@ -141,7 +141,11 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
         if ($config.mcpServers.PSObject.Properties.Count -eq 0) {
             $config.PSObject.Properties.Remove('mcpServers')
         }
-        $config | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $ConfigFile -Encoding UTF8
+        [System.IO.File]::WriteAllText(
+            $ConfigFile,
+            ($config | ConvertTo-Json -Depth 100),
+            (New-Object System.Text.UTF8Encoding($false))
+        )
         return $true
     } catch {
         return $false
@@ -176,7 +180,7 @@ if (Object.keys(config.servers).length === 0) {
   delete config.servers;
 }
 
-fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 '@
         $tempJs = Join-Path $env:TEMP ("wpmcp-uninstall-" + [Guid]::NewGuid().ToString('N') + '.js')
         [System.IO.File]::WriteAllText($tempJs, $script, (New-Object System.Text.UTF8Encoding($false)))
@@ -202,7 +206,11 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
         if ($config.servers.PSObject.Properties.Count -eq 0) {
             $config.PSObject.Properties.Remove('servers')
         }
-        $config | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $ConfigFile -Encoding UTF8
+        [System.IO.File]::WriteAllText(
+            $ConfigFile,
+            ($config | ConvertTo-Json -Depth 100),
+            (New-Object System.Text.UTF8Encoding($false))
+        )
         return $true
     } catch {
         return $false
@@ -282,7 +290,11 @@ fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
         if ($config.context_servers.PSObject.Properties.Count -eq 0) {
             $config.PSObject.Properties.Remove('context_servers')
         }
-        $config | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $ConfigFile -Encoding UTF8
+        [System.IO.File]::WriteAllText(
+            $ConfigFile,
+            ($config | ConvertTo-Json -Depth 100),
+            (New-Object System.Text.UTF8Encoding($false))
+        )
         return $true
     } catch {
         return $false
