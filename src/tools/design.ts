@@ -157,6 +157,7 @@ function buildDesignBrief( input: {
 		},
 		buildWorkflow: [
 			'Create or use the site, then run wpdev_site_status to get URL and credentials.',
+			'Split the build into short visible milestones instead of one very long action. Some AI clients time out during large site builds; guide the user toward the final result step by step.',
 			'Create a custom visual direction before writing content. Do not rely on the default theme appearance.',
 			'Use editable WordPress blocks for headings, paragraphs, columns, lists, buttons, images, and groups. Avoid raw HTML for normal page sections.',
 			'Do not create standalone static .html pages. Create content as WordPress pages/posts, or use .html only for valid block theme templates and template parts.',

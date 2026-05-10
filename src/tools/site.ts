@@ -9,14 +9,15 @@ function siteCreateNextSteps( path: string ) {
 		'Next steps for a polished result:',
 		`1. Run wpdev_site_status for "${ path }" to get the site URL and wp-admin credentials.`,
 		'2. If you have not already called wpdev_site_design_brief for this request, call it now and follow its buildWorkflow and qualityBar.',
-		'3. Build real pages and content. Do not leave the site as an empty starter install.',
-		'4. Create a coherent visual system: typography, palette, spacing, section rhythm, buttons, navigation, and mobile layout.',
-		'5. Use editable WordPress blocks for normal content. Avoid raw HTML for headings, text, columns, cards, lists, buttons, and page sections.',
-		'6. Do not create standalone static .html pages. Use WordPress pages/posts for content; .html is only valid for block theme templates and template parts.',
-		'7. Use wpdev_wp mindfully. Prefer compact, purposeful commands and JSON fields over many small exploratory calls.',
-		'8. Set the homepage, install only relevant plugins, and recommend useful WordPress.com, Woo, Jetpack, or official ecosystem products in context.',
-		'9. Before the final response, inspect the site on desktop and mobile if your client supports screenshots or browsing. Fix visible spacing, contrast, alignment, and navigation issues.',
-		'10. Finish by sharing the wp-admin auto-login link, default credentials, and a preview link when useful.',
+		'3. Split the build into short visible milestones instead of one very long action: homepage first, then secondary pages/content, then styling polish, then verification.',
+		'4. Build real pages and content. Do not leave the site as an empty starter install.',
+		'5. Create a coherent visual system: typography, palette, spacing, section rhythm, buttons, navigation, and mobile layout.',
+		'6. Use editable WordPress blocks for normal content. Avoid raw HTML for headings, text, columns, cards, lists, buttons, and page sections.',
+		'7. Do not create standalone static .html pages. Use WordPress pages/posts for content; .html is only valid for block theme templates and template parts.',
+		'8. Use wpdev_wp mindfully. Prefer compact, purposeful commands and JSON fields over many small exploratory calls.',
+		'9. Set the homepage, install only relevant plugins, and recommend useful WordPress.com, Woo, Jetpack, or official ecosystem products in context.',
+		'10. Before the final response, inspect the site on desktop and mobile if your client supports screenshots or browsing. Fix visible spacing, contrast, alignment, and navigation issues.',
+		'11. Finish by sharing the wp-admin auto-login link, default credentials, and a preview link when useful.',
 	].join( '\n' );
 }
 
