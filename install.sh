@@ -183,15 +183,15 @@ fi
 # ── Wrapper scripts (always regenerated) ─────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Creating wrapper scripts...${NC}"
-rm -f "$INSTALL_DIR/bin/studio-mcp" "$INSTALL_DIR/bin/studio-cli"
-MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
+rm -f "$INSTALL_DIR/bin/wpdev-mcp" "$INSTALL_DIR/bin/studio-cli"
+MCP_COMMAND="$INSTALL_DIR/bin/wpdev-mcp"
 
-cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
+cat > "$INSTALL_DIR/bin/wpdev-mcp" << EOF
 #!/bin/bash
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
 "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
 EOF
-chmod +x "$INSTALL_DIR/bin/studio-mcp"
+chmod +x "$INSTALL_DIR/bin/wpdev-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash

@@ -34,7 +34,7 @@ $NodeDir      = Join-Path $InstallDir 'node'
 $McpDir       = Join-Path $InstallDir 'mcp'
 $BinDir       = Join-Path $InstallDir 'bin'
 
-$McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
+$McpCommand   = Join-Path $BinDir    'wpdev-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
@@ -451,7 +451,7 @@ Info "Creating wrapper scripts..."
 # cmd.exe so Windows can run the npm .cmd shim without Node's direct-spawn EINVAL.
 # The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule that
 # triggers when a line starts with `"` and ends with `"`.
-$studioMcpContent = @"
+$wpdevMcpContent = @"
 @echo off
 setlocal
 set "STUDIO_CLI_PATH=$StudioCliCmd"
@@ -468,7 +468,7 @@ exit /b %ERRORLEVEL%
 "@
 
 foreach ($pair in @(
-    @{ Path = $McpCommand;   Content = $studioMcpContent },
+    @{ Path = $McpCommand;   Content = $wpdevMcpContent },
     @{ Path = $StudioCliCmd; Content = $studioCliContent }
 )) {
     if (Test-Path -LiteralPath $pair.Path) {
