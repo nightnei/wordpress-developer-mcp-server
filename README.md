@@ -37,7 +37,3 @@ Create a polished WordPress site named "Flowers Shop".
 ```
 
 Your AI will turn that into a design brief, choose a visual direction, build the site in steps, and help you iterate toward a finished design. Ask for a new style, extra pages, products, plugins, copy changes, or a shareable preview whenever you want.
-
-## Demo
-
-[![Watch the demo](https://img.youtube.com/vi/l8jFp2455qE/maxresdefault.jpg)](https://youtu.be/l8jFp2455qE)
