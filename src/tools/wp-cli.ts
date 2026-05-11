@@ -42,7 +42,7 @@ export function registerWpCliTools( server: McpServer ) {
 		'wpdev_wp',
 		{
 			description:
-				'Run WP-CLI commands on a Studio site. Examples: "plugin list", "theme activate flavor", "user list". Supports quoted strings for values with spaces.',
+				'Run WP-CLI commands on a Studio site. Use deliberately because WP-CLI can be slower than file reads/writes. Prefer compact output with --format=json and --fields for list commands, and avoid many tiny exploratory calls when one purposeful command is enough. Examples: "plugin list --format=json", "theme activate flavor", "user list --fields=ID,user_login --format=json". Supports quoted strings for values with spaces.',
 			inputSchema: {
 				path: z.string().describe( SITE_PATH_DESCRIPTION ),
 				command: z
