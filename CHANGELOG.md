@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.4...v2.4.0) (2026-05-11)
+
+
+### Features
+
+* **tools:** add design brief ([#56](https://github.com/nightnei/wordpress-developer-mcp-server/issues/56)) ([cb1f95f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cb1f95fdcc46d6320daec13c76deb652bbd0a26a))
+
 ## [2.3.4](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.3...v2.3.4) (2026-05-07)
 
 
