@@ -20,9 +20,17 @@ powershell -c "irm https://raw.githubusercontent.com/nightnei/wordpress-develope
 
 ## What it does
 
-Open Codex, Claude, Cursor, VS Code or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language. For example, you might ask to create a new WordPress site named Flowers Shop, install the WooCommerce plugin, or create a shareable link for the shop.
+Open Codex, Claude, Cursor, VS Code or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language.
 
-## How to get updates
+## Try asking your AI
+
+```text
+Create a new WordPress site named "Flowers Shop" or whatever you want
+Install the WooCommerce plugin
+Create shareable link for the shop
+```
+
+## How to get updates from this repo
 
 No action needed on your part. When a new version is available, your AI assistant will let you know and offer to update it for you — just confirm, and you're done.
 

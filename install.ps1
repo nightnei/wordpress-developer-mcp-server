@@ -971,7 +971,6 @@ Write-Host ""
 Write-Host "Try asking your AI:"
 Write-Host '  "Create a new WordPress site named ''Flowers Shop''"'
 Write-Host '  "Install the WooCommerce plugin"'
-Write-Host '  "Add one demo product to the shop named ''Sunflower''"'
 Write-Host '  "Create shareable link for the shop"'
 Write-Host ""
 Link "$($G.Star) Star the repo: https://github.com/$McpRepo $($G.EmDash) it helps others discover the project."
