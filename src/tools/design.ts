@@ -97,6 +97,48 @@ function buildPages( pages: string | undefined ) {
 	return [ 'Home', 'About', 'Stories or Updates', 'Contact' ];
 }
 
+function wantsAiToChoose( value: string ) {
+	return /\b(surprise me|choose for me|whatever you prefer|use your judgment|just build|you decide)\b/i.test(
+		value
+	);
+}
+
+function isUnderSpecified( input: {
+	goal: string;
+	context?: string;
+	audience?: string;
+	style?: string;
+	pages?: string;
+} ) {
+	if ( wantsAiToChoose( input.goal ) ) {
+		return false;
+	}
+
+	const explicitDetails = [ input.context, input.audience, input.style, input.pages ].filter(
+		( value ) => value?.trim()
+	).length;
+	const goalWordCount = input.goal.trim().split( /\s+/ ).filter( Boolean ).length;
+
+	return explicitDetails < 2 && goalWordCount < 18;
+}
+
+function buildQuestionsBeforeBuild( siteName: string, source: string ) {
+	const text = source.toLowerCase();
+	if ( /\b(shop|store|commerce|product|sell|sales)\b/.test( text ) ) {
+		return [
+			`What does ${ siteName } sell, and who is the ideal customer?`,
+			'What pages or sections do you want besides the homepage?',
+			'What style should it have: premium, playful, minimal, bold, natural, or something else?',
+		];
+	}
+
+	return [
+		`What is ${ siteName } for, and who should visit it?`,
+		'What pages or sections should the site include?',
+		'What visual style or mood should it have?',
+	];
+}
+
 function buildDesignBrief( input: {
 	goal: string;
 	siteName?: string;
@@ -118,10 +160,16 @@ function buildDesignBrief( input: {
 	const aesthetic = inferAesthetic( source );
 	const pages = buildPages( input.pages );
 	const siteName = input.siteName || 'the site';
+	const needsUserInput = isUnderSpecified( input );
 
 	return {
 		siteName,
 		goal: input.goal,
+		needsUserInput,
+		questionsBeforeBuild: needsUserInput ? buildQuestionsBeforeBuild( siteName, source ) : [],
+		nextAction: needsUserInput
+			? 'Ask the user these questions and wait for their answer before calling wpdev_site_create.'
+			: 'Proceed with the build workflow.',
 		audience: input.audience || 'People who should immediately understand the offer and trust it.',
 		creativeDirection: {
 			aesthetic: input.style || aesthetic.name,
@@ -156,6 +204,9 @@ function buildDesignBrief( input: {
 			],
 		},
 		buildWorkflow: [
+			needsUserInput
+				? 'Before creating the site, ask the questionsBeforeBuild and wait for the user answer. Do not create a full site from this brief yet.'
+				: 'The request has enough direction to start; continue with the workflow.',
 			'Create or use the site, then run wpdev_site_status to get URL and credentials.',
 			'Split the build into short visible milestones instead of one very long action. Some AI clients time out during large site builds; guide the user toward the final result step by step.',
 			'Create a custom visual direction before writing content. Do not rely on the default theme appearance.',
@@ -207,6 +258,9 @@ export function registerDesignTools( server: McpServer ) {
 		async ( input ) => {
 			const brief = buildDesignBrief( input );
 			const structuredContent = { brief };
+			const nextInstruction = brief.needsUserInput
+				? 'Ask the questionsBeforeBuild and wait for the user answer before creating the site.'
+				: 'Follow this brief during site creation. Do not stop after creating an empty WordPress site.';
 
 			return {
 				content: [
@@ -215,7 +269,7 @@ export function registerDesignTools( server: McpServer ) {
 						text:
 							`Design brief for ${ brief.siteName }:\n\n` +
 							JSON.stringify( structuredContent, null, 2 ) +
-							'\n\nFollow this brief during site creation. Do not stop after creating an empty WordPress site.',
+							`\n\n${ nextInstruction }`,
 					},
 				],
 				structuredContent,
