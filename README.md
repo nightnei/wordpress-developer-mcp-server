@@ -33,10 +33,10 @@ Open Codex, Claude, Cursor, VS Code, or another supported app and work as if you
 ## Try This Prompt
 
 ```text
-Create a polished WordPress site named "Flowers Shop" and finish with a shareable preview link.
+Create a polished WordPress site named "Flowers Shop".
 ```
 
-Then keep iterating: ask for a new design direction, add products, change copy, install plugins, or publish a fresh preview.
+Your AI will turn that into a design brief, choose a visual direction, build the site in steps, and help you iterate toward a finished design. Ask for a new style, extra pages, products, plugins, copy changes, or a shareable preview whenever you want.
 
 ## Demo
 
