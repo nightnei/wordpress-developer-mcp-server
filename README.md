@@ -36,4 +36,4 @@ Open Codex, Claude, Cursor, VS Code, or another supported app and work as if you
 Create a polished WordPress site named "Flowers Shop".
 ```
 
-Your AI will turn that into a design brief, choose a visual direction, build the site in steps, and help you iterate toward a finished design. Ask for a new style, extra pages, products, plugins, copy changes, or a shareable preview whenever you want.
+Your AI will turn that into a design brief, ask a few details when needed, choose a visual direction, build the site in steps, and help you iterate toward a finished design. Ask for a new style, extra pages, products, plugins, copy changes, or a shareable preview whenever you want.

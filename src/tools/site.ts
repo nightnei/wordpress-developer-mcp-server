@@ -8,7 +8,7 @@ function siteCreateNextSteps( path: string ) {
 		'',
 		'Next steps for a polished result:',
 		`1. Run wpdev_site_status for "${ path }" to get the site URL and wp-admin credentials.`,
-		'2. If you have not already called wpdev_site_design_brief for this request, call it now and follow its buildWorkflow and qualityBar.',
+		'2. If you have not already called wpdev_site_design_brief for this request, call it now. If it returns needsUserInput=true, ask its questions before continuing.',
 		'3. Split the build into short visible milestones instead of one very long action: homepage first, then secondary pages/content, then styling polish, then verification.',
 		'4. Build real pages and content. Do not leave the site as an empty starter install.',
 		'5. Create a coherent visual system: typography, palette, spacing, section rhythm, buttons, navigation, and mobile layout.',
