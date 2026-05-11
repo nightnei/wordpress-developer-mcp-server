@@ -1,4 +1,4 @@
-# Create WordPress sites by chatting with AI 🌸
+# Create WordPress sites by chatting with your AI 🌸
 
 Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
 
@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-se
 powershell -c "irm https://raw.githubusercontent.com/nightnei/wordpress-developer-mcp-server/main/install.ps1 | iex"
 ```
 
-## What it does
+## What It Does
 
 Open Codex, Claude, Cursor, VS Code, or another supported app and work as if your AI already knows WordPress end to end:
 
@@ -30,14 +30,10 @@ Open Codex, Claude, Cursor, VS Code, or another supported app and work as if you
 - Use WP-CLI safely through natural language
 - Create shareable preview links
 
-## Try asking your AI
+## Try This Prompt
 
 ```text
-Create a WordPress site named "Flowers Shop".
-Make it feel polished and friendly.
-Add a homepage, About page, and Shop page.
-Install WooCommerce.
-Finish with a shareable preview link.
+Create a polished WordPress site named "Flowers Shop" and finish with a shareable preview link.
 ```
 
 Then keep iterating: ask for a new design direction, add products, change copy, install plugins, or publish a fresh preview.
