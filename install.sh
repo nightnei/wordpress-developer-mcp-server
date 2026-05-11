@@ -20,7 +20,7 @@ if $UPDATE_MODE; then
 	echo -e "${BLUE}${BOLD}🌸 Updating WordPress Developer MCP Server...${NC}"
 else
 	echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
-	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+	echo -e "${GREEN}${BOLD}Create WordPress sites by chatting with AI.${NC}"
 	echo ""
 	echo "This script will detect your locally installed AI agents"
 	echo "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"

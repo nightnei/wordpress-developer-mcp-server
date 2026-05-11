@@ -1,6 +1,8 @@
-# Turn your AI assistant into a WordPress developer 🌸
+# Create WordPress sites by chatting with AI 🌸
 
 Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
+
+Create, customize, manage, and share local WordPress sites by describing what you want in plain language.
 
 ## Quick Start
 
@@ -20,19 +22,25 @@ powershell -c "irm https://raw.githubusercontent.com/nightnei/wordpress-develope
 
 ## What it does
 
-Open Codex, Claude, Cursor, VS Code or another supported app and work as if the assistant already knows WordPress end to end: it can create and manage sites, install plugins, update themes and styles, run routine tasks, and create shareable preview links. You do not need to paste docs — describe what you want in plain language.
+Open Codex, Claude, Cursor, VS Code, or another supported app and work as if your AI already knows WordPress end to end:
+
+- Create new WordPress sites
+- Add pages, posts, menus, themes, plugins, and content
+- Update styles, settings, and site structure
+- Use WP-CLI safely through natural language
+- Create shareable preview links
 
 ## Try asking your AI
 
 ```text
-Create a new WordPress site named "Flowers Shop" or whatever you want
-Install the WooCommerce plugin
-Create shareable link for the shop
+Create a WordPress site named "Flowers Shop".
+Make it feel polished and friendly.
+Add a homepage, About page, and Shop page.
+Install WooCommerce.
+Finish with a shareable preview link.
 ```
 
-## How to get updates from this repo
-
-No action needed on your part. When a new version is available, your AI assistant will let you know and offer to update it for you — just confirm, and you're done.
+Then keep iterating: ask for a new design direction, add products, change copy, install plugins, or publish a fresh preview.
 
 ## Demo
 
