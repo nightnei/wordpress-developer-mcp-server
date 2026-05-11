@@ -34,7 +34,7 @@ $NodeDir      = Join-Path $InstallDir 'node'
 $McpDir       = Join-Path $InstallDir 'mcp'
 $BinDir       = Join-Path $InstallDir 'bin'
 
-$McpCommand   = Join-Path $BinDir    'studio-mcp.cmd'
+$McpCommand   = Join-Path $BinDir    'wpdev-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
@@ -72,7 +72,7 @@ if ($Update) {
     Head "$($G.Rose) Updating WordPress Developer MCP Server..."
 } else {
     Head "$($G.Rose) Installing WordPress Developer MCP Server..."
-    Ok   "Turn your AI into a full-stack WordPress developer."
+    Ok   "Create WordPress sites by chatting with your AI."
     Write-Host ""
     Write-Host "This script will detect your locally installed AI agents"
     Write-Host "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"
@@ -451,7 +451,7 @@ Info "Creating wrapper scripts..."
 # cmd.exe so Windows can run the npm .cmd shim without Node's direct-spawn EINVAL.
 # The `call "exe" "args" %*` form avoids cmd.exe's quote-stripping rule that
 # triggers when a line starts with `"` and ends with `"`.
-$studioMcpContent = @"
+$wpdevMcpContent = @"
 @echo off
 setlocal
 set "STUDIO_CLI_PATH=$StudioCliCmd"
@@ -468,7 +468,7 @@ exit /b %ERRORLEVEL%
 "@
 
 foreach ($pair in @(
-    @{ Path = $McpCommand;   Content = $studioMcpContent },
+    @{ Path = $McpCommand;   Content = $wpdevMcpContent },
     @{ Path = $StudioCliCmd; Content = $studioCliContent }
 )) {
     if (Test-Path -LiteralPath $pair.Path) {
@@ -969,10 +969,9 @@ Link $HR
 Ok "$($G.Rose) You're all set!"
 Write-Host ""
 Write-Host "Try asking your AI:"
-Write-Host '  "Create a new WordPress site named ''Flowers Shop''"'
-Write-Host '  "Install the WooCommerce plugin"'
-Write-Host '  "Add one demo product to the shop named ''Sunflower''"'
-Write-Host '  "Create shareable link for the shop"'
+Write-Host '  "Create a polished WordPress site named ''Flowers Shop''."'
+Write-Host ""
+Write-Host "Then ask for style changes, extra pages, products, plugins, or a shareable preview."
 Write-Host ""
 Link "$($G.Star) Star the repo: https://github.com/$McpRepo $($G.EmDash) it helps others discover the project."
 Write-Host ""

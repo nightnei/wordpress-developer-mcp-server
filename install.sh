@@ -20,7 +20,7 @@ if $UPDATE_MODE; then
 	echo -e "${BLUE}${BOLD}🌸 Updating WordPress Developer MCP Server...${NC}"
 else
 	echo -e "${BLUE}${BOLD}🌸 Installing WordPress Developer MCP Server...${NC}"
-	echo -e "${GREEN}${BOLD}Turn your AI into a full-stack WordPress developer.${NC}"
+	echo -e "${GREEN}${BOLD}Create WordPress sites by chatting with your AI.${NC}"
 	echo ""
 	echo "This script will detect your locally installed AI agents"
 	echo "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"
@@ -183,15 +183,15 @@ fi
 # ── Wrapper scripts (always regenerated) ─────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Creating wrapper scripts...${NC}"
-rm -f "$INSTALL_DIR/bin/studio-mcp" "$INSTALL_DIR/bin/studio-cli"
-MCP_COMMAND="$INSTALL_DIR/bin/studio-mcp"
+rm -f "$INSTALL_DIR/bin/wpdev-mcp" "$INSTALL_DIR/bin/studio-cli"
+MCP_COMMAND="$INSTALL_DIR/bin/wpdev-mcp"
 
-cat > "$INSTALL_DIR/bin/studio-mcp" << EOF
+cat > "$INSTALL_DIR/bin/wpdev-mcp" << EOF
 #!/bin/bash
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
 "$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
 EOF
-chmod +x "$INSTALL_DIR/bin/studio-mcp"
+chmod +x "$INSTALL_DIR/bin/wpdev-mcp"
 
 cat > "$INSTALL_DIR/bin/studio-cli" << EOF
 #!/bin/bash
@@ -557,10 +557,9 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 echo -e "${GREEN}🌸 You're all set!${NC}"
 echo ""
 echo "Try asking your AI:"
-echo "  \"Create a new WordPress site named 'Flowers Shop'\""
-echo "  \"Install the WooCommerce plugin\""
-echo "  \"Add one demo product to the shop named 'Sunflower'\""
-echo "  \"Create shareable link for the shop\""
+echo "  \"Create a polished WordPress site named 'Flowers Shop'.\""
+echo ""
+echo "Then ask for style changes, extra pages, products, plugins, or a shareable preview."
 echo ""
 echo -e "⭐ Star the repo: ${BLUE}https://github.com/${MCP_REPO}${NC} — it helps others discover the project."
 echo ""
