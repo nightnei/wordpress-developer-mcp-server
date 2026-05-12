@@ -6,8 +6,6 @@ import { SITE_PATH_DESCRIPTION } from '../lib/constants.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
-const syncOptionSchema = z.enum( [ 'all', 'sqls', 'uploads', 'plugins', 'themes', 'contents' ] );
-
 type WpcomSiteResponse = {
 	ID: number;
 	URL: string;
@@ -38,10 +36,6 @@ type WpcomSitesResponse = {
 	sites?: WpcomSiteResponse[];
 	total?: number;
 };
-
-function syncOptionsArg( options: z.infer< typeof syncOptionSchema >[] | undefined ) {
-	return options?.length ? options.join( ',' ) : 'all';
-}
 
 async function getWpcomAccessToken() {
 	const sharedConfigPath = nodePath.join( os.homedir(), '.studio', 'shared.json' );
@@ -158,7 +152,7 @@ export function registerSyncTools( server: McpServer ) {
 		'wpdev_wpcom_site_list',
 		{
 			description:
-				'Fetch the authenticated user’s WordPress.com sites live from WordPress.com. Use this before wpdev_site_push or wpdev_site_pull to choose a remote site URL or ID. A prior local-to-remote connection is not required; push and pull connect during the operation.',
+				"Fetch the authenticated user's WordPress.com sites live from WordPress.com. Use this before wpdev_site_push or wpdev_site_pull to choose a remote site URL or ID. A prior local-to-remote connection is not required; push and pull connect during the operation.",
 			inputSchema: {
 				search: z
 					.string()
@@ -195,22 +189,16 @@ export function registerSyncTools( server: McpServer ) {
 		'wpdev_site_push',
 		{
 			description:
-				'Push a local WordPress site to a WordPress.com site. Requires WordPress.com authentication. Use wpdev_wpcom_site_list first to choose the remote site. A prior connection is not required; the CLI connects during push. This modifies the remote site, so only call after the user confirms the target remote site.',
+				'Push a local WordPress site to a WordPress.com site. Requires WordPress.com authentication. Use wpdev_wpcom_site_list first to choose the remote site. A prior connection is not required; the CLI connects during push. Always syncs all parts of the site. This modifies the remote site, so only call after the user confirms the target remote site.',
 			inputSchema: {
 				path: z.string().describe( SITE_PATH_DESCRIPTION ),
 				remoteSite: z
 					.string()
 					.describe( 'Remote WordPress.com site URL or numeric site ID to push to.' ),
-				options: z
-					.array( syncOptionSchema )
-					.optional()
-					.describe(
-						'Parts to push. Defaults to ["all"]. Other options: sqls, uploads, plugins, themes, contents.'
-					),
 				confirm: z.boolean().describe( 'Must be true to push changes to the remote site.' ),
 			},
 		},
-		async ( { path, remoteSite, options, confirm } ) => {
+		async ( { path, remoteSite, confirm } ) => {
 			if ( ! confirm ) {
 				return {
 					content: [
@@ -231,7 +219,7 @@ export function registerSyncTools( server: McpServer ) {
 				'--remote-site',
 				remoteSite,
 				'--options',
-				syncOptionsArg( options ),
+				'all',
 			] );
 
 			if ( res.exitCode !== 0 ) {
@@ -253,22 +241,16 @@ export function registerSyncTools( server: McpServer ) {
 		'wpdev_site_pull',
 		{
 			description:
-				'Pull a WordPress.com site into a local WordPress site. Requires WordPress.com authentication. Use wpdev_wpcom_site_list first to choose the remote source. A prior connection is not required; the CLI connects during pull. This modifies the local site, so only call after the user confirms the local site and remote source.',
+				'Pull a WordPress.com site into a local WordPress site. Requires WordPress.com authentication. Use wpdev_wpcom_site_list first to choose the remote source. A prior connection is not required; the CLI connects during pull. Always syncs all parts of the site. This modifies the local site, so only call after the user confirms the local site and remote source.',
 			inputSchema: {
 				path: z.string().describe( SITE_PATH_DESCRIPTION ),
 				remoteSite: z
 					.string()
 					.describe( 'Remote WordPress.com site URL or numeric site ID to pull from.' ),
-				options: z
-					.array( syncOptionSchema )
-					.optional()
-					.describe(
-						'Parts to pull. Defaults to ["all"]. Other options: sqls, uploads, plugins, themes, contents.'
-					),
 				confirm: z.boolean().describe( 'Must be true to pull changes into the local site.' ),
 			},
 		},
-		async ( { path, remoteSite, options, confirm } ) => {
+		async ( { path, remoteSite, confirm } ) => {
 			if ( ! confirm ) {
 				return {
 					content: [
@@ -289,7 +271,7 @@ export function registerSyncTools( server: McpServer ) {
 				'--remote-site',
 				remoteSite,
 				'--options',
-				syncOptionsArg( options ),
+				'all',
 			] );
 
 			if ( res.exitCode !== 0 ) {
