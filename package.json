@@ -5,7 +5,7 @@
 	"type": "module",
 	"version": "2.5.1",
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --external:chromium-bidi/* --external:fsevents --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
 		"inspect": "npx @modelcontextprotocol/inspector node ./dist/index.js",
 		"typecheck": "tsc --noEmit",
@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.29.0",
+		"playwright": "^1.60.0",
 		"zod": "^4.4.2"
 	},
 	"devDependencies": {
