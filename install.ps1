@@ -969,9 +969,9 @@ Link $HR
 Ok "$($G.Rose) You're all set!"
 Write-Host ""
 Write-Host "Try asking your AI:"
-Write-Host '  "Create a polished WordPress site named ''Flowers Shop''."'
+Write-Host '  "Create a WordPress site named ''Local Bakery'' with Home, Menu, About, and Contact pages."'
 Write-Host ""
-Write-Host "Then ask for style changes, extra pages, products, plugins, or a shareable preview."
+Write-Host "Then ask for style changes, extra pages, plugins, copy changes, or a shareable preview."
 Write-Host ""
 Link "$($G.Star) Star the repo: https://github.com/$McpRepo $($G.EmDash) it helps others discover the project."
 Write-Host ""

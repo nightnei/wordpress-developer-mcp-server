@@ -33,7 +33,7 @@ Open Codex, Claude, Cursor, VS Code, or another supported app and work as if you
 ## Try This Prompt
 
 ```text
-Create a polished WordPress site named "Flowers Shop".
+Create a WordPress site named "Local Bakery" with Home, Menu, About, and Contact pages.
 ```
 
-Your AI will turn that into a design brief, ask a few details when needed, choose a visual direction, build the site in steps, and help you iterate toward a finished design. Ask for a new style, extra pages, products, plugins, copy changes, or a shareable preview whenever you want.
+Your AI will create a brief, choose a visual direction, build in small steps, and help you iterate toward a finished design. If your request is short, it should first ask whether you want an empty site to iterate on later or a designed site now.
