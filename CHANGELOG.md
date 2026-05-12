@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.4.1...v2.5.0) (2026-05-12)
+
+
+### Features
+
+* **tools:** sync ([#60](https://github.com/nightnei/wordpress-developer-mcp-server/issues/60)) ([864f957](https://github.com/nightnei/wordpress-developer-mcp-server/commit/864f957183efd8bcaf91712c64cca35026bec9f9))
+
 ## [2.4.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.4.0...v2.4.1) (2026-05-11)
 
 
