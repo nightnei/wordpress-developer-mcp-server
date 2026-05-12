@@ -103,6 +103,12 @@ function wantsAiToChoose( value: string ) {
 	);
 }
 
+function wantsEmptySite( value: string ) {
+	return /\b(empty|blank|fresh install|starter site|test site|sandbox|iterate later|build later)\b/i.test(
+		value
+	);
+}
+
 function isUnderSpecified( input: {
 	goal: string;
 	context?: string;
@@ -122,21 +128,8 @@ function isUnderSpecified( input: {
 	return explicitDetails < 2 && goalWordCount < 18;
 }
 
-function buildQuestionsBeforeBuild( siteName: string, source: string ) {
-	const text = source.toLowerCase();
-	if ( /\b(shop|store|commerce|product|sell|sales)\b/.test( text ) ) {
-		return [
-			`What does ${ siteName } sell, and who is the ideal customer?`,
-			'What pages or sections do you want besides the homepage?',
-			'What style should it have: premium, playful, minimal, bold, natural, or something else?',
-		];
-	}
-
-	return [
-		`What is ${ siteName } for, and who should visit it?`,
-		'What pages or sections should the site include?',
-		'What visual style or mood should it have?',
-	];
+function buildScopeQuestion( siteName: string ) {
+	return `Should ${ siteName } be an empty WordPress site that you will iterate on later, or should it be a designed site now? If designed, share the purpose/business, audience, pages/sections, and style preferences.`;
 }
 
 function buildDesignBrief( input: {
@@ -157,19 +150,74 @@ function buildDesignBrief( input: {
 	]
 		.filter( Boolean )
 		.join( ' ' );
+	const siteName = input.siteName || 'the site';
+	const emptySite = wantsEmptySite( source );
+	const needsUserInput = ! emptySite && isUnderSpecified( input );
+
+	if ( emptySite ) {
+		return {
+			siteName,
+			goal: input.goal,
+			siteSetupDecision: {
+				mode: 'empty-site',
+				nextStep:
+					'Create only the WordPress site. Do not build pages, themes, styling, or content until the user asks to iterate.',
+			},
+			needsUserInput: false,
+			questionsBeforeBuild: [],
+			nextAction: 'Create an empty WordPress site only.',
+			buildWorkflow: [
+				'Create the empty WordPress site and stop.',
+				'Run wpdev_site_status to get URL and credentials.',
+				'Share the wp-admin auto-login link and default credentials.',
+				'Do not add pages, styling, plugins, or content until the user asks to iterate.',
+			],
+		};
+	}
+
+	if ( needsUserInput ) {
+		return {
+			siteName,
+			goal: input.goal,
+			siteSetupDecision: {
+				mode: 'clarify-first',
+				nextStep:
+					'Ask the first question in questionsBeforeBuild and wait for the user answer before calling wpdev_site_create.',
+			},
+			needsUserInput: true,
+			questionsBeforeBuild: [ buildScopeQuestion( siteName ) ],
+			nextAction:
+				'Ask the first question in questionsBeforeBuild and wait for the user answer before calling wpdev_site_create.',
+		};
+	}
+
 	const aesthetic = inferAesthetic( source );
 	const pages = buildPages( input.pages );
-	const siteName = input.siteName || 'the site';
-	const needsUserInput = isUnderSpecified( input );
+
+	const enhancedBuildPrompt = [
+		`Build a polished WordPress site for ${ siteName }.`,
+		`Goal: ${ input.goal }`,
+		input.context ? `Context: ${ input.context }` : undefined,
+		input.audience ? `Audience: ${ input.audience }` : undefined,
+		`Creative direction: ${ input.style || aesthetic.name } - ${ aesthetic.mood }.`,
+		`Pages/sections: ${ pages.join( ', ' ) }.`,
+		`Memorable motif: ${ aesthetic.motif }.`,
+		'Use editable WordPress content, a coherent visual system, real copy, and short implementation milestones.',
+	]
+		.filter( Boolean )
+		.join( '\n' );
 
 	return {
 		siteName,
 		goal: input.goal,
-		needsUserInput,
-		questionsBeforeBuild: needsUserInput ? buildQuestionsBeforeBuild( siteName, source ) : [],
-		nextAction: needsUserInput
-			? 'Ask the user these questions and wait for their answer before calling wpdev_site_create.'
-			: 'Proceed with the build workflow.',
+		siteSetupDecision: {
+			mode: 'designed-site',
+			nextStep: 'Proceed with a designed site build using the enhanced brief.',
+		},
+		needsUserInput: false,
+		questionsBeforeBuild: [],
+		nextAction: 'Proceed with the build workflow.',
+		enhancedBuildPrompt,
 		audience: input.audience || 'People who should immediately understand the offer and trust it.',
 		creativeDirection: {
 			aesthetic: input.style || aesthetic.name,
@@ -204,9 +252,7 @@ function buildDesignBrief( input: {
 			],
 		},
 		buildWorkflow: [
-			needsUserInput
-				? 'Before creating the site, ask the questionsBeforeBuild and wait for the user answer. Do not create a full site from this brief yet.'
-				: 'The request has enough direction to start; continue with the workflow.',
+			'The request has enough direction to start; continue with the workflow.',
 			'Create or use the site, then run wpdev_site_status to get URL and credentials.',
 			'Split the build into short visible milestones instead of one very long action. Some AI clients time out during large site builds; guide the user toward the final result step by step.',
 			'Create a custom visual direction before writing content. Do not rely on the default theme appearance.',
@@ -232,7 +278,7 @@ export function registerDesignTools( server: McpServer ) {
 		'wpdev_site_design_brief',
 		{
 			description:
-				'Create a structured design brief before building or redesigning a WordPress site. Call this before wpdev_site_create for real site builds unless the user only wants an empty test site. Use the returned referencePatterns for inspiration, but do not copy real websites. Follow the buildWorkflow and qualityBar while building.',
+				'Create a structured design brief before building or redesigning a WordPress site. If the request is underspecified, this returns one scope question: empty site to iterate on later, or designed site now. Call this before wpdev_site_create for designed site builds unless the user only wants an empty test site. Use the returned referencePatterns for inspiration, but do not copy real websites. Follow the buildWorkflow and qualityBar while building.',
 			inputSchema: {
 				goal: z
 					.string()
@@ -258,9 +304,12 @@ export function registerDesignTools( server: McpServer ) {
 		async ( input ) => {
 			const brief = buildDesignBrief( input );
 			const structuredContent = { brief };
-			const nextInstruction = brief.needsUserInput
-				? 'Ask the questionsBeforeBuild and wait for the user answer before creating the site.'
-				: 'Follow this brief during site creation. Do not stop after creating an empty WordPress site.';
+			const nextInstruction =
+				brief.siteSetupDecision.mode === 'clarify-first'
+					? 'Ask the first question in questionsBeforeBuild and wait for the user answer before creating the site.'
+					: brief.siteSetupDecision.mode === 'empty-site'
+					? 'Create the empty WordPress site only. Do not add content, styling, plugins, or pages until the user asks to iterate.'
+					: 'Follow this brief during site creation. Do not stop after creating an empty WordPress site.';
 
 			return {
 				content: [
