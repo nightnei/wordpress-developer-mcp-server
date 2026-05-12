@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.0...v2.5.1) (2026-05-12)
+
+
+### Bug Fixes
+
+* **tools:** improve design debrief ([#62](https://github.com/nightnei/wordpress-developer-mcp-server/issues/62)) ([e7c4360](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e7c43609b016e267e120d29983943e2b38ba5fa9))
+
 ## [2.5.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.4.1...v2.5.0) (2026-05-12)
 
 
