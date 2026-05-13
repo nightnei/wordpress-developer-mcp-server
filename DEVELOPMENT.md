@@ -36,6 +36,29 @@ Set the `command` to your local `node` and `args` to the built file. In dev mode
 npm run build:watch
 ```
 
+## Testing in Installed AI Apps
+
+If you already ran the normal installer, build directly into the installed MCP location:
+
+```bash
+npm run dev:build:watch:macos
+```
+
+On Windows:
+
+```powershell
+npm run dev:build:watch:windows
+```
+
+These are regular esbuild watch commands that write to the installed MCP server entrypoint:
+
+- macOS: `$HOME/.wordpress-developer-mcp/mcp/index.js`
+- Windows: `%USERPROFILE%\.wordpress-developer-mcp\mcp\index.js`
+
+They assume the installer already created the Node runtime, Studio CLI wrapper, MCP wrapper, and AI app configuration.
+
+Restart the AI app after rebuilds. Existing configs that point to `~/.wordpress-developer-mcp/bin/wpdev-mcp` will then use your local branch.
+
 ## Workflow
 
 - **Inspector** — When using the MCP Inspector (`npm run inspect`) with `npm run build:watch`, click "Restart" in the Inspector UI after code changes. File rebuilds happen automatically, but the MCP server process must be restarted.

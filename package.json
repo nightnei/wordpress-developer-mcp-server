@@ -7,6 +7,8 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=esm --external:chromium-bidi/* --external:fsevents --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
+		"dev:build:watch:macos": "npm run build -- --watch --outfile=$HOME/.wordpress-developer-mcp/mcp/index.js",
+		"dev:build:watch:windows": "npm run build -- --watch --outfile=%USERPROFILE%\\.wordpress-developer-mcp\\mcp\\index.js",
 		"inspect": "npx @modelcontextprotocol/inspector node ./dist/index.js",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier . --write"
