@@ -172,7 +172,10 @@ if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LA
 	echo -e "  ${GREEN}✓ CLI already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing CLI...${NC}"
-	PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=silent 2>&1 | grep -i "error" || true
+	if ! PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=error; then
+		echo -e "  ${RED}✗ Failed to install wp-studio@$STUDIO_LATEST${NC}" >&2
+		exit 1
+	fi
 	if [ -n "$CURRENT_STUDIO_VERSION" ]; then
 		echo -e "  ${GREEN}✓ CLI updated to $STUDIO_LATEST${NC}"
 	else
