@@ -166,13 +166,16 @@ echo -e "${YELLOW}Checking CLI...${NC}"
 # Pin wp-studio explicitly: bump STUDIO_LATEST when you intentionally ship a new CLI.
 # Resolving "latest" from npm was removed so upstream releases cannot break installs unexpectedly.
 # STUDIO_LATEST=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" view wp-studio version --loglevel=silent 2>/dev/null || echo "")
-STUDIO_LATEST=1.8.2
+STUDIO_LATEST=1.8.2123
 CURRENT_STUDIO_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list -g wp-studio --depth=0 --loglevel=silent 2>/dev/null | grep wp-studio | sed 's/.*wp-studio@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_STUDIO_VERSION" ] && [ "$CURRENT_STUDIO_VERSION" = "$STUDIO_LATEST" ]; then
 	echo -e "  ${GREEN}✓ CLI already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing CLI...${NC}"
-	if ! PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=error; then
+	if ! NPM_OUTPUT=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install -g "wp-studio@$STUDIO_LATEST" --loglevel=error 2>&1); then
+		if [ -n "$NPM_OUTPUT" ]; then
+			echo "$NPM_OUTPUT" >&2
+		fi
 		echo -e "  ${RED}✗ Failed to install wp-studio@$STUDIO_LATEST${NC}" >&2
 		exit 1
 	fi
