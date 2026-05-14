@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.1...v2.5.2) (2026-05-14)
+
+
+### Bug Fixes
+
+* **install:** surface npm errors when installing wp-studio ([#66](https://github.com/nightnei/wordpress-developer-mcp-server/issues/66)) ([048e461](https://github.com/nightnei/wordpress-developer-mcp-server/commit/048e4619de3672e75520026a96a1b3c4b8909f19))
+
 ## [2.5.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.0...v2.5.1) (2026-05-12)
 
 
