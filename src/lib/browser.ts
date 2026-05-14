@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { promisify } from 'node:util';
 import type { Browser, BrowserType, LaunchOptions } from 'playwright';
+import { resolveNpmCommand } from './node-runtime.js';
 
 const execFileAsync = promisify( execFile );
 const DEFAULT_BROWSER_ARGS = [ '--ignore-certificate-errors' ];
@@ -12,9 +13,8 @@ let browserPromise: Promise< Browser > | undefined;
 let cleanupRegistered = false;
 
 async function installPlaywrightChromium() {
-	const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 	await execFileAsync(
-		npmCommand,
+		resolveNpmCommand(),
 		[ 'exec', '--yes', `playwright@${ PLAYWRIGHT_VERSION }`, '--', 'install', 'chromium' ],
 		{
 			env: {

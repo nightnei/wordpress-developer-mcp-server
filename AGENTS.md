@@ -37,6 +37,7 @@ if ($errors.Count) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
 - `src/index.ts` creates the MCP server and concatenates always-on server instructions.
 - `src/tools/` contains tool registrations grouped by feature area.
 - `src/lib/studio-cli.ts` owns Studio CLI process execution. Windows `.cmd` behavior is delicate; do not simplify it without retesting Windows.
+- `src/lib/node-runtime.ts` owns lookup for commands provided by the Node runtime. Installed MCP uses the bundled Node/npm under `~/.wordpress-developer-mcp/node`; runtime code that needs npm or Node-provided commands must resolve them through this helper instead of assuming global `node`, `npm`, or `npm.cmd` are on PATH.
 - `src/lib/package.ts` derives MCP `serverInfo.version` from `package.json`.
 - `install.sh` is macOS-focused. `install.ps1` is Windows-focused and also supports the programmatic `-Update` path used by the MCP update tool.
 - Update mode should refresh runtime/server/wrappers only; avoid auth prompts or app configuration during programmatic updates.
