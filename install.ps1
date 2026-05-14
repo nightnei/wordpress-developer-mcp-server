@@ -38,7 +38,7 @@ $McpCommand   = Join-Path $BinDir    'wpdev-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
-$McpJs        = Join-Path $McpDir    'index.js'
+$McpJs        = Join-Path $McpDir    'index.cjs'
 $VersionFile  = Join-Path $McpDir    '.version'
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 
@@ -376,7 +376,7 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
         exit 1
     }
     if (-not (Test-Path -LiteralPath $McpJs)) {
-        Err "$($G.Cross) Server installation failed (index.js missing)."
+        Err "$($G.Cross) Server installation failed (index.cjs missing)."
         exit 1
     }
 

@@ -21,7 +21,7 @@ Set the `command` to your local `node` and `args` to the built file. In dev mode
   "mcpServers": {
     "wordpress-developer": {
       "command": "node",
-      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.cjs"],
       "env": {
         "STUDIO_CLI_PATH": "/path/to/custom/studio-cli"
       }
@@ -52,8 +52,8 @@ npm run dev:build:watch:windows
 
 These are regular esbuild watch commands that write to the installed MCP server entrypoint:
 
-- macOS: `$HOME/.wordpress-developer-mcp/mcp/index.js`
-- Windows: `%USERPROFILE%\.wordpress-developer-mcp\mcp\index.js`
+- macOS: `$HOME/.wordpress-developer-mcp/mcp/index.cjs`
+- Windows: `%USERPROFILE%\.wordpress-developer-mcp\mcp\index.cjs`
 
 They assume the installer already created the Node runtime, Studio CLI wrapper, MCP wrapper, and AI app configuration.
 

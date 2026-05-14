@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository builds and ships a standalone MCP server that lets AI assistants manage local WordPress sites. The TypeScript source lives in `src/`, the bundled release entrypoint is `dist/index.js`, and the macOS/Windows installers wire the bundled server into supported AI apps.
+This repository builds and ships a standalone MCP server that lets AI assistants manage local WordPress sites. The TypeScript source lives in `src/`, the bundled release entrypoint is `dist/index.cjs`, and the macOS/Windows installers wire the bundled server into supported AI apps.
 
 Release artifacts contain only the bundled server file from `dist/`, so changes to `src/` must be followed by `npm run build`.
 
@@ -78,7 +78,7 @@ Releases are automated with Release Please. Conventional commit prefixes drive v
 - `feat:` for minor releases
 - `feat!:` or `BREAKING CHANGE:` for major releases
 
-After Release Please opens and merges a release PR, GitHub Actions builds `dist/index.js`, packages it, and attaches it to the GitHub release.
+After Release Please opens and merges a release PR, GitHub Actions builds `dist/index.cjs`, packages it, and attaches it to the GitHub release.
 
 ## Pull Requests
 

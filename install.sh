@@ -189,7 +189,7 @@ MCP_COMMAND="$INSTALL_DIR/bin/wpdev-mcp"
 cat > "$INSTALL_DIR/bin/wpdev-mcp" << EOF
 #!/bin/bash
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
+"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.cjs" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/wpdev-mcp"
 
