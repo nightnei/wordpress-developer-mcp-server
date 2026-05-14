@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-export function resolveRuntimeCommand( commandName: string ) {
+function resolveRuntimeCommand( commandName: string ) {
 	const commandFromCurrentNode = join( dirname( process.execPath ), commandName );
 
 	if ( existsSync( commandFromCurrentNode ) ) {
