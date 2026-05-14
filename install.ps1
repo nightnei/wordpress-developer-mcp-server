@@ -443,6 +443,50 @@ try {
     $env:PATH = $savedPath
 }
 
+# == Playwright runtime ==------------------------------------------------------
+Write-Host ""
+Info "Checking browser automation runtime..."
+
+$playwrightLatest = '1.60.0'
+$savedPath = $env:PATH
+$env:PATH = "$NodeDir;$savedPath"
+
+$currentPlaywrightVersion = ''
+try {
+    $listOut = (& $NpmBin list playwright --depth=0 --prefix $InstallDir --loglevel=silent 2>&1 | Out-String)
+    if ($listOut -match 'playwright@([^\s\r\n]+)') {
+        $currentPlaywrightVersion = $Matches[1].Trim()
+    }
+} catch { $currentPlaywrightVersion = '' }
+
+try {
+    if ($currentPlaywrightVersion -and ($currentPlaywrightVersion -eq $playwrightLatest)) {
+        Ok "  $($G.Tick) Browser automation runtime already up to date"
+    } else {
+        Info "Installing browser automation runtime..."
+        $env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = '1'
+        $npmOutput = (& $NpmBin install --prefix $InstallDir "playwright@$playwrightLatest" --loglevel=silent 2>&1 | Out-String)
+        $npmExitCode = $LASTEXITCODE
+        Remove-Item Env:\PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD -ErrorAction SilentlyContinue
+        foreach ($line in ($npmOutput -split "`r?`n")) {
+            if ($line -match '(?i)error') { Write-Host $line }
+        }
+        if ($npmExitCode -ne 0) {
+            if ($npmOutput.Trim()) { Write-Host $npmOutput.Trim() }
+            Err "$($G.Cross) Failed to install browser automation runtime (npm exit $npmExitCode)."
+            exit 1
+        }
+        if ($currentPlaywrightVersion) {
+            Ok "  $($G.Tick) Browser automation runtime updated to $playwrightLatest"
+        } else {
+            Ok "  $($G.Tick) Browser automation runtime installed"
+        }
+    }
+} finally {
+    Remove-Item Env:\PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD -ErrorAction SilentlyContinue
+    $env:PATH = $savedPath
+}
+
 # == Wrapper scripts (always regenerated) ==-----------------------------------
 Write-Host ""
 Info "Creating wrapper scripts..."

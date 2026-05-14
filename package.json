@@ -5,7 +5,7 @@
 	"type": "module",
 	"version": "2.5.1",
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --external:chromium-bidi/* --external:fsevents --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node'",
+		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --external:playwright --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
 		"dev:build:watch:macos": "npm run build -- --watch --outfile=$HOME/.wordpress-developer-mcp/mcp/index.cjs",
 		"dev:build:watch:windows": "npm run build -- --watch --outfile=%USERPROFILE%\\.wordpress-developer-mcp\\mcp\\index.cjs",
@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.29.0",
-		"playwright": "^1.60.0",
+		"playwright": "1.60.0",
 		"zod": "^4.4.2"
 	},
 	"devDependencies": {
