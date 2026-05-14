@@ -184,13 +184,13 @@ fi
 echo ""
 echo -e "${YELLOW}Checking browser automation runtime...${NC}"
 PLAYWRIGHT_LATEST=1.60.0
-CURRENT_PLAYWRIGHT_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list playwright --depth=0 --prefix "$INSTALL_DIR" --loglevel=silent 2>/dev/null | grep playwright | sed 's/.*playwright@//' | tr -d ' ' || echo "")
+CURRENT_PLAYWRIGHT_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list playwright --depth=0 --prefix "$INSTALL_DIR/mcp" --loglevel=silent 2>/dev/null | grep playwright | sed 's/.*playwright@//' | tr -d ' ' || echo "")
 if [ -n "$CURRENT_PLAYWRIGHT_VERSION" ] && [ "$CURRENT_PLAYWRIGHT_VERSION" = "$PLAYWRIGHT_LATEST" ]; then
 	echo -e "  ${GREEN}✓ Browser automation runtime already up to date${NC}"
 else
 	echo -e "${YELLOW}Installing browser automation runtime...${NC}"
 	set +e
-	NPM_OUTPUT=$(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install --prefix "$INSTALL_DIR" "playwright@$PLAYWRIGHT_LATEST" --loglevel=silent 2>&1)
+	NPM_OUTPUT=$(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install --prefix "$INSTALL_DIR/mcp" "playwright@$PLAYWRIGHT_LATEST" --loglevel=silent 2>&1)
 	NPM_EXIT=$?
 	set -e
 	echo "$NPM_OUTPUT" | grep -i "error" || true

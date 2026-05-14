@@ -453,7 +453,7 @@ $env:PATH = "$NodeDir;$savedPath"
 
 $currentPlaywrightVersion = ''
 try {
-    $listOut = (& $NpmBin list playwright --depth=0 --prefix $InstallDir --loglevel=silent 2>&1 | Out-String)
+    $listOut = (& $NpmBin list playwright --depth=0 --prefix $McpDir --loglevel=silent 2>&1 | Out-String)
     if ($listOut -match 'playwright@([^\s\r\n]+)') {
         $currentPlaywrightVersion = $Matches[1].Trim()
     }
@@ -465,7 +465,7 @@ try {
     } else {
         Info "Installing browser automation runtime..."
         $env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = '1'
-        $npmOutput = (& $NpmBin install --prefix $InstallDir "playwright@$playwrightLatest" --loglevel=silent 2>&1 | Out-String)
+        $npmOutput = (& $NpmBin install --prefix $McpDir "playwright@$playwrightLatest" --loglevel=silent 2>&1 | Out-String)
         $npmExitCode = $LASTEXITCODE
         Remove-Item Env:\PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD -ErrorAction SilentlyContinue
         foreach ($line in ($npmOutput -split "`r?`n")) {
