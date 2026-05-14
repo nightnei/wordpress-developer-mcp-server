@@ -6,13 +6,21 @@ import type { Page } from 'playwright';
 import { z } from 'zod';
 
 const VIEWPORTS = {
-	desktop: { width: 1280, height: 900 },
+	desktop: { width: 1440, height: 900 },
 	mobile: { width: 390, height: 844 },
 } as const;
 
 type SiteStatus = {
-	url?: string;
-	running?: boolean;
+	siteUrl: string;
+	autoLoginUrl?: string;
+	sitePath: string;
+	status: string;
+	phpVersion: string;
+	wpVersion: string;
+	xdebug: string;
+	adminUsername: string;
+	adminPassword: string;
+	adminEmail: string;
 };
 
 type ViewportName = keyof typeof VIEWPORTS;
@@ -45,8 +53,8 @@ async function getSiteStatus( path: string ) {
 
 async function getRunningSiteUrl( path: string ) {
 	let status = await getSiteStatus( path );
-	if ( status.url && status.running ) {
-		return status.url;
+	if ( status.siteUrl && status.autoLoginUrl ) {
+		return status.siteUrl;
 	}
 
 	const start = await runStudioCli( [ 'site', 'start', '--path', path, '--skip-browser' ] );
@@ -55,11 +63,11 @@ async function getRunningSiteUrl( path: string ) {
 	}
 
 	status = await getSiteStatus( path );
-	if ( ! status.url ) {
+	if ( ! status.siteUrl ) {
 		throw new Error( 'Studio did not return a site URL after starting the site.' );
 	}
 
-	return status.url;
+	return status.siteUrl;
 }
 
 async function waitForImages( page: Page, fullPage: boolean ) {
