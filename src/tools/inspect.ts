@@ -3,25 +3,13 @@ import { formatCliFailure, runStudioCli } from '../lib/studio-cli.js';
 import { SITE_PATH_DESCRIPTION } from '../lib/constants.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Page } from 'playwright';
+import type { StudioSiteStatus } from '../lib/studio-cli-types.js';
 import { z } from 'zod';
 
 const VIEWPORTS = {
 	desktop: { width: 1440, height: 900 },
 	mobile: { width: 390, height: 844 },
 } as const;
-
-type SiteStatus = {
-	siteUrl: string;
-	autoLoginUrl?: string;
-	sitePath: string;
-	status: string;
-	phpVersion: string;
-	wpVersion: string;
-	xdebug: string;
-	adminUsername: string;
-	adminPassword: string;
-	adminEmail: string;
-};
 
 type ViewportName = keyof typeof VIEWPORTS;
 
@@ -48,7 +36,7 @@ async function getSiteStatus( path: string ) {
 		throw new Error( formatCliFailure( 'studio site status', res ) );
 	}
 
-	return JSON.parse( res.stdout.trim() ) as SiteStatus;
+	return JSON.parse( res.stdout.trim() ) as StudioSiteStatus;
 }
 
 async function getRunningSiteUrl( path: string ) {

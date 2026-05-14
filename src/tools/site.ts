@@ -1,6 +1,7 @@
 import { formatCliFailure, runStudioCli } from '../lib/studio-cli.js';
 import { SITE_PATH_DESCRIPTION, STUDIO_SITE_PATH_EXAMPLE } from '../lib/constants.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { StudioSiteStatus } from '../lib/studio-cli-types.js';
 import { z } from 'zod';
 
 function siteCreateNextSteps( path: string ) {
@@ -99,7 +100,7 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
-			const status = JSON.parse( res.stdout.trim() );
+			const status = JSON.parse( res.stdout.trim() ) as StudioSiteStatus;
 
 			const structuredContent = { status };
 
