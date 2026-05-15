@@ -1,4 +1,5 @@
 # Create WordPress sites by chatting with your AI 🌸
+[![GitHub stars](https://img.shields.io/github/stars/nightnei/wordpress-developer-mcp-server?style=social)](https://github.com/nightnei/wordpress-developer-mcp-server)
 
 Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
 
@@ -40,6 +41,4 @@ Your AI will create a brief, choose a visual direction, build in small steps, an
 
 ## Support the Project
 
-If this MCP server helps your WordPress workflow, star the repository so more people can find it:
-
-[![GitHub stars](https://img.shields.io/github/stars/nightnei/wordpress-developer-mcp-server?style=social)](https://github.com/nightnei/wordpress-developer-mcp-server)
+⭐ If this MCP server helps your WordPress workflow, star the repository so more people can find it.
