@@ -186,6 +186,32 @@ else
 	fi
 fi
 
+# ── Playwright runtime ────────────────────────────────────────────────────────
+echo ""
+echo -e "${YELLOW}Checking browser automation runtime...${NC}"
+PLAYWRIGHT_LATEST=1.60.0
+CURRENT_PLAYWRIGHT_VERSION=$(PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" list playwright --depth=0 --prefix "$INSTALL_DIR/mcp" --loglevel=silent 2>/dev/null | grep playwright | sed 's/.*playwright@//' | tr -d ' ' || echo "")
+if [ -n "$CURRENT_PLAYWRIGHT_VERSION" ] && [ "$CURRENT_PLAYWRIGHT_VERSION" = "$PLAYWRIGHT_LATEST" ]; then
+	echo -e "  ${GREEN}✓ Browser automation runtime already up to date${NC}"
+else
+	echo -e "${YELLOW}Installing browser automation runtime...${NC}"
+	set +e
+	NPM_OUTPUT=$(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 PATH="$INSTALL_DIR/node/bin:$PATH" "$NPM_BIN" install --prefix "$INSTALL_DIR/mcp" "playwright@$PLAYWRIGHT_LATEST" --loglevel=silent 2>&1)
+	NPM_EXIT=$?
+	set -e
+	echo "$NPM_OUTPUT" | grep -i "error" || true
+	if [ "$NPM_EXIT" -ne 0 ]; then
+		echo "$NPM_OUTPUT"
+		echo -e "${RED}❌ Failed to install browser automation runtime (npm exit $NPM_EXIT).${NC}"
+		exit 1
+	fi
+	if [ -n "$CURRENT_PLAYWRIGHT_VERSION" ]; then
+		echo -e "  ${GREEN}✓ Browser automation runtime updated to $PLAYWRIGHT_LATEST${NC}"
+	else
+		echo -e "  ${GREEN}✓ Browser automation runtime installed${NC}"
+	fi
+fi
+
 # ── Wrapper scripts (always regenerated) ─────────────────────────────────────
 echo ""
 echo -e "${YELLOW}Creating wrapper scripts...${NC}"
@@ -195,7 +221,7 @@ MCP_COMMAND="$INSTALL_DIR/bin/wpdev-mcp"
 cat > "$INSTALL_DIR/bin/wpdev-mcp" << EOF
 #!/bin/bash
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.js" "\$@"
+"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.cjs" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/wpdev-mcp"
 

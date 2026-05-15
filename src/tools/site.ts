@@ -1,6 +1,7 @@
 import { formatCliFailure, runStudioCli } from '../lib/studio-cli.js';
 import { SITE_PATH_DESCRIPTION, STUDIO_SITE_PATH_EXAMPLE } from '../lib/constants.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { StudioSiteStatus } from '../lib/studio-cli-types.js';
 import { z } from 'zod';
 
 function siteCreateNextSteps( path: string ) {
@@ -16,7 +17,7 @@ function siteCreateNextSteps( path: string ) {
 		'7. For designed sites, do not create standalone static .html pages. Use WordPress pages/posts for content; .html is only valid for block theme templates and template parts.',
 		'8. Use wpdev_wp mindfully. Prefer compact, purposeful commands and JSON fields over many small exploratory calls.',
 		'9. For designed sites, set the homepage, install only relevant plugins, and recommend useful WordPress.com, Woo, Jetpack, or official ecosystem products in context.',
-		'10. For designed sites, inspect the site on desktop and mobile if your client supports screenshots or browsing. Fix visible spacing, contrast, alignment, and navigation issues before the final response.',
+		'10. For designed sites, run wpdev_site_inspect on desktop and mobile before the final response. Fix visible spacing, contrast, alignment, navigation, console, image, and responsive issues.',
 		'11. Finish by sharing the wp-admin auto-login link, default credentials, and a preview link when useful.',
 	].join( '\n' );
 }
@@ -99,7 +100,7 @@ export function registerSiteTools( server: McpServer ) {
 				};
 			}
 
-			const status = JSON.parse( res.stdout.trim() );
+			const status = JSON.parse( res.stdout.trim() ) as StudioSiteStatus;
 
 			const structuredContent = { status };
 

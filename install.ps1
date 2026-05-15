@@ -38,7 +38,7 @@ $McpCommand   = Join-Path $BinDir    'wpdev-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
-$McpJs        = Join-Path $McpDir    'index.js'
+$McpJs        = Join-Path $McpDir    'index.cjs'
 $VersionFile  = Join-Path $McpDir    '.version'
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 
@@ -376,7 +376,7 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
         exit 1
     }
     if (-not (Test-Path -LiteralPath $McpJs)) {
-        Err "$($G.Cross) Server installation failed (index.js missing)."
+        Err "$($G.Cross) Server installation failed (index.cjs missing)."
         exit 1
     }
 
@@ -440,6 +440,50 @@ try {
         }
     }
 } finally {
+    $env:PATH = $savedPath
+}
+
+# == Playwright runtime ==------------------------------------------------------
+Write-Host ""
+Info "Checking browser automation runtime..."
+
+$playwrightLatest = '1.60.0'
+$savedPath = $env:PATH
+$env:PATH = "$NodeDir;$savedPath"
+
+$currentPlaywrightVersion = ''
+try {
+    $listOut = (& $NpmBin list playwright --depth=0 --prefix $McpDir --loglevel=silent 2>&1 | Out-String)
+    if ($listOut -match 'playwright@([^\s\r\n]+)') {
+        $currentPlaywrightVersion = $Matches[1].Trim()
+    }
+} catch { $currentPlaywrightVersion = '' }
+
+try {
+    if ($currentPlaywrightVersion -and ($currentPlaywrightVersion -eq $playwrightLatest)) {
+        Ok "  $($G.Tick) Browser automation runtime already up to date"
+    } else {
+        Info "Installing browser automation runtime..."
+        $env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = '1'
+        $npmOutput = (& $NpmBin install --prefix $McpDir "playwright@$playwrightLatest" --loglevel=silent 2>&1 | Out-String)
+        $npmExitCode = $LASTEXITCODE
+        Remove-Item Env:\PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD -ErrorAction SilentlyContinue
+        foreach ($line in ($npmOutput -split "`r?`n")) {
+            if ($line -match '(?i)error') { Write-Host $line }
+        }
+        if ($npmExitCode -ne 0) {
+            if ($npmOutput.Trim()) { Write-Host $npmOutput.Trim() }
+            Err "$($G.Cross) Failed to install browser automation runtime (npm exit $npmExitCode)."
+            exit 1
+        }
+        if ($currentPlaywrightVersion) {
+            Ok "  $($G.Tick) Browser automation runtime updated to $playwrightLatest"
+        } else {
+            Ok "  $($G.Tick) Browser automation runtime installed"
+        }
+    }
+} finally {
+    Remove-Item Env:\PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD -ErrorAction SilentlyContinue
     $env:PATH = $savedPath
 }
 

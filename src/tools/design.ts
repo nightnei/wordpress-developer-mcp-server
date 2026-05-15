@@ -261,7 +261,7 @@ function buildDesignBrief( input: {
 			'Use wpdev_wp mindfully. Prefer compact, purposeful commands and JSON fields over many small exploratory calls.',
 			'Write theme CSS or block-compatible styling so the site has a coherent visual system.',
 			'Create the requested pages and set the homepage appropriately.',
-			'Check desktop and mobile layout manually if screenshots are available. Fix spacing, contrast, alignment, navigation, and CTA issues before final response.',
+			'Run wpdev_site_inspect on desktop and mobile before the final response. Fix spacing, contrast, alignment, navigation, CTA, console, image, and responsive issues.',
 			'Finish with the wp-admin auto-login link and, when useful, a shareable preview link.',
 		],
 		qualityBar: [
