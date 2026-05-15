@@ -37,3 +37,9 @@ Create a WordPress site named "Local Bakery" with Home, Menu, About, and Contact
 ```
 
 Your AI will create a brief, choose a visual direction, build in small steps, and help you iterate toward a finished design. If your request is short, it should first ask whether you want an empty site to iterate on later or a designed site now.
+
+## Support the Project
+
+If this MCP server helps your WordPress workflow, star the repository so more people can find it:
+
+[![GitHub stars](https://img.shields.io/github/stars/nightnei/wordpress-developer-mcp-server?style=social)](https://github.com/nightnei/wordpress-developer-mcp-server)

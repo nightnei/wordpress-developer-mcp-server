@@ -144,6 +144,7 @@ MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" 
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
 CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/server/.version" 2>/dev/null || echo "")
+MCP_VERSION_CHANGED=false
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
 	echo -e "  ${GREEN}✓ Server already up to date${NC}"
 else
@@ -154,6 +155,7 @@ else
 		tar -xz -C "$INSTALL_DIR/mcp/server"
 	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/server/.version"
 	if [ -n "$CURRENT_MCP_VERSION" ]; then
+		MCP_VERSION_CHANGED=true
 		echo -e "  ${GREEN}✓ Server updated to $MCP_LATEST${NC}"
 	else
 		echo -e "  ${GREEN}✓ Server installed${NC}"
@@ -534,6 +536,10 @@ if $UPDATE_MODE; then
 	echo ""
 	echo -e "${GREEN}✅ Update complete!${NC}"
 	echo -e "${YELLOW}↺  Restart your AI assistant to apply the new version.${NC}"
+	if $MCP_VERSION_CHANGED; then
+		echo ""
+		echo -e "⭐ Enjoying WordPress Developer MCP? Star the repo: ${BLUE}https://github.com/${MCP_REPO}${NC}"
+	fi
 	echo ""
 	exit 0
 fi

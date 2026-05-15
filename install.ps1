@@ -333,6 +333,7 @@ if (Test-Path -LiteralPath $VersionFile) {
         $currentMcpVersion = (Get-Content -LiteralPath $VersionFile -Raw).Trim()
     } catch { $currentMcpVersion = '' }
 }
+$mcpVersionChanged = $false
 
 if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     Ok "  $($G.Tick) Server already up to date"
@@ -384,6 +385,7 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     Set-Content -LiteralPath $VersionFile -Value $mcpLatest -NoNewline -Encoding ASCII
 
     if ($currentMcpVersion) {
+        $mcpVersionChanged = $true
         Ok "  $($G.Tick) Server updated to $mcpLatest"
     } else {
         Ok "  $($G.Tick) Server installed"
@@ -533,6 +535,10 @@ if ($Update) {
     Write-Host ""
     Ok "$($G.Check) Update complete!"
     Info "$($G.Rot)  Restart your AI assistant to apply the new version."
+    if ($mcpVersionChanged) {
+        Write-Host ""
+        Link "$($G.Star) Enjoying WordPress Developer MCP? Star the repo: https://github.com/$McpRepo"
+    }
     Write-Host ""
     exit 0
 }
