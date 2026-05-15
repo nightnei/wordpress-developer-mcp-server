@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.7.0...v2.8.0) (2026-05-15)
+
+
+### Features
+
+* **install:** add star info ([#74](https://github.com/nightnei/wordpress-developer-mcp-server/issues/74)) ([efb2f93](https://github.com/nightnei/wordpress-developer-mcp-server/commit/efb2f931a5cc44fd312aacd772adb18a39a7d43e))
+
 ## [2.7.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.1...v2.7.0) (2026-05-15)
 
 
