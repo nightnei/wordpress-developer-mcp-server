@@ -7,8 +7,8 @@
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --external:playwright --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
-		"dev:build:watch:macos": "npm run build -- --watch --outfile=$HOME/.wordpress-developer-mcp/mcp/index.cjs",
-		"dev:build:watch:windows": "npm run build -- --watch --outfile=%USERPROFILE%\\.wordpress-developer-mcp\\mcp\\index.cjs",
+		"dev:build:watch:macos": "npm run build -- --watch --outfile=$HOME/.wordpress-developer-mcp/mcp/server/index.cjs",
+		"dev:build:watch:windows": "npm run build -- --watch --outfile=%USERPROFILE%\\.wordpress-developer-mcp\\mcp\\server\\index.cjs",
 		"inspect": "npx @modelcontextprotocol/inspector node ./dist/index.cjs",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier . --write"

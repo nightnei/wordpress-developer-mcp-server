@@ -32,14 +32,15 @@ $NodeVersion  = '24.13.1'
 
 $NodeDir      = Join-Path $InstallDir 'node'
 $McpDir       = Join-Path $InstallDir 'mcp'
+$McpServerDir = Join-Path $McpDir     'server'
 $BinDir       = Join-Path $InstallDir 'bin'
 
 $McpCommand   = Join-Path $BinDir    'wpdev-mcp.cmd'
 $StudioCliCmd = Join-Path $BinDir    'studio-cli.cmd'
 $NodeBin      = Join-Path $NodeDir   'node.exe'
 $NpmBin       = Join-Path $NodeDir   'npm.cmd'
-$McpJs        = Join-Path $McpDir    'index.cjs'
-$VersionFile  = Join-Path $McpDir    '.version'
+$McpJs        = Join-Path $McpServerDir 'index.cjs'
+$VersionFile  = Join-Path $McpServerDir '.version'
 $StudioShim   = Join-Path $NodeDir   'studio.cmd'
 
 # == Unicode glyphs (ASCII-safe source) ==--------------------------------------
@@ -235,7 +236,7 @@ if (-not $Update) {
 }
 
 # == Prepare install directory ==-----------------------------------------------
-foreach ($d in @($InstallDir, $NodeDir, $McpDir, $BinDir)) {
+foreach ($d in @($InstallDir, $NodeDir, $McpDir, $McpServerDir, $BinDir)) {
     if (-not (Test-Path -LiteralPath $d)) {
         New-Item -ItemType Directory -Force -Path $d | Out-Null
     }
@@ -337,10 +338,10 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     Ok "  $($G.Tick) Server already up to date"
 } else {
     Info "Downloading server..."
-    if (Test-Path -LiteralPath $McpDir) {
-        Remove-Item -LiteralPath $McpDir -Recurse -Force
+    if (Test-Path -LiteralPath $McpServerDir) {
+        Remove-Item -LiteralPath $McpServerDir -Recurse -Force
     }
-    New-Item -ItemType Directory -Force -Path $McpDir | Out-Null
+    New-Item -ItemType Directory -Force -Path $McpServerDir | Out-Null
 
     $tarName = "wordpress-developer-mcp-server-$mcpLatest.tar.gz"
     $tarUrl  = "https://github.com/$McpRepo/releases/download/$mcpLatest/$tarName"
@@ -368,7 +369,7 @@ if ($currentMcpVersion -and ($currentMcpVersion -eq $mcpLatest)) {
     }
 
     # -C avoids relying on the current directory.
-    & $tarExe -xzf $tarPath -C $McpDir
+    & $tarExe -xzf $tarPath -C $McpServerDir
     $tarRc = $LASTEXITCODE
     Remove-Item -LiteralPath $tarPath -Force -ErrorAction SilentlyContinue
     if ($tarRc -ne 0) {

@@ -116,7 +116,7 @@ if ! $UPDATE_MODE; then
 	fi
 fi
 
-mkdir -p "$INSTALL_DIR"/{node,mcp,bin}
+mkdir -p "$INSTALL_DIR"/{node,mcp/server,bin}
 
 # ── Node.js runtime ───────────────────────────────────────────────────────────
 NODE_BIN="$INSTALL_DIR/node/bin/node"
@@ -143,16 +143,16 @@ echo -e "${YELLOW}Checking server...${NC}"
 MCP_LATEST=$(curl -sSL "https://api.github.com/repos/$MCP_REPO/releases/latest" \
 	-H "Accept: application/vnd.github.v3+json" \
 	| "$NODE_BIN" -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).tag_name))")
-CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/.version" 2>/dev/null || echo "")
+CURRENT_MCP_VERSION=$(cat "$INSTALL_DIR/mcp/server/.version" 2>/dev/null || echo "")
 if [ "$CURRENT_MCP_VERSION" = "$MCP_LATEST" ]; then
 	echo -e "  ${GREEN}✓ Server already up to date${NC}"
 else
 	echo -e "${YELLOW}Downloading server...${NC}"
-	rm -rf "$INSTALL_DIR/mcp"
-	mkdir -p "$INSTALL_DIR/mcp"
+	rm -rf "$INSTALL_DIR/mcp/server"
+	mkdir -p "$INSTALL_DIR/mcp/server"
 	curl -fsSL "https://github.com/$MCP_REPO/releases/download/$MCP_LATEST/wordpress-developer-mcp-server-$MCP_LATEST.tar.gz" | \
-		tar -xz -C "$INSTALL_DIR/mcp"
-	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/.version"
+		tar -xz -C "$INSTALL_DIR/mcp/server"
+	echo "$MCP_LATEST" > "$INSTALL_DIR/mcp/server/.version"
 	if [ -n "$CURRENT_MCP_VERSION" ]; then
 		echo -e "  ${GREEN}✓ Server updated to $MCP_LATEST${NC}"
 	else
@@ -221,7 +221,7 @@ MCP_COMMAND="$INSTALL_DIR/bin/wpdev-mcp"
 cat > "$INSTALL_DIR/bin/wpdev-mcp" << EOF
 #!/bin/bash
 export STUDIO_CLI_PATH="$INSTALL_DIR/bin/studio-cli"
-"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/index.cjs" "\$@"
+"$INSTALL_DIR/node/bin/node" "$INSTALL_DIR/mcp/server/index.cjs" "\$@"
 EOF
 chmod +x "$INSTALL_DIR/bin/wpdev-mcp"
 
