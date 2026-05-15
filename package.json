@@ -3,7 +3,7 @@
 	"description": "MCP server for WordPress Development",
 	"private": true,
 	"type": "module",
-	"version": "2.7.0",
+	"version": "2.8.0",
 	"scripts": {
 		"build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --external:playwright --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node'",
 		"build:watch": "npm run build -- --watch",
