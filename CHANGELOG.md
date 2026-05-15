@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.1...v2.7.0) (2026-05-15)
+
+
+### Features
+
+* **install:** move mcp into server folder ([#72](https://github.com/nightnei/wordpress-developer-mcp-server/issues/72)) ([5c9dbc8](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5c9dbc886410946eb284fb76a12c546cfc6a99f7))
+
 ## [2.6.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.0...v2.6.1) (2026-05-15)
 
 
