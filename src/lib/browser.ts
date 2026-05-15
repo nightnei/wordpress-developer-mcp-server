@@ -1,29 +1,32 @@
 import { execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { delimiter, dirname, join } from 'node:path';
 import { promisify } from 'node:util';
 import type { Browser, BrowserType, LaunchOptions } from 'playwright';
-import { resolveNpmCommand } from './node-runtime.js';
 
 const execFileAsync = promisify( execFile );
+const require = createRequire( __filename );
 const DEFAULT_BROWSER_ARGS = [ '--ignore-certificate-errors' ];
-// Keep this in sync with package.json. Playwright browser cache revisions are version-specific.
-const PLAYWRIGHT_VERSION = '1.60.0';
 
 let browserPromise: Promise< Browser > | undefined;
 let cleanupRegistered = false;
 
+function resolvePlaywrightCliPath() {
+	return join( dirname( require.resolve( 'playwright/package.json' ) ), 'cli.js' );
+}
+
 async function installPlaywrightChromium() {
-	await execFileAsync(
-		resolveNpmCommand(),
-		[ 'exec', '--yes', `playwright@${ PLAYWRIGHT_VERSION }`, '--', 'install', 'chromium' ],
-		{
-			env: {
-				...process.env,
-				CI: process.env.CI ?? '1',
-			},
-			maxBuffer: 10 * 1024 * 1024,
-		}
-	);
+	const nodeBinDir = dirname( process.execPath );
+
+	await execFileAsync( process.execPath, [ resolvePlaywrightCliPath(), 'install', 'chromium' ], {
+		env: {
+			...process.env,
+			CI: process.env.CI ?? '1',
+			PATH: [ nodeBinDir, process.env.PATH ].filter( Boolean ).join( delimiter ),
+		},
+		maxBuffer: 10 * 1024 * 1024,
+	} );
 }
 
 function buildLaunchAttempts( chromium: Pick< BrowserType, 'executablePath' > ): LaunchOptions[] {
