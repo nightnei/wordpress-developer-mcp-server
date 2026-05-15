@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.0...v2.6.1) (2026-05-15)
+
+
+### Bug Fixes
+
+* **tools:** inspect ([#70](https://github.com/nightnei/wordpress-developer-mcp-server/issues/70)) ([e8f553c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e8f553c33de20a37f8b5c98507436d83235f3c1a))
+
 ## [2.6.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.2...v2.6.0) (2026-05-15)
 
 
