@@ -126,7 +126,7 @@ echo ""
 echo -e "${YELLOW}Checking runtime environment...${NC}"
 CURRENT_NODE_VERSION=$("$NODE_BIN" --version 2>/dev/null | tr -d 'v' || echo "")
 if [ "$CURRENT_NODE_VERSION" = "$NODE_VERSION" ]; then
-	echo -e "  ${GREEN}✓ Runtime environment already installed${NC}"
+	echo -e "  ${GREEN}✓ Runtime environment already up to date${NC}"
 else
 	echo -e "${YELLOW}Downloading runtime environment...${NC}"
 	rm -rf "$INSTALL_DIR/node"
