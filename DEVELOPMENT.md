@@ -52,8 +52,8 @@ npm run dev:build:watch:windows
 
 These are regular esbuild watch commands that write to the installed MCP server entrypoint:
 
-- macOS: `$HOME/.wordpress-developer-mcp/mcp/index.cjs`
-- Windows: `%USERPROFILE%\.wordpress-developer-mcp\mcp\index.cjs`
+- macOS: `$HOME/.wordpress-developer-mcp/mcp/server/index.cjs`
+- Windows: `%USERPROFILE%\.wordpress-developer-mcp\mcp\server\index.cjs`
 
 They assume the installer already created the Node runtime, Studio CLI wrapper, MCP wrapper, and AI app configuration.
 

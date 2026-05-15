@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 const INSTALL_DIR = `${ homedir() }/.wordpress-developer-mcp`;
-const VERSION_FILE = `${ INSTALL_DIR }/mcp/.version`;
+const VERSION_FILE = `${ INSTALL_DIR }/mcp/server/.version`;
 const MCP_REPO = 'nightnei/wordpress-developer-mcp-server';
 const GITHUB_API_URL = `https://api.github.com/repos/${ MCP_REPO }/releases/latest`;
 const INSTALL_SCRIPT_SH_URL = `https://raw.githubusercontent.com/${ MCP_REPO }/main/install.sh`;
