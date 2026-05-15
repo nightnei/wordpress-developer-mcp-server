@@ -1,7 +1,7 @@
 # Create WordPress sites by chatting with your AI 🌸
 
-[![Release downloads](https://img.shields.io/github/downloads/nightnei/wordpress-developer-mcp-server/total)](https://github.com/nightnei/wordpress-developer-mcp-server/releases)
 [![Latest release](https://img.shields.io/github/v/release/nightnei/wordpress-developer-mcp-server)](https://github.com/nightnei/wordpress-developer-mcp-server/releases)
+[![Release downloads](https://img.shields.io/github/downloads/nightnei/wordpress-developer-mcp-server/total)](https://github.com/nightnei/wordpress-developer-mcp-server/releases)
 [![GitHub stars](https://img.shields.io/github/stars/nightnei/wordpress-developer-mcp-server?style=social)](https://github.com/nightnei/wordpress-developer-mcp-server)
 
 Codex · Claude Desktop · Claude Code · Cursor · VS Code · Windsurf · Zed
