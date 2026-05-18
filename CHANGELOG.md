@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.0...v2.8.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* **tools:** handle unauthorized responses ([#76](https://github.com/nightnei/wordpress-developer-mcp-server/issues/76)) ([62adccb](https://github.com/nightnei/wordpress-developer-mcp-server/commit/62adccbab7d78c481b4f682b015b08a9715c1ce8))
+
 ## [2.8.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.7.0...v2.8.0) (2026-05-15)
 
 
