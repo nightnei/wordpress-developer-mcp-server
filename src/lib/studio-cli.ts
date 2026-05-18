@@ -26,7 +26,7 @@ export function formatAuthenticationRequired( action: string ) {
 		`${ action } requires WordPress.com authentication.\n\n` +
 		'Ask the user to run this command in their own terminal, then retry:\n\n' +
 		`${ STUDIO_AUTH_LOGIN_COMMAND }\n\n` +
-		'Do not run this command for the user. The login flow requires user interaction, including copying or pasting an authentication token.'
+		'Do not run this command for the user because the login flow is interactive.'
 	);
 }
 
