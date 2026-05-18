@@ -537,7 +537,7 @@ if ($Update) {
     Info "$($G.Rot)  Restart your AI assistant to apply the new version."
     if ($mcpVersionChanged) {
         Write-Host ""
-        Link "$($G.Star) Enjoying WordPress Developer MCP? Star the repo: https://github.com/$McpRepo"
+        Link "$($G.Star) If this MCP server helps your WordPress workflow, star the repository so more people can find it: https://github.com/$McpRepo"
     }
     Write-Host ""
     exit 0
@@ -1024,7 +1024,7 @@ Write-Host '  "Create a WordPress site named ''Local Bakery'' with Home, Menu, A
 Write-Host ""
 Write-Host "Then ask for style changes, extra pages, plugins, copy changes, or a shareable preview."
 Write-Host ""
-Link "$($G.Star) Star the repo: https://github.com/$McpRepo $($G.EmDash) it helps others discover the project."
+Link "$($G.Star) If this MCP server helps your WordPress workflow, star the repository so more people can find it: https://github.com/$McpRepo"
 Write-Host ""
 Link $HR
 Write-Host ""

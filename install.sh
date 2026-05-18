@@ -538,7 +538,7 @@ if $UPDATE_MODE; then
 	echo -e "${YELLOW}↺  Restart your AI assistant to apply the new version.${NC}"
 	if $MCP_VERSION_CHANGED; then
 		echo ""
-		echo -e "⭐ Enjoying WordPress Developer MCP? Star the repo: ${BLUE}https://github.com/${MCP_REPO}${NC}"
+		echo -e "⭐ If this MCP server helps your WordPress workflow, star the repository so more people can find it: ${BLUE}https://github.com/${MCP_REPO}${NC}"
 	fi
 	echo ""
 	exit 0
@@ -599,7 +599,7 @@ echo "  \"Create a WordPress site named 'Local Bakery' with Home, Menu, About, a
 echo ""
 echo "Then ask for style changes, extra pages, plugins, copy changes, or a shareable preview."
 echo ""
-echo -e "⭐ Star the repo: ${BLUE}https://github.com/${MCP_REPO}${NC} — it helps others discover the project."
+echo -e "⭐ If this MCP server helps your WordPress workflow, star the repository so more people can find it: ${BLUE}https://github.com/${MCP_REPO}${NC}"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
