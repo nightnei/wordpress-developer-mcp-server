@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.1...v2.8.2) (2026-05-18)
+
+
+### Bug Fixes
+
+* **tools:** adjust auth instructions ([#78](https://github.com/nightnei/wordpress-developer-mcp-server/issues/78)) ([be20564](https://github.com/nightnei/wordpress-developer-mcp-server/commit/be205646851257e7759a8f45ffd7e95589c19623))
+
 ## [2.8.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.0...v2.8.1) (2026-05-18)
 
 
