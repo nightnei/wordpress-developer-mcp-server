@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import nodePath from 'node:path';
-import { formatCliFailure, runStudioCli } from '../lib/studio-cli.js';
+import { formatAuthenticationRequired, formatCliFailure, runStudioCli } from '../lib/studio-cli.js';
 import { SITE_PATH_DESCRIPTION } from '../lib/constants.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
@@ -91,7 +91,7 @@ function toRemoteSiteSummary( site: WpcomSiteResponse ) {
 async function fetchWpcomSites( search?: string ) {
 	const token = await getWpcomAccessToken();
 	if ( ! token ) {
-		throw new Error( 'WordPress.com authentication required. Run wpdev_auth_status for details.' );
+		throw new Error( formatAuthenticationRequired( 'Fetching WordPress.com sites' ) );
 	}
 
 	const sites: WpcomSiteResponse[] = [];
@@ -170,13 +170,14 @@ export function registerSyncTools( server: McpServer ) {
 					structuredContent,
 				};
 			} catch ( error ) {
+				const message = error instanceof Error ? error.message : String( error );
 				return {
 					content: [
 						{
 							type: 'text',
-							text: `Failed to fetch WordPress.com sites: ${
-								error instanceof Error ? error.message : String( error )
-							}`,
+							text: message.includes( 'requires WordPress.com authentication' )
+								? message
+								: `Failed to fetch WordPress.com sites: ${ message }`,
 						},
 					],
 					isError: true,
