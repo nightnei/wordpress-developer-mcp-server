@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { STUDIO_AUTH_LOGIN_COMMAND } from './constants.js';
 
 const CLI_COMMAND = process.env.STUDIO_CLI_PATH || 'studio';
 
@@ -9,11 +10,28 @@ type CliResult = {
 };
 
 export function formatCliFailure( cmd: string, res: CliResult ) {
+	if ( isAuthenticationRequired( res ) ) {
+		return formatAuthenticationRequired( cmd );
+	}
+
 	return (
 		`${ cmd } failed (exit ${ res.exitCode }).\n\n` +
 		( res.stderr.trim() ? `stderr:\n${ res.stderr.trim() }\n\n` : '' ) +
 		( res.stdout.trim() ? `stdout:\n${ res.stdout.trim() }` : '' )
 	);
+}
+
+export function formatAuthenticationRequired( action: string ) {
+	return (
+		`${ action } requires WordPress.com authentication.\n\n` +
+		'Ask the user to run this command in their own terminal, then retry:\n\n' +
+		`${ STUDIO_AUTH_LOGIN_COMMAND }\n\n` +
+		'Do not run this command for the user. The login flow requires user interaction, including copying or pasting an authentication token.'
+	);
+}
+
+function isAuthenticationRequired( res: CliResult ) {
+	return /authentication required|please log in with/i.test( `${ res.stderr }\n${ res.stdout }` );
 }
 
 function resolveSpawnTarget( command: string, args: string[] ) {
