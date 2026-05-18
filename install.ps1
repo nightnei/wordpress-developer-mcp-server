@@ -73,7 +73,7 @@ if ($Update) {
     Head "$($G.Rose) Updating WordPress Developer MCP Server..."
 } else {
     Head "$($G.Rose) Installing WordPress Developer MCP Server..."
-    Ok   "Create WordPress sites by chatting with your AI."
+    Ok   "Build WordPress sites with your AI."
     Write-Host ""
     Write-Host "This script will detect your locally installed AI agents"
     Write-Host "(Codex, Claude, Cursor, VS Code, Windsurf, Zed) and configure them"

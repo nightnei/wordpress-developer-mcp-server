@@ -1,4 +1,4 @@
-# Create WordPress sites by chatting with your AI 🌸
+# Build WordPress sites with your AI 🌸
 
 [![Latest release](https://img.shields.io/github/v/release/nightnei/wordpress-developer-mcp-server)](https://github.com/nightnei/wordpress-developer-mcp-server/releases)
 [![Release downloads](https://img.shields.io/github/downloads/nightnei/wordpress-developer-mcp-server/total)](https://github.com/nightnei/wordpress-developer-mcp-server/releases)
