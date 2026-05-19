@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.4](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.3...v2.8.4) (2026-05-19)
+
+
+### Bug Fixes
+
+* just format ([#83](https://github.com/nightnei/wordpress-developer-mcp-server/issues/83)) ([2bd2f12](https://github.com/nightnei/wordpress-developer-mcp-server/commit/2bd2f128846a35a19426a2b0882d9f451aa2b0c6))
+
 ## [2.8.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.2...v2.8.3) (2026-05-19)
 
 
