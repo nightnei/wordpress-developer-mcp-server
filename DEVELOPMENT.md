@@ -18,15 +18,15 @@ Set the `command` to your local `node` and `args` to the built file. In dev mode
 
 ```json
 {
-  "mcpServers": {
-    "wordpress-developer": {
-      "command": "node",
-      "args": ["/absolute/path/to/wordpress-developer-mcp-server/dist/index.cjs"],
-      "env": {
-        "STUDIO_CLI_PATH": "/path/to/custom/studio-cli"
-      }
-    }
-  }
+	"mcpServers": {
+		"wordpress-developer": {
+			"command": "node",
+			"args": [ "/absolute/path/to/wordpress-developer-mcp-server/dist/index.cjs" ],
+			"env": {
+				"STUDIO_CLI_PATH": "/path/to/custom/studio-cli"
+			}
+		}
+	}
 }
 ```
 
@@ -72,11 +72,11 @@ Releases are automated with [Release Please](https://github.com/googleapis/relea
 
 Use conventional commit prefixes to control version bumps:
 
-| Prefix | Version bump | Example |
-|---|---|---|
-| `fix:` | Patch (1.0.0 → 1.0.1) | `fix: crash on empty site list` |
-| `feat:` | Minor (1.0.0 → 1.1.0) | `feat: add theme management tools` |
-| `feat!:` or `BREAKING CHANGE:` | Major (1.0.0 → 2.0.0) | `feat!: rename all tool IDs` |
+| Prefix                         | Version bump          | Example                            |
+| ------------------------------ | --------------------- | ---------------------------------- |
+| `fix:`                         | Patch (1.0.0 → 1.0.1) | `fix: crash on empty site list`    |
+| `feat:`                        | Minor (1.0.0 → 1.1.0) | `feat: add theme management tools` |
+| `feat!:` or `BREAKING CHANGE:` | Major (1.0.0 → 2.0.0) | `feat!: rename all tool IDs`       |
 
 Commits without a conventional prefix (e.g. `chore:`, `docs:`, `refactor:`) don't trigger a version bump but will still appear in the changelog if included in a release.
 
