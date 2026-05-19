@@ -2,292 +2,256 @@
 
 ## [2.8.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.2...v2.8.3) (2026-05-19)
 
-
 ### Bug Fixes
 
-* **tools:** improve update response ([#81](https://github.com/nightnei/wordpress-developer-mcp-server/issues/81)) ([948f82e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/948f82e12cf73f334cc001c0b367f42a734dc42c))
+- **tools:** improve update response ([#81](https://github.com/nightnei/wordpress-developer-mcp-server/issues/81)) ([948f82e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/948f82e12cf73f334cc001c0b367f42a734dc42c))
 
 ## [2.8.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.1...v2.8.2) (2026-05-18)
 
-
 ### Bug Fixes
 
-* **tools:** adjust auth instructions ([#78](https://github.com/nightnei/wordpress-developer-mcp-server/issues/78)) ([be20564](https://github.com/nightnei/wordpress-developer-mcp-server/commit/be205646851257e7759a8f45ffd7e95589c19623))
+- **tools:** adjust auth instructions ([#78](https://github.com/nightnei/wordpress-developer-mcp-server/issues/78)) ([be20564](https://github.com/nightnei/wordpress-developer-mcp-server/commit/be205646851257e7759a8f45ffd7e95589c19623))
 
 ## [2.8.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.0...v2.8.1) (2026-05-18)
 
-
 ### Bug Fixes
 
-* **tools:** handle unauthorized responses ([#76](https://github.com/nightnei/wordpress-developer-mcp-server/issues/76)) ([62adccb](https://github.com/nightnei/wordpress-developer-mcp-server/commit/62adccbab7d78c481b4f682b015b08a9715c1ce8))
+- **tools:** handle unauthorized responses ([#76](https://github.com/nightnei/wordpress-developer-mcp-server/issues/76)) ([62adccb](https://github.com/nightnei/wordpress-developer-mcp-server/commit/62adccbab7d78c481b4f682b015b08a9715c1ce8))
 
 ## [2.8.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.7.0...v2.8.0) (2026-05-15)
 
-
 ### Features
 
-* **install:** add star info ([#74](https://github.com/nightnei/wordpress-developer-mcp-server/issues/74)) ([efb2f93](https://github.com/nightnei/wordpress-developer-mcp-server/commit/efb2f931a5cc44fd312aacd772adb18a39a7d43e))
+- **install:** add star info ([#74](https://github.com/nightnei/wordpress-developer-mcp-server/issues/74)) ([efb2f93](https://github.com/nightnei/wordpress-developer-mcp-server/commit/efb2f931a5cc44fd312aacd772adb18a39a7d43e))
 
 ## [2.7.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.1...v2.7.0) (2026-05-15)
 
-
 ### Features
 
-* **install:** move mcp into server folder ([#72](https://github.com/nightnei/wordpress-developer-mcp-server/issues/72)) ([5c9dbc8](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5c9dbc886410946eb284fb76a12c546cfc6a99f7))
+- **install:** move mcp into server folder ([#72](https://github.com/nightnei/wordpress-developer-mcp-server/issues/72)) ([5c9dbc8](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5c9dbc886410946eb284fb76a12c546cfc6a99f7))
 
 ## [2.6.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.6.0...v2.6.1) (2026-05-15)
 
-
 ### Bug Fixes
 
-* **tools:** inspect ([#70](https://github.com/nightnei/wordpress-developer-mcp-server/issues/70)) ([e8f553c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e8f553c33de20a37f8b5c98507436d83235f3c1a))
+- **tools:** inspect ([#70](https://github.com/nightnei/wordpress-developer-mcp-server/issues/70)) ([e8f553c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e8f553c33de20a37f8b5c98507436d83235f3c1a))
 
 ## [2.6.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.2...v2.6.0) (2026-05-15)
 
-
 ### Features
 
-* **tools:** add inspect ([#65](https://github.com/nightnei/wordpress-developer-mcp-server/issues/65)) ([17eb043](https://github.com/nightnei/wordpress-developer-mcp-server/commit/17eb0431b95c8af654221379300af7c478217efe))
+- **tools:** add inspect ([#65](https://github.com/nightnei/wordpress-developer-mcp-server/issues/65)) ([17eb043](https://github.com/nightnei/wordpress-developer-mcp-server/commit/17eb0431b95c8af654221379300af7c478217efe))
 
 ## [2.5.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.1...v2.5.2) (2026-05-14)
 
-
 ### Bug Fixes
 
-* **install:** surface npm errors when installing wp-studio ([#66](https://github.com/nightnei/wordpress-developer-mcp-server/issues/66)) ([048e461](https://github.com/nightnei/wordpress-developer-mcp-server/commit/048e4619de3672e75520026a96a1b3c4b8909f19))
+- **install:** surface npm errors when installing wp-studio ([#66](https://github.com/nightnei/wordpress-developer-mcp-server/issues/66)) ([048e461](https://github.com/nightnei/wordpress-developer-mcp-server/commit/048e4619de3672e75520026a96a1b3c4b8909f19))
 
 ## [2.5.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.5.0...v2.5.1) (2026-05-12)
 
-
 ### Bug Fixes
 
-* **tools:** improve design debrief ([#62](https://github.com/nightnei/wordpress-developer-mcp-server/issues/62)) ([e7c4360](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e7c43609b016e267e120d29983943e2b38ba5fa9))
+- **tools:** improve design debrief ([#62](https://github.com/nightnei/wordpress-developer-mcp-server/issues/62)) ([e7c4360](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e7c43609b016e267e120d29983943e2b38ba5fa9))
 
 ## [2.5.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.4.1...v2.5.0) (2026-05-12)
 
-
 ### Features
 
-* **tools:** sync ([#60](https://github.com/nightnei/wordpress-developer-mcp-server/issues/60)) ([864f957](https://github.com/nightnei/wordpress-developer-mcp-server/commit/864f957183efd8bcaf91712c64cca35026bec9f9))
+- **tools:** sync ([#60](https://github.com/nightnei/wordpress-developer-mcp-server/issues/60)) ([864f957](https://github.com/nightnei/wordpress-developer-mcp-server/commit/864f957183efd8bcaf91712c64cca35026bec9f9))
 
 ## [2.4.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.4.0...v2.4.1) (2026-05-11)
 
-
 ### Bug Fixes
 
-* **tools:** improve design debrief ([#58](https://github.com/nightnei/wordpress-developer-mcp-server/issues/58)) ([642c4b4](https://github.com/nightnei/wordpress-developer-mcp-server/commit/642c4b4b8e9ef640a1ce4ac2814ea1cb9cba8425))
+- **tools:** improve design debrief ([#58](https://github.com/nightnei/wordpress-developer-mcp-server/issues/58)) ([642c4b4](https://github.com/nightnei/wordpress-developer-mcp-server/commit/642c4b4b8e9ef640a1ce4ac2814ea1cb9cba8425))
 
 ## [2.4.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.4...v2.4.0) (2026-05-11)
 
-
 ### Features
 
-* **tools:** add design brief ([#56](https://github.com/nightnei/wordpress-developer-mcp-server/issues/56)) ([cb1f95f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cb1f95fdcc46d6320daec13c76deb652bbd0a26a))
+- **tools:** add design brief ([#56](https://github.com/nightnei/wordpress-developer-mcp-server/issues/56)) ([cb1f95f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cb1f95fdcc46d6320daec13c76deb652bbd0a26a))
 
 ## [2.3.4](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.3...v2.3.4) (2026-05-07)
 
-
 ### Bug Fixes
 
-* **uninstall:** remove trailing line for windows jsons ([bffb5a6](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bffb5a67e3ee546f97f14b66d8af065d88116837))
+- **uninstall:** remove trailing line for windows jsons ([bffb5a6](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bffb5a67e3ee546f97f14b66d8af065d88116837))
 
 ## [2.3.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.2...v2.3.3) (2026-05-07)
 
-
 ### Bug Fixes
 
-* **install:** use auth json format in installers ([#52](https://github.com/nightnei/wordpress-developer-mcp-server/issues/52)) ([80e2ba9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/80e2ba91937f3cca993ddcf265c4b6e6e5a54a59))
+- **install:** use auth json format in installers ([#52](https://github.com/nightnei/wordpress-developer-mcp-server/issues/52)) ([80e2ba9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/80e2ba91937f3cca993ddcf265c4b6e6e5a54a59))
 
 ## [2.3.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.1...v2.3.2) (2026-05-07)
 
-
 ### Bug Fixes
 
-* handle empty Studio site list output ([#50](https://github.com/nightnei/wordpress-developer-mcp-server/issues/50)) ([0f39b50](https://github.com/nightnei/wordpress-developer-mcp-server/commit/0f39b500cc950aa25128f0cca2ffaf05ba7056ac))
+- handle empty Studio site list output ([#50](https://github.com/nightnei/wordpress-developer-mcp-server/issues/50)) ([0f39b50](https://github.com/nightnei/wordpress-developer-mcp-server/commit/0f39b500cc950aa25128f0cca2ffaf05ba7056ac))
 
 ## [2.3.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.3.0...v2.3.1) (2026-05-04)
 
-
 ### Bug Fixes
 
-* **instructions:** add info to site create ([#46](https://github.com/nightnei/wordpress-developer-mcp-server/issues/46)) ([7dd5425](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7dd54256efeacfd929a62e16ba175253bb4a93ce))
+- **instructions:** add info to site create ([#46](https://github.com/nightnei/wordpress-developer-mcp-server/issues/46)) ([7dd5425](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7dd54256efeacfd929a62e16ba175253bb4a93ce))
 
 ## [2.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.2.0...v2.3.0) (2026-05-04)
 
-
 ### Features
 
-* use cli 1.8.2 ([#44](https://github.com/nightnei/wordpress-developer-mcp-server/issues/44)) ([626512a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/626512ace5e487d291948320b0dadc879619b5a0))
+- use cli 1.8.2 ([#44](https://github.com/nightnei/wordpress-developer-mcp-server/issues/44)) ([626512a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/626512ace5e487d291948320b0dadc879619b5a0))
 
 ## [2.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.1.0...v2.2.0) (2026-05-04)
 
-
 ### Features
 
-* include wp recommendations ([#42](https://github.com/nightnei/wordpress-developer-mcp-server/issues/42)) ([db8d539](https://github.com/nightnei/wordpress-developer-mcp-server/commit/db8d539eab54b7c0776311f0a2ed0eff42a6acac))
+- include wp recommendations ([#42](https://github.com/nightnei/wordpress-developer-mcp-server/issues/42)) ([db8d539](https://github.com/nightnei/wordpress-developer-mcp-server/commit/db8d539eab54b7c0776311f0a2ed0eff42a6acac))
 
 ## [2.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.9...v2.1.0) (2026-05-04)
 
-
 ### Features
 
-* update deps ([#40](https://github.com/nightnei/wordpress-developer-mcp-server/issues/40)) ([c2f5042](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c2f5042869d9ff14d10a7bbd4a537cc5b023a9fb))
-* use package version as McpServer version ([#39](https://github.com/nightnei/wordpress-developer-mcp-server/issues/39)) ([4b7d298](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b7d2985f68e884f60a9b4e0d3699fd5b01ca3a2))
+- update deps ([#40](https://github.com/nightnei/wordpress-developer-mcp-server/issues/40)) ([c2f5042](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c2f5042869d9ff14d10a7bbd4a537cc5b023a9fb))
+- use package version as McpServer version ([#39](https://github.com/nightnei/wordpress-developer-mcp-server/issues/39)) ([4b7d298](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b7d2985f68e884f60a9b4e0d3699fd5b01ca3a2))
 
 ## [2.0.9](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.8...v2.0.9) (2026-05-01)
 
-
 ### Bug Fixes
 
-* **install:** use cli 1.7.8 ([daf93ad](https://github.com/nightnei/wordpress-developer-mcp-server/commit/daf93ad6e796dbeb72f375e432b347cc251b00d8))
-* **install:** use cli 1.8.1 ([7e6eead](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7e6eead2a36ad3b0cf20fa9606230b005e1c2406))
-* **install:** use cli 1.8.1 ([f159b0d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f159b0db5ec1820a7785e0ca3801ba1b727e7dd9))
+- **install:** use cli 1.7.8 ([daf93ad](https://github.com/nightnei/wordpress-developer-mcp-server/commit/daf93ad6e796dbeb72f375e432b347cc251b00d8))
+- **install:** use cli 1.8.1 ([7e6eead](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7e6eead2a36ad3b0cf20fa9606230b005e1c2406))
+- **install:** use cli 1.8.1 ([f159b0d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f159b0db5ec1820a7785e0ca3801ba1b727e7dd9))
 
 ## [2.0.8](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.7...v2.0.8) (2026-04-30)
 
-
 ### Bug Fixes
 
-* **tools:** avoid quoting cli on windows ([#36](https://github.com/nightnei/wordpress-developer-mcp-server/issues/36)) ([12da548](https://github.com/nightnei/wordpress-developer-mcp-server/commit/12da5482c0b4fe0213f299b64854cd33a697b5dc))
+- **tools:** avoid quoting cli on windows ([#36](https://github.com/nightnei/wordpress-developer-mcp-server/issues/36)) ([12da548](https://github.com/nightnei/wordpress-developer-mcp-server/commit/12da5482c0b4fe0213f299b64854cd33a697b5dc))
 
 ## [2.0.7](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.6...v2.0.7) (2026-04-30)
 
-
 ### Bug Fixes
 
-* **tools:** running cli on windows ([#33](https://github.com/nightnei/wordpress-developer-mcp-server/issues/33)) ([e4b5f38](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e4b5f3813e9d752e69b407f2ec52ac2de9d86e1f))
+- **tools:** running cli on windows ([#33](https://github.com/nightnei/wordpress-developer-mcp-server/issues/33)) ([e4b5f38](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e4b5f3813e9d752e69b407f2ec52ac2de9d86e1f))
 
 ## [2.0.6](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.5...v2.0.6) (2026-04-30)
 
-
 ### Bug Fixes
 
-* **tools:** windows runtime ([#31](https://github.com/nightnei/wordpress-developer-mcp-server/issues/31)) ([817c35a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/817c35ab2b067714a42b9875b27287505176db6e))
+- **tools:** windows runtime ([#31](https://github.com/nightnei/wordpress-developer-mcp-server/issues/31)) ([817c35a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/817c35ab2b067714a42b9875b27287505176db6e))
 
 ## [2.0.5](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.4...v2.0.5) (2026-04-30)
 
-
 ### Bug Fixes
 
-* **tools:** update php version defaults ([#29](https://github.com/nightnei/wordpress-developer-mcp-server/issues/29)) ([f9f9314](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f9f93145af0f72828ab30f98a7dc8b0729dc3f6b))
+- **tools:** update php version defaults ([#29](https://github.com/nightnei/wordpress-developer-mcp-server/issues/29)) ([f9f9314](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f9f93145af0f72828ab30f98a7dc8b0729dc3f6b))
 
 ## [2.0.4](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.3...v2.0.4) (2026-04-30)
 
-
 ### Bug Fixes
 
-* **tools:** update php version defaults ([#27](https://github.com/nightnei/wordpress-developer-mcp-server/issues/27)) ([8e1ec4a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/8e1ec4a5d9a0c11ec5c96ca53f119d8d4024b0cf))
+- **tools:** update php version defaults ([#27](https://github.com/nightnei/wordpress-developer-mcp-server/issues/27)) ([8e1ec4a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/8e1ec4a5d9a0c11ec5c96ca53f119d8d4024b0cf))
 
 ## [2.0.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.2...v2.0.3) (2026-04-30)
 
-
 ### Bug Fixes
 
-* cleanup ([#25](https://github.com/nightnei/wordpress-developer-mcp-server/issues/25)) ([599d467](https://github.com/nightnei/wordpress-developer-mcp-server/commit/599d46788a3aa1da5262fab056b848920137f307))
+- cleanup ([#25](https://github.com/nightnei/wordpress-developer-mcp-server/issues/25)) ([599d467](https://github.com/nightnei/wordpress-developer-mcp-server/commit/599d46788a3aa1da5262fab056b848920137f307))
 
 ## [2.0.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.1...v2.0.2) (2026-04-24)
 
-
 ### Bug Fixes
 
-* **install:** macOS installation and updating is improved and fixed a few bugs ([#21](https://github.com/nightnei/wordpress-developer-mcp-server/issues/21)) ([9dc33e4](https://github.com/nightnei/wordpress-developer-mcp-server/commit/9dc33e4558000c7e4142861a01bff3e250f63029))
+- **install:** macOS installation and updating is improved and fixed a few bugs ([#21](https://github.com/nightnei/wordpress-developer-mcp-server/issues/21)) ([9dc33e4](https://github.com/nightnei/wordpress-developer-mcp-server/commit/9dc33e4558000c7e4142861a01bff3e250f63029))
 
 ## [2.0.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.0.0...v2.0.1) (2026-04-14)
 
-
 ### Bug Fixes
 
-* **tools:** running cli on Windows ([#18](https://github.com/nightnei/wordpress-developer-mcp-server/issues/18)) ([c4c8f2b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c4c8f2b3d5abb5595fa2a59a8b8031e17b13ce7e))
+- **tools:** running cli on Windows ([#18](https://github.com/nightnei/wordpress-developer-mcp-server/issues/18)) ([c4c8f2b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c4c8f2b3d5abb5595fa2a59a8b8031e17b13ce7e))
 
 ## [2.0.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.4.1...v2.0.0) (2026-04-13)
 
-
 ### ⚠ BREAKING CHANGES
 
-* **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16))
+- **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16))
 
 ### Features
 
-* **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16)) ([4b3ebd5](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b3ebd53aa7b7140fec7d401f311601757430250))
+- **install:** new, extended installation flow ([#16](https://github.com/nightnei/wordpress-developer-mcp-server/issues/16)) ([4b3ebd5](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4b3ebd53aa7b7140fec7d401f311601757430250))
 
 ## [1.4.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.4.0...v1.4.1) (2026-03-25)
 
-
 ### Bug Fixes
 
-* **tools:** description improvements ([124857a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/124857ad4a9994c3eff11ca1f40bbb9c1e832130))
+- **tools:** description improvements ([124857a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/124857ad4a9994c3eff11ca1f40bbb9c1e832130))
 
 ## [1.4.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.3.0...v1.4.0) (2026-03-06)
 
-
 ### Features
 
-* **tools:** add auto-updates ([bb1403e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bb1403e821dc7baa44b5513e6bc545fb02c24cd6))
+- **tools:** add auto-updates ([bb1403e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bb1403e821dc7baa44b5513e6bc545fb02c24cd6))
 
 ## [1.3.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.2.0...v1.3.0) (2026-03-06)
 
-
 ### Features
 
-* **install:** bin files now flexible with selecting tools and adjust to any environment ([b524a66](https://github.com/nightnei/wordpress-developer-mcp-server/commit/b524a66d827bf20fe9a3b387fc19dedfbf8d2f6c))
+- **install:** bin files now flexible with selecting tools and adjust to any environment ([b524a66](https://github.com/nightnei/wordpress-developer-mcp-server/commit/b524a66d827bf20fe9a3b387fc19dedfbf8d2f6c))
 
 ## [1.2.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.1...v1.2.0) (2026-03-03)
 
-
 ### Features
 
-* oportunity to provide custom studio cli instance ([f766881](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f7668818a55a829272efab62566edac89ef3c973))
+- oportunity to provide custom studio cli instance ([f766881](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f7668818a55a829272efab62566edac89ef3c973))
 
 ## [1.1.1](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.1.0...v1.1.1) (2026-03-03)
 
-
 ### Bug Fixes
 
-* provide correct path to install_dir ([65345b3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/65345b31cb94836f17fedbc60899ea055bcbc088))
+- provide correct path to install_dir ([65345b3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/65345b31cb94836f17fedbc60899ea055bcbc088))
 
 ## [1.1.0](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v1.0.0...v1.1.0) (2026-03-03)
 
-
 ### Features
 
-* use releses instead of committed dist ([cfaee72](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cfaee72f5dfd6cea88ce932260654fb71c4404d3))
+- use releses instead of committed dist ([cfaee72](https://github.com/nightnei/wordpress-developer-mcp-server/commit/cfaee72f5dfd6cea88ce932260654fb71c4404d3))
 
 ## 1.0.0 (2026-03-03)
 
-
 ### Features
 
-* **tools:** add capability to remove folders ([ed35c77](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ed35c77e5b5ea55a17ea57a0db3f53f87f2257d9))
-* **tools:** add custom domain and https for site set command ([bba9bf9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bba9bf9b97cff8eba74a0f5bb56424e810a38467))
-* **tools:** add fs ([14c0cf3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/14c0cf348a06ec993b90dd328b025ad69cea1216)), ([352e878](https://github.com/nightnei/wordpress-developer-mcp-server/commit/352e878e0ecd0ef5ddbe126dd90faa04630b94d6))
-* **tools:** add site ([ec35cad](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ec35cad754ec154db0cb4dd92348f59f68867676)), ([d930683](https://github.com/nightnei/wordpress-developer-mcp-server/commit/d930683d205c0737ef7630343b005bc1a3f7f61f)), ([6133fbc](https://github.com/nightnei/wordpress-developer-mcp-server/commit/6133fbc3cb18018d1a8d5166acbe683fac5b21c8)), ([7457343](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7457343d481432e596c401340854d9bab5ccebad)), ([5a39596](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5a39596b58edb443816b667096af1a73987c6e42)), ([4347b7b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4347b7b06210e9a9c97d48f671a273d8526c5b32))
-* **tools:** add wp-cli ([43021e6](https://github.com/nightnei/wordpress-developer-mcp-server/commit/43021e680129ce4c9e3b673e08ed004cbbe8b556))
-* **tools:** return json for sites list ([f1e1aa9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f1e1aa98074713bb38d2487a3b34aee49b3c6563))
-* **uninstall:** add claude restart and optional removing files ([edbde5a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/edbde5ad4a2ae3392550683ea0509cea012ed714))
-* **uninstall:** add readme ([077d076](https://github.com/nightnei/wordpress-developer-mcp-server/commit/077d07621c7bb5f3f3bee70f0c1f67add0d76e3a))
-* **install:** zero-setup installation with install.sh ([362dcc8](https://github.com/nightnei/wordpress-developer-mcp-server/commit/362dcc8c34261a78db467da64a80eb0e0fba63b3))
-* **instructions:** force using provided tools for fs modifications ([922a97c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/922a97cfdf6dc57f10b90221eb48eb7659a69649))
-* **instructions:** improve info to login to wpcom ([dfd41a3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/dfd41a3a4a20f5a3e2c34b9ebead23f3c6923666))
-* **instructions:** info to login to wpcom ([bdb24e0](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bdb24e0a91506c1bb4310cf6bd540c011d405fc1))
-* **instructions:** add info about image generation ([e8a9042](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e8a9042054217668e1f53ac339db772d0a41e343))
-* **instructions:** add info about Studio app ([bef5a2d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bef5a2d2e793add0cc7bee7f5303d11febccefb7))
-* **instructions:** add info about using this mcp ([2a37b4d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/2a37b4d969ceb0937d857fc4b2276c72279ffee9))
+- **tools:** add capability to remove folders ([ed35c77](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ed35c77e5b5ea55a17ea57a0db3f53f87f2257d9))
+- **tools:** add custom domain and https for site set command ([bba9bf9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bba9bf9b97cff8eba74a0f5bb56424e810a38467))
+- **tools:** add fs ([14c0cf3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/14c0cf348a06ec993b90dd328b025ad69cea1216)), ([352e878](https://github.com/nightnei/wordpress-developer-mcp-server/commit/352e878e0ecd0ef5ddbe126dd90faa04630b94d6))
+- **tools:** add site ([ec35cad](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ec35cad754ec154db0cb4dd92348f59f68867676)), ([d930683](https://github.com/nightnei/wordpress-developer-mcp-server/commit/d930683d205c0737ef7630343b005bc1a3f7f61f)), ([6133fbc](https://github.com/nightnei/wordpress-developer-mcp-server/commit/6133fbc3cb18018d1a8d5166acbe683fac5b21c8)), ([7457343](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7457343d481432e596c401340854d9bab5ccebad)), ([5a39596](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5a39596b58edb443816b667096af1a73987c6e42)), ([4347b7b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/4347b7b06210e9a9c97d48f671a273d8526c5b32))
+- **tools:** add wp-cli ([43021e6](https://github.com/nightnei/wordpress-developer-mcp-server/commit/43021e680129ce4c9e3b673e08ed004cbbe8b556))
+- **tools:** return json for sites list ([f1e1aa9](https://github.com/nightnei/wordpress-developer-mcp-server/commit/f1e1aa98074713bb38d2487a3b34aee49b3c6563))
+- **uninstall:** add claude restart and optional removing files ([edbde5a](https://github.com/nightnei/wordpress-developer-mcp-server/commit/edbde5ad4a2ae3392550683ea0509cea012ed714))
+- **uninstall:** add readme ([077d076](https://github.com/nightnei/wordpress-developer-mcp-server/commit/077d07621c7bb5f3f3bee70f0c1f67add0d76e3a))
+- **install:** zero-setup installation with install.sh ([362dcc8](https://github.com/nightnei/wordpress-developer-mcp-server/commit/362dcc8c34261a78db467da64a80eb0e0fba63b3))
+- **instructions:** force using provided tools for fs modifications ([922a97c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/922a97cfdf6dc57f10b90221eb48eb7659a69649))
+- **instructions:** improve info to login to wpcom ([dfd41a3](https://github.com/nightnei/wordpress-developer-mcp-server/commit/dfd41a3a4a20f5a3e2c34b9ebead23f3c6923666))
+- **instructions:** info to login to wpcom ([bdb24e0](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bdb24e0a91506c1bb4310cf6bd540c011d405fc1))
+- **instructions:** add info about image generation ([e8a9042](https://github.com/nightnei/wordpress-developer-mcp-server/commit/e8a9042054217668e1f53ac339db772d0a41e343))
+- **instructions:** add info about Studio app ([bef5a2d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/bef5a2d2e793add0cc7bee7f5303d11febccefb7))
+- **instructions:** add info about using this mcp ([2a37b4d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/2a37b4d969ceb0937d857fc4b2276c72279ffee9))
 
 ### Bug Fixes
 
-* **install:** remove arm64 check ([ca94553](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ca945534408dd50228e78f00a7b539aedee6ce69))
-* **install:** wpcom login ([c1fd94c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c1fd94cfcc703553dc15b936de4c25afdfbada28))
-* **install:** wpcom login i2 ([a3a2c4e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/a3a2c4e0250d064bd408fd04e8e54bc68707f9f0))
-* **tools:** handle case with no already created sites ([b1e1661](https://github.com/nightnei/wordpress-developer-mcp-server/commit/b1e1661bb911fea34cb60fe1722d4ff058af4c70))
-* **tools:** improve also process of resolving paths in the whole codebase ([990cb7e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/990cb7e7de52b8ab2f0c7d00b3c08055822a22f3))
-* **tools:** improve process of resolving paths ([00c9856](https://github.com/nightnei/wordpress-developer-mcp-server/commit/00c98568ef77c8fa06bcd24b91883b1de20992f2))
-* **tools:** provide homedir to assistant ([44885cb](https://github.com/nightnei/wordpress-developer-mcp-server/commit/44885cbc0050a780a6709ade5a3906fec9204b71))
-* **tools:** share wp-admin credentials and add instruction for auto-login ([9b30cdd](https://github.com/nightnei/wordpress-developer-mcp-server/commit/9b30cddded88771db0fb4758a79f6279b964a389))
-* **tools:** spaces are respected for wp-cli ([d4f9e25](https://github.com/nightnei/wordpress-developer-mcp-server/commit/d4f9e2530df1cef4b75d957ddef1905d7df7f4dd))
-* **uninstall:** clean up Claude ([3773a38](https://github.com/nightnei/wordpress-developer-mcp-server/commit/3773a3801a8ceebf774a67f453944ebe3070fe8d))
-* **uninstall:** remove installation directory ([2de833d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/2de833d09f6f7ff75d565b46f7e22fac3c75f7b6))
-* **uninstall:** remove installation directory ([40c9b6b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/40c9b6b1cb90e6afda6f66d2af14f0ad322390aa))
-* **uninstall:** remove sites ([5eea83f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5eea83fa5bd49820ffb92875a362cb388fa85821))
-* **uninstall:** remove sites directory ([74a651f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/74a651fe5096a781fd7a6b5d94dc0ca2e6074dcd))
-* **uninstall:** check if studio is installed and dont remove sites ([7ef9e6c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7ef9e6c7559341379c048f79d046096715403f04))
-* **uninstall:** check number of sites and ask user should they be removed ([5d0b222](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5d0b2229774e5ccc4f1e3d8d78cd4d0139039f7f))
+- **install:** remove arm64 check ([ca94553](https://github.com/nightnei/wordpress-developer-mcp-server/commit/ca945534408dd50228e78f00a7b539aedee6ce69))
+- **install:** wpcom login ([c1fd94c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/c1fd94cfcc703553dc15b936de4c25afdfbada28))
+- **install:** wpcom login i2 ([a3a2c4e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/a3a2c4e0250d064bd408fd04e8e54bc68707f9f0))
+- **tools:** handle case with no already created sites ([b1e1661](https://github.com/nightnei/wordpress-developer-mcp-server/commit/b1e1661bb911fea34cb60fe1722d4ff058af4c70))
+- **tools:** improve also process of resolving paths in the whole codebase ([990cb7e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/990cb7e7de52b8ab2f0c7d00b3c08055822a22f3))
+- **tools:** improve process of resolving paths ([00c9856](https://github.com/nightnei/wordpress-developer-mcp-server/commit/00c98568ef77c8fa06bcd24b91883b1de20992f2))
+- **tools:** provide homedir to assistant ([44885cb](https://github.com/nightnei/wordpress-developer-mcp-server/commit/44885cbc0050a780a6709ade5a3906fec9204b71))
+- **tools:** share wp-admin credentials and add instruction for auto-login ([9b30cdd](https://github.com/nightnei/wordpress-developer-mcp-server/commit/9b30cddded88771db0fb4758a79f6279b964a389))
+- **tools:** spaces are respected for wp-cli ([d4f9e25](https://github.com/nightnei/wordpress-developer-mcp-server/commit/d4f9e2530df1cef4b75d957ddef1905d7df7f4dd))
+- **uninstall:** clean up Claude ([3773a38](https://github.com/nightnei/wordpress-developer-mcp-server/commit/3773a3801a8ceebf774a67f453944ebe3070fe8d))
+- **uninstall:** remove installation directory ([2de833d](https://github.com/nightnei/wordpress-developer-mcp-server/commit/2de833d09f6f7ff75d565b46f7e22fac3c75f7b6))
+- **uninstall:** remove installation directory ([40c9b6b](https://github.com/nightnei/wordpress-developer-mcp-server/commit/40c9b6b1cb90e6afda6f66d2af14f0ad322390aa))
+- **uninstall:** remove sites ([5eea83f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5eea83fa5bd49820ffb92875a362cb388fa85821))
+- **uninstall:** remove sites directory ([74a651f](https://github.com/nightnei/wordpress-developer-mcp-server/commit/74a651fe5096a781fd7a6b5d94dc0ca2e6074dcd))
+- **uninstall:** check if studio is installed and dont remove sites ([7ef9e6c](https://github.com/nightnei/wordpress-developer-mcp-server/commit/7ef9e6c7559341379c048f79d046096715403f04))
+- **uninstall:** check number of sites and ask user should they be removed ([5d0b222](https://github.com/nightnei/wordpress-developer-mcp-server/commit/5d0b2229774e5ccc4f1e3d8d78cd4d0139039f7f))

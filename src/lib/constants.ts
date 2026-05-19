@@ -8,5 +8,4 @@ export const STUDIO_AUTH_LOGIN_COMMAND =
 		? `~/.wordpress-developer-mcp/bin/studio-cli.cmd auth login`
 		: `~/.wordpress-developer-mcp/bin/studio-cli auth login`;
 
-export const SITE_PATH_DESCRIPTION =
-	`Path to the root directory of a Studio site. Default location is ${ STUDIO_SITE_PATH_EXAMPLE }. Use wpdev_site_list to discover all sites and their paths.`;
+export const SITE_PATH_DESCRIPTION = `Path to the root directory of a Studio site. Default location is ${ STUDIO_SITE_PATH_EXAMPLE }. Use wpdev_site_list to discover all sites and their paths.`;

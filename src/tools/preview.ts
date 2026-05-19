@@ -72,8 +72,7 @@ export function registerPreviewTools( server: McpServer ) {
 	server.registerTool(
 		'wpdev_preview_update',
 		{
-			description:
-				'Update a Studio preview site for a given original site path.',
+			description: 'Update a Studio preview site for a given original site path.',
 			inputSchema: {
 				host: z
 					.string()

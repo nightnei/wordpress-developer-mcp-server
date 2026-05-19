@@ -16,15 +16,18 @@ export function registerAuthTools( server: McpServer ) {
 				};
 			}
 
-			return { content: [ { type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' } ] };
+			return {
+				content: [
+					{ type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' },
+				],
+			};
 		}
 	);
 
 	server.registerTool(
 		'wpdev_auth_logout',
 		{
-			description:
-				'Log out and clear WordPress.com authentication for Studio.',
+			description: 'Log out and clear WordPress.com authentication for Studio.',
 		},
 		async () => {
 			const res = await runStudioCli( [ 'auth', 'logout' ] );
@@ -35,7 +38,11 @@ export function registerAuthTools( server: McpServer ) {
 				};
 			}
 
-			return { content: [ { type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' } ] };
+			return {
+				content: [
+					{ type: 'text', text: res.stdout.trim() || res.stderr.trim() || '(no output)' },
+				],
+			};
 		}
 	);
 }
