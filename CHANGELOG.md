@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.3](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.2...v2.8.3) (2026-05-19)
+
+
+### Bug Fixes
+
+* **tools:** improve update response ([#81](https://github.com/nightnei/wordpress-developer-mcp-server/issues/81)) ([948f82e](https://github.com/nightnei/wordpress-developer-mcp-server/commit/948f82e12cf73f334cc001c0b367f42a734dc42c))
+
 ## [2.8.2](https://github.com/nightnei/wordpress-developer-mcp-server/compare/v2.8.1...v2.8.2) (2026-05-18)
 
 
