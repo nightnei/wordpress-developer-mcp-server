@@ -40,7 +40,7 @@ Open Codex, Claude, Cursor, VS Code, or another supported app and work as if you
 Create a WordPress site named "Local Bakery" with Home, Menu, About, and Contact pages.
 ```
 
-Your AI will create a brief, choose a visual direction, build in small steps, and help you iterate toward a finished design. If your request is short, it should first ask whether you want an empty site to iterate on later or a designed site now.
+Your AI will create a brief, choose a visual direction, build in small steps, and help you iterate toward a finished design.
 
 ## Contributing
 
